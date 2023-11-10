@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Supplement extends BaseEntity {
 
-	@OneToMany(mappedBy = "supplement", cascade = CascadeType.PERSIST, orphanRemoval = true)
+	@OneToMany(mappedBy = "supplement", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
 	private final List<SupplementRecord> supplementRecordList = new ArrayList<>();
 
 	@Column(name = "supplement_id")
