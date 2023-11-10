@@ -1,9 +1,6 @@
 package com.juju.cozyformombackend3.domain.supplement.model;
 
-import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecord;
-import com.juju.cozyformombackend3.domain.meal.model.MealRecord;
 import com.juju.cozyformombackend3.domain.user.model.User;
-import com.juju.cozyformombackend3.domain.weight.model.WeightRecord;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,18 +22,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "supplement")
 @Entity
 public class Supplement extends BaseEntity {
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
-	private final List<Supplement> supplementList = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
-	private final List<BloodSugarRecord> bloodSugarRecordList = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
-	private final List<WeightRecord> weightRecordList = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
-	private final List<MealRecord> mealRecordList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "supplement", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	private final List<SupplementRecord> supplementRecordList = new ArrayList<>();
