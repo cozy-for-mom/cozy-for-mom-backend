@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -31,10 +32,14 @@ public class WeightRecord extends BaseEntity {
 	@Column(name = "weight", nullable = false)
 	private Double weight;
 
+	@Column(name = "record_date", nullable = false)
+	private LocalDate recordDate;
+
 	@Builder
-	public WeightRecord(User user, Double weight) {
+	public WeightRecord(User user, Double weight, LocalDate recordDate) {
 		this.user = user;
 		this.weight = weight;
+		this.recordDate = recordDate;
 	}
 
 	@Override
