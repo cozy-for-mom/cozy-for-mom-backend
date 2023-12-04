@@ -45,4 +45,8 @@ public class WeightRecord extends BaseEntity {
 	@Override
 	public void delete() {
 	}
+
+	public void updateWeight(double weight) {
+		this.weight = weight;
+	}
 }

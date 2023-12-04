@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,4 +25,9 @@ public class WeightController {
 		return ResponseEntity.ok(SuccessResponse.of(LocalDateTime.now(), 201, "ok", null));
 	}
 
+	@PutMapping()
+	public ResponseEntity<SuccessResponse> updateWeight(@RequestBody RecordWeightRequest request) {
+		weightService.updateWeight(request);
+		return ResponseEntity.ok(SuccessResponse.of(LocalDateTime.now(), 200, "ok", null));
+	}
 }
