@@ -1,6 +1,7 @@
 package com.juju.cozyformombackend3.domain.weight.service;
 
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.domain.weight.dto.request.DeleteWeightRequest;
 import com.juju.cozyformombackend3.domain.weight.dto.request.RecordWeightRequest;
 import com.juju.cozyformombackend3.domain.weight.exception.WeightErrorCode;
 import com.juju.cozyformombackend3.domain.weight.model.WeightRecord;
@@ -32,5 +33,13 @@ public class WeightService {
 		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, request.getDate())
 						.orElseThrow(() -> new BusinessException(WeightErrorCode.RECORD_DATE_NOT_FOUND));
 		weightRecord.updateWeight(request.getWeight());
+	}
+
+	@Transactional
+	public void deleteWeight(DeleteWeightRequest request) {
+		User user = null; // security context 가져오기
+		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, request.getDate())
+						.orElseThrow(() -> new BusinessException(WeightErrorCode.RECORD_DATE_NOT_FOUND));
+		weightRepository.delete(weightRecord);
 	}
 }
