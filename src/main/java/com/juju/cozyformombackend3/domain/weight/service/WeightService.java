@@ -42,4 +42,7 @@ public class WeightService {
 						.orElseThrow(() -> new BusinessException(WeightErrorCode.RECORD_DATE_NOT_FOUND));
 		weightRepository.delete(weightRecord);
 	}
+
+	//	public WeightListResponse getWeight(LocalDate date, String type) {
+	//	}
 }

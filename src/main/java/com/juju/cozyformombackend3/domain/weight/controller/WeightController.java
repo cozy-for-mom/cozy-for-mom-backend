@@ -38,4 +38,11 @@ public class WeightController {
 		weightService.deleteWeight(request);
 		return ResponseEntity.ok(SuccessResponse.of(LocalDateTime.now(), 204, "ok", null));
 	}
+
+	//	@GetMapping()
+	//	public ResponseEntity<SuccessResponse> getWeight(
+	//					@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+	//					@RequestParam(name = "type") String type) {
+	//		return ResponseEntity.ok(SuccessResponse.of(LocalDateTime.now(), 200, "ok", weightService.getWeight(date, type)));
+	//	}
 }
