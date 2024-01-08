@@ -1,6 +1,8 @@
 package com.juju.cozyformombackend3.domain.bloodsugar.controller;
 
+import com.juju.cozyformombackend3.domain.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
+import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.ModifyBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.bloodsugar.service.BloodSugarService;
 import com.juju.cozyformombackend3.domain.user.model.User;
@@ -8,6 +10,7 @@ import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,5 +28,13 @@ public class BloodSugarController {
 
 		SaveBloodSugarRecordResponse response = bloodSugarService.saveBloodSugarRecord(request, user);
 		return ResponseEntity.ok().body(SuccessResponse.of(201, response));
+	}
+
+	@PutMapping
+	public ResponseEntity<SuccessResponse> modifyBloodSugarRecord(@RequestBody ModifyBloodSugarRecordRequest request) {
+		User user = new User();
+
+		ModifyBloodSugarRecordResponse response = bloodSugarService.updateBloodSugarRecord(request, user);
+		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}
 }

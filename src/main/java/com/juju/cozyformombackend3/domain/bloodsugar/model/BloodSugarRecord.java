@@ -54,4 +54,10 @@ public class BloodSugarRecord extends BaseEntity {
 	public void delete() {
 
 	}
+
+	public void update(LocalDate date, BloodSugarRecordType type, double level) {
+		this.recordAt = date;
+		this.bloodSugarRecordType = type;
+		this.level = level;
+	}
 }
