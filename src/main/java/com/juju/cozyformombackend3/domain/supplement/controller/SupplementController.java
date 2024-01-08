@@ -3,6 +3,7 @@ package com.juju.cozyformombackend3.domain.supplement.controller;
 import com.juju.cozyformombackend3.domain.supplement.dto.request.RegisterSupplementRequest;
 import com.juju.cozyformombackend3.domain.supplement.dto.response.RegisterSupplementResponse;
 import com.juju.cozyformombackend3.domain.supplement.service.SupplementService;
+import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.dto.response.CommonResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,10 @@ public class SupplementController {
 	@PostMapping("")
 	public ResponseEntity<CommonResponse> registerSupplement(@RequestBody RegisterSupplementRequest request) {
 		Long userId = 1L;
+		User user = new User();
 
 		URI uri = URI.create("/api/v1/supplement/" + userId);
-		RegisterSupplementResponse registerSupplementResponse = supplementService.registerSupplement(request, userId);
+		RegisterSupplementResponse registerSupplementResponse = supplementService.registerSupplement(request, user);
 		return ResponseEntity.created(uri).body(CommonResponse.of(registerSupplementResponse));
 	}
-
 }
