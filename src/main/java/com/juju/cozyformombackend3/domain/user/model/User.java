@@ -83,4 +83,14 @@ public class User extends BaseEntity {
 	public void delete() {
 
 	}
+
+	public Long registerSupplement(String supplementName, int targetCount) {
+		Supplement supplement = Supplement.builder()
+						.user(this)
+						.supplementName(supplementName)
+						.targetCount(targetCount)
+						.build();
+		supplementList.add(supplement);
+		return supplement.getSupplementId();
+	}
 }
