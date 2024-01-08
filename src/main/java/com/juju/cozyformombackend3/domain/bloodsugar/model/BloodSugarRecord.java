@@ -13,9 +13,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Table(name = "blood_sugar_record")
 @Entity
@@ -37,11 +40,14 @@ public class BloodSugarRecord extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private BloodSugarRecordType bloodSugarRecordType;
 
+	private LocalDate recordAt;
+
 	@Builder
-	public BloodSugarRecord(User user, Double level, BloodSugarRecordType bloodSugarRecordType) {
+	public BloodSugarRecord(User user, Double level, BloodSugarRecordType bloodSugarRecordType, LocalDate recordAt) {
 		this.user = user;
 		this.level = level;
 		this.bloodSugarRecordType = bloodSugarRecordType;
+		this.recordAt = recordAt;
 	}
 
 	@Override

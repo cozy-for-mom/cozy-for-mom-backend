@@ -1,6 +1,7 @@
 package com.juju.cozyformombackend3.domain.user.model;
 
 import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecord;
+import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecordType;
 import com.juju.cozyformombackend3.domain.meal.model.MealRecord;
 import com.juju.cozyformombackend3.domain.supplement.model.Supplement;
 import com.juju.cozyformombackend3.domain.weight.model.WeightRecord;
@@ -18,6 +19,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,5 +94,22 @@ public class User extends BaseEntity {
 						.build();
 		supplementList.add(supplement);
 		return supplement.getSupplementId();
+	}
+
+	public Long addBloodSugarRecord(LocalDate date, BloodSugarRecordType type, double level) {
+		BloodSugarRecord bloodSugarRecord = BloodSugarRecord.builder()
+						.user(this)
+						.recordAt(date)
+						.bloodSugarRecordType(type)
+						.level(level)
+						.build();
+
+		if (bloodSugarRecordList.stream()
+						.anyMatch(record -> record.getRecordAt().equals(date) && record.getBloodSugarRecordType().equals(type))) {
+			throw new IllegalArgumentException("이미 해당 날짜에 해당 타입의 혈당 기록이 존재합니다.");
+		} else {
+			bloodSugarRecordList.add(bloodSugarRecord);
+		}
+		return bloodSugarRecord.getBloodSugarId();
 	}
 }
