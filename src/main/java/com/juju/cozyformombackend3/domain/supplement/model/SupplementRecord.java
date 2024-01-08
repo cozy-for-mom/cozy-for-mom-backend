@@ -10,9 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Table(name = "supplement_record")
 @Entity
@@ -27,9 +30,12 @@ public class SupplementRecord extends BaseEntity {
 	@JoinColumn(name = "supplement_id")
 	private Supplement supplement;
 
+	private LocalDateTime recordAt;
+
 	@Builder
-	public SupplementRecord(Supplement supplement) {
+	public SupplementRecord(Supplement supplement, LocalDateTime recordAt) {
 		this.supplement = supplement;
+		this.recordAt = recordAt;
 	}
 
 	@Override

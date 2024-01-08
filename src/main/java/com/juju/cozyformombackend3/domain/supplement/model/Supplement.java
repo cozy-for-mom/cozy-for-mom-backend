@@ -13,11 +13,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Table(name = "supplement")
 @Entity
@@ -51,5 +54,20 @@ public class Supplement extends BaseEntity {
 	@Override
 	public void delete() {
 
+	}
+
+	public Long saveSupplementRecord(LocalDateTime datetime) {
+		SupplementRecord supplementRecord = SupplementRecord.builder()
+						.supplement(this)
+						.recordAt(datetime)
+						.build();
+		supplementRecordList.add(supplementRecord);
+		return supplementRecord.getSupplementRecordId();
+	}
+
+	public void deleteSupplementRecord(List<LocalDateTime> datetimeList) {
+		for (LocalDateTime datetime : datetimeList) {
+			supplementRecordList.removeIf(supplementRecord -> supplementRecord.getRecordAt().equals(datetime));
+		}
 	}
 }
