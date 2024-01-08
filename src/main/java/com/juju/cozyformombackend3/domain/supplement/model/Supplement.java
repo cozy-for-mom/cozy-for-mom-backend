@@ -64,4 +64,10 @@ public class Supplement extends BaseEntity {
 		supplementRecordList.add(supplementRecord);
 		return supplementRecord.getSupplementRecordId();
 	}
+
+	public void deleteSupplementRecord(List<LocalDateTime> datetimeList) {
+		for (LocalDateTime datetime : datetimeList) {
+			supplementRecordList.removeIf(supplementRecord -> supplementRecord.getRecordAt().equals(datetime));
+		}
+	}
 }

@@ -1,13 +1,16 @@
 package com.juju.cozyformombackend3.domain.supplement.controller;
 
+import com.juju.cozyformombackend3.domain.supplement.dto.request.DeleteSupplementRecordRequest;
 import com.juju.cozyformombackend3.domain.supplement.dto.request.SaveSupplementRecordRequest;
 import com.juju.cozyformombackend3.domain.supplement.dto.response.SaveSupplementRecordResponse;
 import com.juju.cozyformombackend3.domain.supplement.service.SupplementRecordService;
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.global.dto.request.ListRequest;
 import com.juju.cozyformombackend3.global.dto.response.CommonResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +37,12 @@ public class SupplementRecordController {
 	//	@GetMapping()
 	//	public
 	//
-	//	@DeleteMapping("/api/v1/supplement/intake/{userId}")
-	//	public void deleteSupplementRecord(@RequestBody PostSupplementRecordRequest request) {
-	//		// supplementRecordService.deleteSupplementRecord(request, userId);
-	//	}
+	@DeleteMapping("")
+	public ResponseEntity<CommonResponse> deleteSupplementRecord(
+					@RequestBody ListRequest<DeleteSupplementRecordRequest> request) {
+		User user = new User();
+
+		supplementRecordService.deleteSupplementRecord(request, user);
+		return ResponseEntity.ok().body(CommonResponse.of("success"));
+	}
 }
