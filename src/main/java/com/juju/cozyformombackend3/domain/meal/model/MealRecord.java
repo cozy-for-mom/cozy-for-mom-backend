@@ -13,9 +13,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Table(name = "meal_record")
 @Entity
@@ -37,15 +40,27 @@ public class MealRecord extends BaseEntity {
 	@Column(name = "meal_image_url", nullable = false)
 	private String mealImageUrl;
 
+	@Column(name = "record_at", nullable = false)
+	private LocalDateTime recordAt;
+
 	@Builder
-	public MealRecord(User user, MealType mealType, String mealImageUrl) {
+	private MealRecord(User user, MealType mealType, String mealImageUrl, LocalDateTime recordAt) {
 		this.user = user;
 		this.mealType = mealType;
 		this.mealImageUrl = mealImageUrl;
+		this.recordAt = recordAt;
+	}
+
+	public static MealRecord of(User user, MealType mealType, String mealImageUrl, LocalDateTime recordAt) {
+		return MealRecord.builder()
+						.user(user)
+						.mealType(mealType)
+						.mealImageUrl(mealImageUrl)
+						.recordAt(recordAt)
+						.build();
 	}
 
 	@Override
 	public void delete() {
 	}
-
 }
