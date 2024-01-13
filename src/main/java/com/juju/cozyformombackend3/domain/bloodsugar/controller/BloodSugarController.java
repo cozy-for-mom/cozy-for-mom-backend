@@ -7,8 +7,11 @@ import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.SaveBloodSugar
 import com.juju.cozyformombackend3.domain.bloodsugar.service.BloodSugarService;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +30,9 @@ public class BloodSugarController {
 		User user = new User();
 
 		SaveBloodSugarRecordResponse response = bloodSugarService.saveBloodSugarRecord(request, user);
-		return ResponseEntity.ok().body(SuccessResponse.of(201, response));
+		URI uri = URI.create("/api/v1/bloodsugar/" + response.getBloodSugarRecordId());
+
+		return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
 	}
 
 	@PutMapping
@@ -35,6 +40,16 @@ public class BloodSugarController {
 		User user = new User();
 
 		ModifyBloodSugarRecordResponse response = bloodSugarService.updateBloodSugarRecord(request, user);
+
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<SuccessResponse> removeBloodSugarRecord(@PathVariable(name = "id") Long id) {
+		User user = new User();
+
+		bloodSugarService.deleteBloodSugarRecord(id, user);
+
+		return ResponseEntity.ok().body(SuccessResponse.of(200, null));
 	}
 }
