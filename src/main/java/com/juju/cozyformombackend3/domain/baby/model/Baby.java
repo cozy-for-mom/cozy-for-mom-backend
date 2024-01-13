@@ -18,11 +18,13 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "baby")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Baby {
 
 	@OneToMany(mappedBy = "baby", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

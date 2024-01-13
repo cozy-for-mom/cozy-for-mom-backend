@@ -10,13 +10,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "growth_diary")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class GrowthRecord {
 
 	@Id
@@ -29,7 +31,7 @@ public class GrowthRecord {
 	private Baby baby;
 
 	@Column(name = "record_at", nullable = false)
-	private LocalDateTime recordAt;
+	private LocalDate recordAt;
 
 	@Column(name = "weight")
 	private Double weight;
@@ -45,4 +47,20 @@ public class GrowthRecord {
 
 	@Column(name = "thigh_length")
 	private Double thighLength;
+
+	private GrowthRecord(Baby baby, LocalDate recordAt, Double weight, Double headDiameter, Double headCircum,
+					Double abdomenCircum, Double thighLength) {
+		this.baby = baby;
+		this.recordAt = recordAt;
+		this.weight = weight;
+		this.headDiameter = headDiameter;
+		this.headCircum = headCircum;
+		this.abdomenCircum = abdomenCircum;
+		this.thighLength = thighLength;
+	}
+
+	public static GrowthRecord of(Baby baby, LocalDate recordAt, Double weight, Double headDiameter, Double headCircum,
+					Double abdomenCircum, Double thighLength) {
+		return new GrowthRecord(baby, recordAt, weight, headDiameter, headCircum, abdomenCircum, thighLength);
+	}
 }
