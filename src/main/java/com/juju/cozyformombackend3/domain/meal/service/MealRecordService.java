@@ -27,14 +27,30 @@ public class MealRecordService {
 
 	@Transactional
 	public UpdateMealRecordResponse updateMealRecord(UpdateMealRecordRequest request, User user) {
-		MealRecord foundMealRecord = mealRecordRepository.findById(request.getId())
-						.orElseThrow(() -> new IllegalArgumentException("해당 식사 기록이 존재하지 않습니다."));
-		if (foundMealRecord.getUser() != user) {
-			throw new IllegalArgumentException("해당 식사 기록에 대한 권한이 없습니다.");
-		}
+		MealRecord foundMealRecord = findMealRecordById(request.getId());
+		isMealRecordOwner(foundMealRecord.getUser(), user);
 		Long updatedRecordId = foundMealRecord.update(request.getDatetime(), request.getMealType(),
 						request.getMealImageUrl());
 
 		return UpdateMealRecordResponse.of(updatedRecordId);
+	}
+
+	@Transactional
+	public void deleteMealRecord(Long id, User user) {
+		MealRecord foundMealRecord = findMealRecordById(id);
+		isMealRecordOwner(foundMealRecord.getUser(), user);
+
+		mealRecordRepository.delete(foundMealRecord);
+	}
+
+	private MealRecord findMealRecordById(Long id) {
+		return mealRecordRepository.findById(id)
+						.orElseThrow(() -> new IllegalArgumentException("해당 식사 기록이 존재하지 않습니다."));
+	}
+
+	private void isMealRecordOwner(User recordOwner, User requestUser) {
+		if (recordOwner != requestUser) {
+			throw new IllegalArgumentException("해당 식사 기록에 대한 권한이 없습니다.");
+		}
 	}
 }
