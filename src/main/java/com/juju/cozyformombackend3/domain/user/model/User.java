@@ -3,6 +3,7 @@ package com.juju.cozyformombackend3.domain.user.model;
 import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecordType;
 import com.juju.cozyformombackend3.domain.meal.model.MealRecord;
+import com.juju.cozyformombackend3.domain.meal.model.MealType;
 import com.juju.cozyformombackend3.domain.supplement.model.Supplement;
 import com.juju.cozyformombackend3.domain.weight.model.WeightRecord;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
@@ -20,6 +21,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -111,5 +113,12 @@ public class User extends BaseEntity {
 			bloodSugarRecordList.add(bloodSugarRecord);
 		}
 		return bloodSugarRecord.getBloodSugarId();
+	}
+
+	public Long addMealRecord(LocalDateTime datetime, MealType mealType, String mealImageUrl) {
+		MealRecord mealRecord = MealRecord.of(this, mealType, mealImageUrl, datetime);
+		mealRecordList.add(mealRecord);
+
+		return mealRecord.getMealId();
 	}
 }
