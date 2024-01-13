@@ -4,7 +4,6 @@ import com.juju.cozyformombackend3.domain.weight.dto.request.DeleteWeightRequest
 import com.juju.cozyformombackend3.domain.weight.dto.request.RecordWeightRequest;
 import com.juju.cozyformombackend3.domain.weight.service.WeightService;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,25 +23,25 @@ public class WeightController {
 	@PostMapping()
 	public ResponseEntity<SuccessResponse> recordWeight(@RequestBody RecordWeightRequest request) {
 		weightService.recordWeight(request);
-		return ResponseEntity.ok(SuccessResponse.of(LocalDateTime.now(), 201, "ok", null));
+		return ResponseEntity.ok(SuccessResponse.of(201, null));
 	}
 
 	@PutMapping()
 	public ResponseEntity<SuccessResponse> updateWeight(@RequestBody RecordWeightRequest request) {
 		weightService.updateWeight(request);
-		return ResponseEntity.ok(SuccessResponse.of(LocalDateTime.now(), 200, "ok", null));
+		return ResponseEntity.ok(SuccessResponse.of(200, null));
 	}
 
 	@DeleteMapping()
 	public ResponseEntity<SuccessResponse> deleteWeight(@RequestBody DeleteWeightRequest request) {
 		weightService.deleteWeight(request);
-		return ResponseEntity.ok(SuccessResponse.of(LocalDateTime.now(), 204, "ok", null));
+		return ResponseEntity.ok(SuccessResponse.of(204, null));
 	}
 
 	//	@GetMapping()
 	//	public ResponseEntity<SuccessResponse> getWeight(
 	//					@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
 	//					@RequestParam(name = "type") String type) {
-	//		return ResponseEntity.ok(SuccessResponse.of(LocalDateTime.now(), 200, "ok", weightService.getWeight(date, type)));
+	//		return ResponseEntity.ok(SuccessResponse.of( 200, weightService.getWeight(date, type)));
 	//	}
 }

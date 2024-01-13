@@ -5,27 +5,23 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class SuccessResponse {
+public class SuccessResponse<T> {
 
 	private final LocalDateTime timestamp;
 	private final int status;
-	private final String message;
-	private final Object data;
+	private final T data;
 
 
 	@Builder
-	public SuccessResponse(LocalDateTime timestamp, int status, String message, Object data) {
-		this.timestamp = timestamp;
+	public SuccessResponse(int status, T data) {
+		this.timestamp = LocalDateTime.now();
 		this.status = status;
-		this.message = message;
 		this.data = data;
 	}
 
-	public static SuccessResponse of(LocalDateTime timestamp, int status, String message, Object data) {
+	public static <T> SuccessResponse of(int status, T data) {
 		return SuccessResponse.builder()
-						.timestamp(timestamp)
 						.status(status)
-						.message(message)
 						.data(data)
 						.build();
 	}
