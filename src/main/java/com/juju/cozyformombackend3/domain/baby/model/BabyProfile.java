@@ -1,5 +1,6 @@
 package com.juju.cozyformombackend3.domain.baby.model;
 
+import com.juju.cozyformombackend3.domain.growth.model.GrowthDiary;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,6 +26,9 @@ public class BabyProfile {
 
 	@OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
 	List<Baby> babyList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	List<GrowthDiary> growthDiaryList = new ArrayList<>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
