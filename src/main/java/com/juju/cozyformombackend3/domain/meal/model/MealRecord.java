@@ -63,4 +63,12 @@ public class MealRecord extends BaseEntity {
 	@Override
 	public void delete() {
 	}
+
+	public Long update(LocalDateTime datetime, MealType mealType, String mealImageUrl) {
+		this.recordAt = datetime;
+		this.mealType = mealType;
+		this.mealImageUrl = mealImageUrl;
+
+		return this.mealId;
+	}
 }
