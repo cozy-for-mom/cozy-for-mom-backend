@@ -4,7 +4,9 @@ import com.juju.cozyformombackend3.domain.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.baby.repository.BabyProfileRepository;
 import com.juju.cozyformombackend3.domain.baby.repository.BabyRepository;
 import com.juju.cozyformombackend3.domain.growth.dto.request.SaveGrowthRequest;
+import com.juju.cozyformombackend3.domain.growth.dto.request.UpdateGrowthRequest;
 import com.juju.cozyformombackend3.domain.growth.dto.response.SaveGrowthResponse;
+import com.juju.cozyformombackend3.domain.growth.dto.response.UpdateGrowthResponse;
 import com.juju.cozyformombackend3.domain.growth.model.GrowthDiary;
 import com.juju.cozyformombackend3.domain.growth.model.GrowthRecord;
 import com.juju.cozyformombackend3.domain.growth.repository.GrowthDiaryRepository;
@@ -14,8 +16,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GrowthService {
 
@@ -27,13 +31,11 @@ public class GrowthService {
 
 	private final BabyRepository babyRepository;
 
+	@Transactional
 	public SaveGrowthResponse saveGrowth(User user, SaveGrowthRequest request) {
-		BabyProfile foundBabyProfile = babyProfileRepository.findById(request.getBabyProfileId())
-						.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
+		BabyProfile foundBabyProfile = findBabyProfileById(request.getBabyProfileId());
+		isUserAuthorizedBabyProfile(foundBabyProfile.getUser(), user);
 
-		if (foundBabyProfile.getUser() != user) {
-			throw new IllegalArgumentException("권한이 없습니다.");
-		}
 		GrowthDiary savedGrowthDiary = growthDiaryRepository.save(request.toGrowthDiary(foundBabyProfile));
 
 		List<GrowthRecord> saveGrowthRecordList = foundBabyProfile.getBabyList().stream()
@@ -45,5 +47,36 @@ public class GrowthService {
 						saveGrowthRecordList.stream()
 										.map(GrowthRecord::getGrowthRecordId)
 										.collect(Collectors.toList()));
+	}
+
+	@Transactional
+	public UpdateGrowthResponse updateGrowth(User user, UpdateGrowthRequest request) {
+		BabyProfile foundBabyProfile = findBabyProfileById(request.getBabyProfileId());
+		isUserAuthorizedBabyProfile(foundBabyProfile.getUser(), user);
+
+		GrowthDiary foundGrowthDairy = growthDiaryRepository.findById(request.getGrowthDiaryId())
+						.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장일기입니다."));
+		foundGrowthDairy.update(request.getGrowthDiaryDto());
+
+		List<Long> foundGrowthRecordList = request.getBabies().stream()
+						.map(baby -> {
+							GrowthRecord foundGrowthRecord = growthRecordRepository.findById(baby.getGrowthRecordId())
+											.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 record입니다."));
+							foundGrowthRecord.update(baby);
+							return foundGrowthRecord.getGrowthRecordId();
+						}).collect(Collectors.toList());
+
+		return UpdateGrowthResponse.of(foundGrowthDairy.getGrowthDiaryId(), foundGrowthRecordList);
+	}
+
+	private BabyProfile findBabyProfileById(Long babyProfileId) {
+		return babyProfileRepository.findById(babyProfileId)
+						.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
+	}
+
+	private void isUserAuthorizedBabyProfile(User mom, User target) {
+		if (mom != target) {
+			throw new IllegalArgumentException("권한이 없습니다.");
+		}
 	}
 }

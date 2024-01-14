@@ -36,7 +36,7 @@ public class SaveGrowthRequest {
 						.getGrowthInfo();
 
 		return GrowthRecord.of(baby, date, growthInfo.weight, growthInfo.headDiameter, growthInfo.headCircum,
-						growthInfo.abdomenCircum, growthInfo.thighCircum);
+						growthInfo.abdomenCircum, growthInfo.thighLength);
 	}
 
 	@Getter
@@ -59,6 +59,6 @@ public class SaveGrowthRequest {
 
 		private double abdomenCircum;
 
-		private double thighCircum;
+		private double thighLength;
 	}
 }

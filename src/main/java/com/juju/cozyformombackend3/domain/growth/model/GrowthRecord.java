@@ -1,6 +1,7 @@
 package com.juju.cozyformombackend3.domain.growth.model;
 
 import com.juju.cozyformombackend3.domain.baby.model.Baby;
+import com.juju.cozyformombackend3.domain.growth.dto.request.UpdateGrowthRequest.BabyInfoRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -62,5 +63,13 @@ public class GrowthRecord {
 	public static GrowthRecord of(Baby baby, LocalDate recordAt, Double weight, Double headDiameter, Double headCircum,
 					Double abdomenCircum, Double thighLength) {
 		return new GrowthRecord(baby, recordAt, weight, headDiameter, headCircum, abdomenCircum, thighLength);
+	}
+
+	public void update(BabyInfoRequest baby) {
+		this.weight = baby.getGrowthInfo().getWeight();
+		this.headDiameter = baby.getGrowthInfo().getHeadDiameter();
+		this.headCircum = baby.getGrowthInfo().getHeadCircum();
+		this.abdomenCircum = baby.getGrowthInfo().getAbdomenCircum();
+		this.thighLength = baby.getGrowthInfo().getThighLength();
 	}
 }

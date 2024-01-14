@@ -1,6 +1,7 @@
 package com.juju.cozyformombackend3.domain.growth.model;
 
 import com.juju.cozyformombackend3.domain.baby.model.BabyProfile;
+import com.juju.cozyformombackend3.domain.growth.dto.request.UpdateGrowthRequest.GrowthDiaryDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,5 +49,11 @@ public class GrowthDiary {
 
 	public static GrowthDiary of(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String content) {
 		return new GrowthDiary(babyProfile, recordAt, growthImageUrl, content);
+	}
+
+	public void update(GrowthDiaryDto growthDiaryDto) {
+		this.recordAt = growthDiaryDto.getDate();
+		this.growthImageUrl = growthDiaryDto.getGrowthImageUrl();
+		this.content = growthDiaryDto.getContent();
 	}
 }
