@@ -12,6 +12,7 @@ import com.juju.cozyformombackend3.domain.growth.model.GrowthRecord;
 import com.juju.cozyformombackend3.domain.growth.repository.GrowthDiaryRepository;
 import com.juju.cozyformombackend3.domain.growth.repository.GrowthRecordRepository;
 import com.juju.cozyformombackend3.domain.user.model.User;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class GrowthService {
 	@Transactional
 	public SaveGrowthResponse saveGrowth(User user, SaveGrowthRequest request) {
 		BabyProfile foundBabyProfile = findBabyProfileById(request.getBabyProfileId());
-		isUserAuthorizedBabyProfile(foundBabyProfile.getUser(), user);
+		isUserAuthorized(foundBabyProfile.getUser(), user);
 
 		GrowthDiary savedGrowthDiary = growthDiaryRepository.save(request.toGrowthDiary(foundBabyProfile));
 
@@ -52,7 +53,7 @@ public class GrowthService {
 	@Transactional
 	public UpdateGrowthResponse updateGrowth(User user, UpdateGrowthRequest request) {
 		BabyProfile foundBabyProfile = findBabyProfileById(request.getBabyProfileId());
-		isUserAuthorizedBabyProfile(foundBabyProfile.getUser(), user);
+		isUserAuthorized(foundBabyProfile.getUser(), user);
 
 		GrowthDiary foundGrowthDairy = growthDiaryRepository.findById(request.getGrowthDiaryId())
 						.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장일기입니다."));
@@ -74,9 +75,23 @@ public class GrowthService {
 						.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
 	}
 
-	private void isUserAuthorizedBabyProfile(User mom, User target) {
+	private void isUserAuthorized(User mom, User target) {
 		if (mom != target) {
 			throw new IllegalArgumentException("권한이 없습니다.");
 		}
+	}
+
+	public void deleteGrowth(User user, LocalDate date) {
+		List<GrowthDiary> growthDiaryList = growthDiaryRepository.findAllByRecordAt(date);
+		growthDiaryList.forEach(growthDiary -> {
+			isUserAuthorized(growthDiary.getBabyProfile().getUser(), user);
+			growthDiaryRepository.delete(growthDiary);
+		});
+
+		List<GrowthRecord> growthRecordList = growthRecordRepository.findAllByRecordAt(date);
+		growthRecordList.forEach(growthRecord -> {
+			isUserAuthorized(growthRecord.getBaby().getBabyProfile().getUser(), user);
+			growthRecordRepository.delete(growthRecord);
+		});
 	}
 }
