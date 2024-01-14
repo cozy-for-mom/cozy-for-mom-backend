@@ -1,5 +1,6 @@
 package com.juju.cozyformombackend3.domain.user.model;
 
+import com.juju.cozyformombackend3.domain.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecordType;
 import com.juju.cozyformombackend3.domain.meal.model.MealRecord;
@@ -48,6 +49,9 @@ public class User extends BaseEntity {
 
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
 	private final List<MealRecord> mealRecordList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<BabyProfile> babyProfileList = new ArrayList<>();
 
 	@Column(name = "user_id")
 	@Id
