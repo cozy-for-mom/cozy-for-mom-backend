@@ -2,6 +2,7 @@ package com.juju.cozyformombackend3.domain.bloodsugar.controller;
 
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
+import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.FindBloodSugarListResponse;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.FindDailyBloodSugarListResponse;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.ModifyBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
@@ -9,6 +10,7 @@ import com.juju.cozyformombackend3.domain.bloodsugar.service.BloodSugarService;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,10 +52,19 @@ public class BloodSugarController {
     }
 
     @GetMapping()
-    public ResponseEntity<SuccessResponse> searchBloodSugarRecord(@RequestParam(name = "date") String date) {
+    public ResponseEntity<SuccessResponse> searchDailyBloodSugarRecord(@RequestParam(name = "date") String date) {
         // TODO: 2021-10-04 date validation
         FindDailyBloodSugarListResponse response = bloodSugarService.findDailyBloodSugarRecord(1L, date);
-        
+
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
+
+    @GetMapping("/period")
+    public ResponseEntity<SuccessResponse> searchBloodSugarRecord(@RequestParam(name = "date") String date,
+                                                                  @RequestParam(name = "type") String type,
+                                                                  Pageable pageable) {
+        FindBloodSugarListResponse response = bloodSugarService.findBloodSugarRecord(1L, date, type, pageable);
+
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
 }

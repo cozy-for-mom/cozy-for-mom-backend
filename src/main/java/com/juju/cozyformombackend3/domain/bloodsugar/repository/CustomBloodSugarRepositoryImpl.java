@@ -1,10 +1,18 @@
 package com.juju.cozyformombackend3.domain.bloodsugar.repository;
 
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.object.FindDaliyBloodSugar;
+import com.juju.cozyformombackend3.domain.bloodsugar.dto.object.FindPeriodicBloodSugar;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.object.QFindDaliyBloodSugar;
+import com.juju.cozyformombackend3.domain.bloodsugar.dto.object.QFindPeriodicBloodSugar;
+import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecord;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.juju.cozyformombackend3.domain.bloodsugar.model.QBloodSugarRecord.bloodSugarRecord;
@@ -24,5 +32,55 @@ public class CustomBloodSugarRepositoryImpl implements CustomBloodSugarRepositor
                         getDateFromDateTime(bloodSugarRecord.createdAt).eq(createdAt))
                 .orderBy(bloodSugarRecord.createdAt.asc())
                 .fetch();
+    }
+
+    @Override
+    public Slice<FindPeriodicBloodSugar> searchAllByPeriodType(long userId, String date, String type, Pageable pageable) {
+        List<BloodSugarRecord> data = jpaQueryFactory
+                .selectFrom(bloodSugarRecord)
+                .where(bloodSugarRecord.user.userId.eq(userId),
+                        getDateFromDateTime(bloodSugarRecord.createdAt).eq(date)//,
+//                        bloodSugarRecord.bloodSugarRecordType.eq(BloodSugarRecord.BloodSugarRecordType.valueOf(type))
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .orderBy(bloodSugarRecord.createdAt.desc())
+                .fetch();
+
+//        return new SliceImpl(data, pageable, hasNextPage(data, pageable.getPageSize()));
+        return null;
+    }
+
+    @Override
+    public Slice<FindPeriodicBloodSugar> searchAllByDailyType(long userId, LocalDate date, Pageable pageable) {
+        List<LocalDateTime> datesBeforeGivenDate = jpaQueryFactory
+                .selectDistinct(bloodSugarRecord.createdAt)
+                .from(bloodSugarRecord)
+                .where(bloodSugarRecord.user.userId.eq(userId)
+                        .and(bloodSugarRecord.createdAt.lt(LocalDateTime.of(date, LocalDateTime.MAX.toLocalTime())))
+                        .and(bloodSugarRecord.createdAt.gt(LocalDateTime.of(date.minusDays(pageable.getPageSize()), LocalDateTime.MIN.toLocalTime()))))
+                .orderBy(bloodSugarRecord.createdAt.desc())
+                .fetch();
+
+        List<FindPeriodicBloodSugar> data = jpaQueryFactory
+                .select(new QFindPeriodicBloodSugar(getDateFromDateTime(bloodSugarRecord.createdAt), bloodSugarRecord.level.avg()))
+                .from(bloodSugarRecord)
+                .where(bloodSugarRecord.user.userId.eq(userId)
+                        .and(bloodSugarRecord.createdAt.in(datesBeforeGivenDate)))
+                .groupBy(getDateFromDateTime(bloodSugarRecord.createdAt))
+                .orderBy(getDateFromDateTime(bloodSugarRecord.createdAt).desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return new SliceImpl(data, pageable, hasNextPage(data, pageable.getPageSize()));
+    }
+
+    private boolean hasNextPage(List<FindPeriodicBloodSugar> data, int pageSize) {
+        if (data.size() > pageSize) {
+            data.remove(pageSize);
+            return true;
+        }
+        return false;
     }
 }

@@ -1,7 +1,9 @@
 package com.juju.cozyformombackend3.domain.bloodsugar.service;
 
+import com.juju.cozyformombackend3.domain.bloodsugar.dto.object.FindPeriodicBloodSugar;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
+import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.FindBloodSugarListResponse;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.FindDailyBloodSugarListResponse;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.ModifyBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
@@ -9,8 +11,12 @@ import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.bloodsugar.repository.BloodSugarRepository;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 @Transactional(readOnly = true)
@@ -47,5 +53,31 @@ public class BloodSugarService {
 
     public FindDailyBloodSugarListResponse findDailyBloodSugarRecord(long userId, String date) {
         return FindDailyBloodSugarListResponse.of(bloodSugarRepository.searchAllByCreatedAt(userId, date));
+    }
+
+    public FindBloodSugarListResponse findBloodSugarRecord(long userId, String date, String type, Pageable pageable) {
+//        List<FindPeriodicBloodSugar> findPeriodicRecordList = bloodSugarRepository.searchAllByPeriodType(userId, date, type, pageable);
+        Slice<FindPeriodicBloodSugar> response = null;
+        LocalDate localDate = LocalDate.parse(date);
+
+        if (type.equals("daily")) {
+            response = findAllByDailyType(userId, localDate, pageable);
+            return FindBloodSugarListResponse.of("daily", response);
+        } else if (type.equals("weekly")) {
+//            response = findAllByWeeklyType(userId, date, pageable);
+//            response = bloodSugarRepository.searchAllByWeeklyType(userId, date, pageable);
+        } else if (type.equals("monthly")) {
+//            response = findAllByMonthlyType(userId, date, pageable);
+//            response = bloodSugarRepository.searchAllByMonthlyType(userId, date, pageable);
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 기간 타입입니다.");
+        }
+        return null;
+    }
+
+    private Slice<FindPeriodicBloodSugar> findAllByDailyType(long userId, LocalDate date, Pageable pageable) {
+        Slice<FindPeriodicBloodSugar> bloodSugarList = bloodSugarRepository.searchAllByDailyType(userId, date, pageable);
+
+        return bloodSugarList;
     }
 }
