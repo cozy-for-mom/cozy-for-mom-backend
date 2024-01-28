@@ -14,4 +14,6 @@ public interface CustomBloodSugarRepository {
     Slice<FindPeriodicBloodSugar> searchAllByPeriodType(long userId, String date, String type, Pageable pageable);
 
     Slice<FindPeriodicBloodSugar> searchAllByDailyType(long userId, LocalDate date, Pageable pageable);
+
+    Slice<FindPeriodicBloodSugar> searchAllByWeeklyType(long userId, LocalDate date, Pageable pageable);
 }

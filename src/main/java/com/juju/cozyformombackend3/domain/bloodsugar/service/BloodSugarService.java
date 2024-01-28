@@ -64,15 +64,21 @@ public class BloodSugarService {
             response = findAllByDailyType(userId, localDate, pageable);
             return FindBloodSugarListResponse.of("daily", response);
         } else if (type.equals("weekly")) {
-//            response = findAllByWeeklyType(userId, date, pageable);
-//            response = bloodSugarRepository.searchAllByWeeklyType(userId, date, pageable);
+            response = findAllByWeeklyType(userId, localDate, pageable);
+            return FindBloodSugarListResponse.of("weekly", response);
         } else if (type.equals("monthly")) {
-//            response = findAllByMonthlyType(userId, date, pageable);
+//            response = findAllByMonthlyType(userId, localDate, pageable);
 //            response = bloodSugarRepository.searchAllByMonthlyType(userId, date, pageable);
         } else {
             throw new IllegalArgumentException("존재하지 않는 기간 타입입니다.");
         }
         return null;
+    }
+
+    private Slice<FindPeriodicBloodSugar> findAllByWeeklyType(long userId, LocalDate date, Pageable pageable) {
+        Slice<FindPeriodicBloodSugar> bloodSugarList = bloodSugarRepository.searchAllByWeeklyType(userId, date, pageable);
+
+        return bloodSugarList;
     }
 
     private Slice<FindPeriodicBloodSugar> findAllByDailyType(long userId, LocalDate date, Pageable pageable) {

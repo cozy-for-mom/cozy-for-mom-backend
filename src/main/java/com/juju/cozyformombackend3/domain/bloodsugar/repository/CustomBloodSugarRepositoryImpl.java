@@ -14,6 +14,7 @@ import org.springframework.data.domain.SliceImpl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.juju.cozyformombackend3.domain.bloodsugar.model.QBloodSugarRecord.bloodSugarRecord;
 import static com.juju.cozyformombackend3.global.repository.DateParser.getDateFromDateTime;
@@ -74,6 +75,32 @@ public class CustomBloodSugarRepositoryImpl implements CustomBloodSugarRepositor
                 .fetch();
 
         return new SliceImpl(data, pageable, hasNextPage(data, pageable.getPageSize()));
+    }
+
+    @Override
+    public Slice<FindPeriodicBloodSugar> searchAllByWeeklyType(long userId, LocalDate date, Pageable pageable) {
+        LocalDate startDate = date.minusDays(6); // 시작일로부터 6일 전까지
+
+        List<FindPeriodicBloodSugar> averages = jpaQueryFactory
+                .select(bloodSugarRecord.createdAt.week(),
+                        bloodSugarRecord.createdAt.year(),
+                        bloodSugarRecord.level.avg())
+                .from(bloodSugarRecord)
+                .where(bloodSugarRecord.createdAt.between(startDate.atStartOfDay(), date.atTime(LocalDateTime.MAX.toLocalTime())),
+                        bloodSugarRecord.user.userId.eq(userId))
+                .groupBy(bloodSugarRecord.createdAt.week(), bloodSugarRecord.createdAt.year())
+                .orderBy(bloodSugarRecord.createdAt.week().desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch()
+                .stream()
+                .map(tuple -> new FindPeriodicBloodSugar(
+                        String.valueOf(LocalDate.of(tuple.get(bloodSugarRecord.createdAt.year()),
+                                1, 1).plusWeeks(tuple.get(bloodSugarRecord.createdAt.week()))),
+                        tuple.get(bloodSugarRecord.level.avg())))
+                .collect(Collectors.toList());
+
+        return new SliceImpl<>(averages, pageable, hasNextPage(averages, pageable.getPageSize()));
     }
 
     private boolean hasNextPage(List<FindPeriodicBloodSugar> data, int pageSize) {
