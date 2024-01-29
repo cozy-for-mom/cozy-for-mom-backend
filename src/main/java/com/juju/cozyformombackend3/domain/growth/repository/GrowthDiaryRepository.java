@@ -1,11 +1,16 @@
 package com.juju.cozyformombackend3.domain.growth.repository;
 
+import com.juju.cozyformombackend3.domain.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.growth.model.GrowthDiary;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
 public interface GrowthDiaryRepository extends JpaRepository<GrowthDiary, Long> {
 
-	List<GrowthDiary> findAllByRecordAt(LocalDate date);
+    List<GrowthDiary> findAllByRecordAt(LocalDate date);
+
+    Optional<GrowthDiary> findByBabyProfileAndRecordAt(BabyProfile findBabyProfile, LocalDate date);
 }
