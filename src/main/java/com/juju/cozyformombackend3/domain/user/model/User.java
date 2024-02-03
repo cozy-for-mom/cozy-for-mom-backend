@@ -1,13 +1,14 @@
 package com.juju.cozyformombackend3.domain.user.model;
 
-import com.juju.cozyformombackend3.domain.baby.model.BabyProfile;
-import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecord;
-import com.juju.cozyformombackend3.domain.bloodsugar.model.BloodSugarRecordType;
-import com.juju.cozyformombackend3.domain.meal.model.MealRecord;
-import com.juju.cozyformombackend3.domain.meal.model.MealType;
-import com.juju.cozyformombackend3.domain.supplement.model.Supplement;
-import com.juju.cozyformombackend3.domain.weight.model.WeightRecord;
+import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecordType;
+import com.juju.cozyformombackend3.domain.userlog.meal.model.MealRecord;
+import com.juju.cozyformombackend3.domain.userlog.meal.model.MealType;
+import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
+import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,11 +22,13 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.UniqueConstraint;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,8 +36,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "user", uniqueConstraints = {
-				@UniqueConstraint(columnNames = {"nickname", "email"},
-								name = "nickname_email_unique")})
+	@UniqueConstraint(columnNames = {"nickname", "email"},
+		name = "nickname_email_unique")})
 @Entity
 public class User extends BaseEntity {
 
@@ -94,24 +97,24 @@ public class User extends BaseEntity {
 
 	public Long registerSupplement(String supplementName, int targetCount) {
 		Supplement supplement = Supplement.builder()
-						.user(this)
-						.supplementName(supplementName)
-						.targetCount(targetCount)
-						.build();
+			.user(this)
+			.supplementName(supplementName)
+			.targetCount(targetCount)
+			.build();
 		supplementList.add(supplement);
 		return supplement.getSupplementId();
 	}
 
 	public Long addBloodSugarRecord(LocalDate date, BloodSugarRecordType type, double level) {
 		BloodSugarRecord bloodSugarRecord = BloodSugarRecord.builder()
-						.user(this)
-						.recordAt(date)
-						.bloodSugarRecordType(type)
-						.level(level)
-						.build();
+			.user(this)
+			.recordAt(date)
+			.bloodSugarRecordType(type)
+			.level(level)
+			.build();
 
 		if (bloodSugarRecordList.stream()
-						.anyMatch(record -> record.getRecordAt().equals(date) && record.getBloodSugarRecordType().equals(type))) {
+			.anyMatch(record -> record.getRecordAt().equals(date) && record.getBloodSugarRecordType().equals(type))) {
 			throw new IllegalArgumentException("이미 해당 날짜에 해당 타입의 혈당 기록이 존재합니다.");
 		} else {
 			bloodSugarRecordList.add(bloodSugarRecord);
