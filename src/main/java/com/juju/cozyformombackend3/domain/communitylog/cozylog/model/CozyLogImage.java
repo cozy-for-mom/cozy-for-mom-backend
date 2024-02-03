@@ -10,9 +10,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cozy_log_image")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CozyLogImage extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +24,28 @@ public class CozyLogImage extends BaseEntity {
 	@Column(name = "cozy_log_image_url", nullable = false, columnDefinition = "TEXT")
 	private String cozyLogImageUrl;
 
+	@Column(name = "description")
+	private String description;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private CozyLog cozyLog;
+
+	private CozyLogImage(CozyLog cozyLog, String cozyLogImageUrl, String description) {
+		this.cozyLogImageUrl = cozyLogImageUrl;
+		this.description = description;
+		this.cozyLog = cozyLog;
+	}
+
+	public static CozyLogImage of(CozyLog cozyLog, String cozyLogImageUrl, String description) {
+		if (cozyLog == null) {
+			return new CozyLogImage(null, cozyLogImageUrl, description);
+		}
+		return new CozyLogImage(cozyLog, cozyLogImageUrl, description);
+	}
+
+	public void updateCozyLogId(CozyLog cozyLog) {
+		this.cozyLog = cozyLog;
+	}
 
 	@Override
 	public void delete() {
