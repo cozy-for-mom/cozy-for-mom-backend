@@ -1,15 +1,15 @@
 package com.juju.cozyformombackend3.domain.userlog.meal.repository;
 
-import com.juju.cozyformombackend3.domain.userlog.meal.dto.object.DailyMealRecord;
-import com.juju.cozyformombackend3.domain.meal.dto.object.QDailyMealRecord;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import lombok.RequiredArgsConstructor;
+import static com.juju.cozyformombackend3.domain.userlog.meal.model.QMealRecord.*;
+import static com.juju.cozyformombackend3.global.repository.DateParser.*;
 
 import java.util.List;
 
-import static com.juju.cozyformombackend3.domain.meal.model.QMealRecord.mealRecord;
-import static com.juju.cozyformombackend3.global.repository.DateParser.getDateFromDateTime;
+import com.juju.cozyformombackend3.domain.userlog.meal.dto.object.DailyMealRecord;
+import com.juju.cozyformombackend3.domain.userlog.meal.dto.object.QDailyMealRecord;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CustomMealRecordRepositoryImpl implements CustomMealRecordRepository {

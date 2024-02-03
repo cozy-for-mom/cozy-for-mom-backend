@@ -1,6 +1,15 @@
 package com.juju.cozyformombackend3.domain.user.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLog;
+import com.juju.cozyformombackend3.domain.communitylog.like.model.Like;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.model.Scrap;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecordType;
 import com.juju.cozyformombackend3.domain.userlog.meal.model.MealRecord;
@@ -22,13 +31,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.UniqueConstraint;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,21 +42,6 @@ import lombok.NoArgsConstructor;
 		name = "nickname_email_unique")})
 @Entity
 public class User extends BaseEntity {
-
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	private final List<Supplement> supplementList = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	private final List<BloodSugarRecord> bloodSugarRecordList = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	private final List<WeightRecord> weightRecordList = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	private final List<MealRecord> mealRecordList = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	private final List<BabyProfile> babyProfileList = new ArrayList<>();
 
 	@Column(name = "user_id")
 	@Id
@@ -79,6 +66,30 @@ public class User extends BaseEntity {
 
 	@Column(name = "email", nullable = false)
 	private String email;
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<Supplement> supplementList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<BloodSugarRecord> bloodSugarRecordList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<WeightRecord> weightRecordList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<MealRecord> mealRecordList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<BabyProfile> babyProfileList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<CozyLog> cozyLogList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<Like> likeList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	private final List<Scrap> scrapList = new ArrayList<>();
 
 	@Builder
 	public User(UserType userType, String name, String nickname, String profileImageUrl, Date birth, String email) {

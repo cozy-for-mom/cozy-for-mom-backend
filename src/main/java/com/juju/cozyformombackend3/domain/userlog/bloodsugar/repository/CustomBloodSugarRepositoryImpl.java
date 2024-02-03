@@ -1,25 +1,25 @@
 package com.juju.cozyformombackend3.domain.userlog.bloodsugar.repository;
 
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindDaliyBloodSugar;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodicBloodSugar;
-import com.juju.cozyformombackend3.domain.bloodsugar.dto.object.QFindDaliyBloodSugar;
-import com.juju.cozyformombackend3.domain.bloodsugar.dto.object.QFindPeriodicBloodSugar;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import static com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.QBloodSugarRecord.*;
+import static com.juju.cozyformombackend3.global.repository.DateParser.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.juju.cozyformombackend3.domain.bloodsugar.model.QBloodSugarRecord.bloodSugarRecord;
-import static com.juju.cozyformombackend3.global.repository.DateParser.getDateFromDateTime;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindDaliyBloodSugar;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodicBloodSugar;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.QFindDaliyBloodSugar;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.QFindPeriodicBloodSugar;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CustomBloodSugarRepositoryImpl implements CustomBloodSugarRepository {

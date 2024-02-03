@@ -1,15 +1,15 @@
 package com.juju.cozyformombackend3.domain.userlog.supplement.repository;
 
-import com.juju.cozyformombackend3.domain.userlog.supplement.dto.object.FindDailySupplementIntake;
-import com.juju.cozyformombackend3.domain.supplement.dto.object.QFindDailySupplementIntake;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import lombok.RequiredArgsConstructor;
+import static com.juju.cozyformombackend3.domain.userlog.supplement.model.QSupplementRecord.*;
+import static com.juju.cozyformombackend3.global.repository.DateParser.*;
 
 import java.util.List;
 
-import static com.juju.cozyformombackend3.domain.supplement.model.QSupplementRecord.supplementRecord;
-import static com.juju.cozyformombackend3.global.repository.DateParser.getDateFromDateTime;
+import com.juju.cozyformombackend3.domain.userlog.supplement.dto.object.FindDailySupplementIntake;
+import com.juju.cozyformombackend3.domain.userlog.supplement.dto.object.QFindDailySupplementIntake;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CustomSupplementRecordRepositoryImpl implements CustomSupplementRecordRepository {
