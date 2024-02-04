@@ -3,6 +3,8 @@ package com.juju.cozyformombackend3.domain.communitylog.cozylog.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,5 +44,14 @@ public class CozyLogController {
 		Long modifiedCozyLogId = cozyLogService.updateCozyLog(user, request);
 
 		return ResponseEntity.ok(SuccessResponse.of(200, ModifyCozyLogResponse.of(modifiedCozyLogId)));
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> removeCozyLog(@PathVariable("id") Long removeCozyLogId) {
+		Long userId = 1L;
+
+		userId = cozyLogService.deleteCozyLog(userId, removeCozyLogId);
+
+		return ResponseEntity.noContent().build();
 	}
 }
