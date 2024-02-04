@@ -1,5 +1,7 @@
 package com.juju.cozyformombackend3.domain.communitylog.comment.controller;
 
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +31,10 @@ public class CommentController {
 	public ResponseEntity<SuccessResponse> createComment(@LoginUserId Long userId,
 		@PathVariable(name = "id") Long cozyLogId, @RequestBody CreateCommentRequest request) {
 		Long createdCommentId = commentService.createComment(userId, cozyLogId, request);
-		// TODO: Created 로 바꾸기 ok 가 아니라
-		return ResponseEntity.ok(SuccessResponse.of(201, CreateCommentResponse.of(createdCommentId)));
+		URI location = URI.create("/api/v1/cozy-log/" + cozyLogId + "/comment/" + createdCommentId);
+
+		return ResponseEntity.created(location)
+			.body(SuccessResponse.of(201, CreateCommentResponse.of(createdCommentId)));
 	}
 
 	@PutMapping
