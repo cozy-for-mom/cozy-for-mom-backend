@@ -38,12 +38,15 @@ public class Comment extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private CozyLog cozyLog;
 
+	private boolean isDeleted = false;
+
 	@Builder
 	private Comment(String content, Long parentCommentId, User user, CozyLog cozyLog) {
 		this.content = content;
 		this.parentCommentId = parentCommentId;
 		this.user = user;
 		this.cozyLog = cozyLog;
+		this.isDeleted = false;
 	}
 
 	public static Comment of(String content, Long parentCommentId, User user, CozyLog cozyLog) {
@@ -57,7 +60,7 @@ public class Comment extends BaseEntity {
 
 	@Override
 	public void delete() {
-
+		this.isDeleted = true;
 	}
 
 	public void updateCozyLog(CozyLog cozyLog) {
