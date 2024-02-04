@@ -34,4 +34,11 @@ public class CozyLogService {
 
 		return foundCozyLog.getId();
 	}
+
+	@Transactional
+	public Long deleteCozyLog(Long userId, Long removeCozyLogId) {
+		cozyLogRepository.deleteById(removeCozyLogId);
+
+		return removeCozyLogId;
+	}
 }
