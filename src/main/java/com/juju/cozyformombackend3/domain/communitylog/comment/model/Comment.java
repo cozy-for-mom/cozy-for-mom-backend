@@ -14,11 +14,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Comment extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,5 +62,9 @@ public class Comment extends BaseEntity {
 
 	public void updateCozyLog(CozyLog cozyLog) {
 		this.cozyLog = cozyLog;
+	}
+
+	public void update(String comment) {
+		this.content = comment;
 	}
 }
