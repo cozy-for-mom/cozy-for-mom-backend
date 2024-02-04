@@ -4,12 +4,15 @@ import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.ModifyCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CreateCozyLogResponse;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.ModifyCozyLogResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogService;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -26,10 +29,18 @@ public class CozyLogController {
 	public ResponseEntity<SuccessResponse> createCozyLog(@RequestBody CreateCozyLogRequest request) {
 		User user = new User();
 
-		Long createdCozyLogId = cozyLogService.createCozyLog(user, request);
+		Long createdCozyLogId = cozyLogService.saveCozyLog(user, request);
 		URI location = URI.create("/api/v1/cozy-log/" + createdCozyLogId);
 
 		return ResponseEntity.created(location)
 			.body(SuccessResponse.of(201, CreateCozyLogResponse.of(createdCozyLogId)));
+	}
+
+	@PutMapping
+	public ResponseEntity<SuccessResponse> modifyCozyLog(@RequestBody ModifyCozyLogRequest request) {
+		User user = new User();
+		Long modifiedCozyLogId = cozyLogService.updateCozyLog(user, request);
+
+		return ResponseEntity.ok(SuccessResponse.of(200, ModifyCozyLogResponse.of(modifiedCozyLogId)));
 	}
 }

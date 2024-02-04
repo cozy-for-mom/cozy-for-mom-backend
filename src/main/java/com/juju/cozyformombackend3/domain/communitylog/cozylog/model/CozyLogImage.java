@@ -43,7 +43,7 @@ public class CozyLogImage extends BaseEntity {
 		return new CozyLogImage(cozyLog, cozyLogImageUrl, description);
 	}
 
-	public void updateCozyLogId(CozyLog cozyLog) {
+	public void updateCozyLog(CozyLog cozyLog) {
 		this.cozyLog = cozyLog;
 	}
 
