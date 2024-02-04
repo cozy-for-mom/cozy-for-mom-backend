@@ -69,9 +69,21 @@ public class CozyLog extends BaseEntity {
 			.imageList(imageList)
 			.mode(mode)
 			.build();
-		imageList.forEach(image -> image.updateCozyLogId(newCozyLog));
+		imageList.forEach(image -> image.updateCozyLog(newCozyLog));
 
 		return newCozyLog;
+	}
+
+	public void updateTextContent(String title, String content, CozyLogMode mode) {
+		this.title = title;
+		this.content = content;
+		this.mode = mode;
+	}
+
+	public void updateImageList(List<CozyLogImage> imageList) {
+		this.cozyLogImageList.clear();
+		this.cozyLogImageList.addAll(imageList);
+		imageList.forEach(image -> image.updateCozyLog(this));
 	}
 
 	@Override
