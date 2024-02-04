@@ -3,6 +3,7 @@ package com.juju.cozyformombackend3.domain.communitylog.comment.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,5 +44,13 @@ public class CommentController {
 		Long modifiedCommentId = commentService.updateComment(userId, request);
 
 		return ResponseEntity.ok(SuccessResponse.of(200, ModifyCommentResponse.of(modifiedCommentId)));
+	}
+
+	@DeleteMapping("/{commentId}")
+	public ResponseEntity<Void> removeComment(@LoginUserId Long userId,
+		@PathVariable(name = "id") Long cozyLogId, @PathVariable(name = "commentId") Long commentId) {
+		commentService.deleteComment(userId, commentId);
+
+		return ResponseEntity.noContent().build();
 	}
 }
