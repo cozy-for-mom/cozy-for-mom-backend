@@ -1,43 +1,17 @@
 version: '3'
 services:
-  cozyformom-database:
-    container_name: cozyformom-database
-    image: cozyformom-database
-    build:
-      dockerfile: Dockerfile
-      context: ./database
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE_NAME}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_DATABASE_PASSWORD}
-    volumes:
-      - db-data:/var/lib/mysql
-      - ./database/config:/etc/mysql/conf.d
-    ports:
-      - "3306:3306"
-    networks:
-      - cozyformom-network
-
   cozyformom-application:
     container_name: cozyformom-application
-    image: cozyformom-application
+    image: anso33/cozy-for-mom
     build:
       context: .
       dockerfile: Dockerfile
+    expose:
+      - "8080"
     ports:
       - "8080:8080"
-    depends_on:
-      - cozyformom-database
+    restart: always
     environment:
       - MYSQL_DATABASE_URL=${MYSQL_DATABASE_URL}
       - MYSQL_DATABASE_USERNAME=${MYSQL_DATABASE_USERNAME}
       - MYSQL_DATABASE_PASSWORD=${MYSQL_DATABASE_PASSWORD}
-    restart: always
-    networks:
-      - cozyformom-network
-
-networks:
-  cozyformom-network:
-    driver: bridge
-
-volumes:
-  db-data:
