@@ -34,10 +34,10 @@ jobs:
 
       - name: Set application.yml
         run: |
-          sed -i "s|MYSQL_DATABASE_NAME|${{ secrets.MYSQL_DATABASE_NAME }}|g" ./src/main/resources/application.yml
-          sed -i "s|MYSQL_DATABASE_PASSWORD|${{ secrets.MYSQL_DATABASE_PASSWORD }}|g" ./src/main/resources/application.yml
-          sed -i "s|MYSQL_DATABASE_URL|${{ secrets.MYSQL_DATABASE_URL }}|g" ./src/main/resources/application.yml
-          sed -i "s|MYSQL_DATABASE_USERNAME|${{ secrets.MYSQL_DATABASE_USERNAME }}|g" ./src/main/resources/application.yml
+          sed -i "s|@MYSQL_DATABASE_NAME@|${{ secrets.MYSQL_DATABASE_NAME }}|g" ./src/main/resources/application.yml
+          sed -i "s|@MYSQL_DATABASE_PASSWORD@|${{ secrets.MYSQL_DATABASE_PASSWORD }}|g" ./src/main/resources/application.yml
+          sed -i "s|@MYSQL_DATABASE_URL@|${{ secrets.MYSQL_DATABASE_URL }}|g" ./src/main/resources/application.yml
+          sed -i "s|@MYSQL_DATABASE_USERNAME@|${{ secrets.MYSQL_DATABASE_USERNAME }}|g" ./src/main/resources/application.yml
 
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
