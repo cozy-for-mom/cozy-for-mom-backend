@@ -20,8 +20,10 @@ jobs:
       - name: make application-dev.yml
         run: |
           touch ./src/main/resources/application-dev.yml
-          echo "${{ secrets.DEV_YML }}" >> ./src/main/resources/application-dev.yml
-          shell: bash
+          echo $DEV_YML >> ./src/main/resources/application-dev.yml
+        shell: bash
+        env:
+          DEV_YML: ${{ secrets.DEV_YML }}
 
       # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다.
       - name: Generate Environment Variables File for Production
