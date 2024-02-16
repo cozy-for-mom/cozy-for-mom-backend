@@ -1,4 +1,4 @@
-FROM openjdk:21 as builder
+FROM openjdk:21-jdk as builder
 
 WORKDIR /app
 
@@ -9,11 +9,9 @@ COPY gradlew ./gradlew
 COPY src ./src
 
 RUN chmod +x ./gradlew
+RUN ./gradlew clean build -x test --stacktrace
 
-
-RUN ./gradlew clean build
-
-FROM openjdk:21-slim
+FROM openjdk:21-jdk
 
 WORKDIR /app
 
