@@ -17,6 +17,15 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - uses: actions/checkout@v2
+      - run: touch ./src/main/resources/application-dev.yml
+      - run: echo "${{ secrets.DEV_YML }}" | base64 --decode > ./src/main/resources/application-dev.yml
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: application-dev.yml
+          path: ./src/main/resources/application-dev.yml
+
       - name: make application-dev.yml
         run: |
           touch ./src/main/resources/application-dev.yml
