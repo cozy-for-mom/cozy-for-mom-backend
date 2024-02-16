@@ -21,6 +21,7 @@ jobs:
         run: |
           touch ./src/main/resources/application-dev.yml
           echo $DEV_YML >> ./src/main/resources/application-dev.yml
+          echo $DEV_YML
         shell: bash
         env:
           DEV_YML: ${{ secrets.DEV_YML }}
