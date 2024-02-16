@@ -28,16 +28,10 @@ jobs:
       # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다.
       - name: Generate Environment Variables File for Production
         run: |
-          touch .env
-          echo "MYSQL_DATABASE_NAME" >> .env
-          echo "MYSQL_DATABASE_PASSWORD" >> .env
-          echo "MYSQL_DATABASE_URL" >> .env
-          echo "MYSQL_DATABASE_USERNAME" >> .env
-        env:
-          MYSQL_DATABASE_NAME=${{ secrets.MYSQL_DATABASE_NAME }}
-          MYSQL_DATABASE_PASSWORD=${{ secrets.MYSQL_DATABASE_PASSWORD }}
-          MYSQL_DATABASE_URL=${{ secrets.MYSQL_DATABASE_URL }}
-          MYSQL_DATABASE_USERNAME=${{ secrets.MYSQL_DATABASE_USERNAME }}
+          echo "MYSQL_DATABASE_NAME=${{ secrets.MYSQL_DATABASE_NAME }}" >> .env
+          echo "MYSQL_DATABASE_PASSWORD=${{ secrets.MYSQL_DATABASE_PASSWORD }}" >> .env
+          echo "MYSQL_DATABASE_URL=${{ secrets.MYSQL_DATABASE_URL }}" >> .env
+          echo "MYSQL_DATABASE_USERNAME=${{ secrets.MYSQL_DATABASE_USERNAME }}" >> .env
 
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
