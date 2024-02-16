@@ -27,11 +27,17 @@ jobs:
       # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다.
       - name: Generate Environment Variables File for Production
         run: |
-          echo "REACT_APP_EXAMPLE=${{ secrets.REACT_APP_EXAMPLE }}" >> .env
           echo "MYSQL_DATABASE_NAME=${{ secrets.MYSQL_DATABASE_NAME }}" >> .env
           echo "MYSQL_DATABASE_PASSWORD=${{ secrets.MYSQL_DATABASE_PASSWORD }}" >> .env
           echo "MYSQL_DATABASE_URL=${{ secrets.MYSQL_DATABASE_URL }}" >> .env
           echo "MYSQL_DATABASE_USERNAME=${{ secrets.MYSQL_DATABASE_USERNAME }}" >> .env
+
+      - name: Set application.yml
+        run: |
+          sed -i "s|MYSQL_DATABASE_NAME|${{ secrets.MYSQL_DATABASE_NAME }}|g" ./src/main/resources/application.yml
+          sed -i "s|MYSQL_DATABASE_PASSWORD|${{ secrets.MYSQL_DATABASE_PASSWORD }}|g" ./src/main/resources/application.yml
+          sed -i "s|MYSQL_DATABASE_URL|${{ secrets.MYSQL_DATABASE_URL }}|g" ./src/main/resources/application.yml
+          sed -i "s|MYSQL_DATABASE_USERNAME|${{ secrets.MYSQL_DATABASE_USERNAME }}|g" ./src/main/resources/application.yml
 
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
@@ -78,5 +84,6 @@ jobs:
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker rm -f $(sudo docker ps -qa)
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-            sudo docker-compose up -d
+            sudo docker run ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
             sudo docker image prune -f
+          
