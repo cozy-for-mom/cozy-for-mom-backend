@@ -8,6 +8,7 @@ COPY gradle ./gradle
 COPY gradlew ./gradlew
 COPY src ./src
 
+RUN microdnf install findutils
 RUN chmod +x ./gradlew
 RUN ./gradlew clean build -x test --stacktrace
 
