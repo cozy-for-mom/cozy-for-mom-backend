@@ -18,9 +18,10 @@ jobs:
           distribution: 'temurin'
 
       - name: make application-dev.yml
-      - uses: actions/checkout@v3
-      - run: touch ./src/main/resources/application-dev.yml
-      - run: echo "${{ secrets.DEV_YML }}" > ./src/main/resources/application-dev.yml
+        uses: actions/checkout@v3
+        run: |
+          touch ./src/main/resources/application-dev.yml
+          echo "${{ secrets.DEV_YML }}" > ./src/main/resources/application-dev.yml
 
       #        run: |
       #          touch ./src/main/resources/application-dev.yml
