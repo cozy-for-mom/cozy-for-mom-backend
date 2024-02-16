@@ -17,12 +17,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      #      - name: make application-dev.yml
-      #        run: |
-      #          cd ./src/main/resources
-      #          touch ./application-dev.yml
-      #          echo "${{ secrets.PROD_YML }}" >> ./application-prod.yml
-      #        shell: bash
+      - name: make application-dev.yml
+        run: |
+          touch ./src/main/resources/application-dev.yml
+          echo "${{ secrets.DEV_YML }}" >> ./src/main/resources/application-dev.yml
+          shell: bash
 
       # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다.
       - name: Generate Environment Variables File for Production
@@ -34,10 +33,10 @@ jobs:
 
       - name: Set application.yml
         run: |
-          sed -i "s|${MYSQL_DATABASE_NAME}|${{ secrets.MYSQL_DATABASE_NAME }}|g" ./src/main/resources/application.yml
-          sed -i "s|${MYSQL_DATABASE_PASSWORD}|${{ secrets.MYSQL_DATABASE_PASSWORD }}|g" ./src/main/resources/application.yml
-          sed -i "s|${MYSQL_DATABASE_URL}|${{ secrets.MYSQL_DATABASE_URL }}|g" ./src/main/resources/application.yml
-          sed -i "s|${MYSQL_DATABASE_USERNAME}|${{ secrets.MYSQL_DATABASE_USERNAME }}|g" ./src/main/resources/application.yml
+          sed -i "s|@MYSQL_DATABASE_NAME@|${{ secrets.MYSQL_DATABASE_NAME }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@MYSQL_DATABASE_PASSWORD@|${{ secrets.MYSQL_DATABASE_PASSWORD }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@MYSQL_DATABASE_URL@|${{ secrets.MYSQL_DATABASE_URL }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@MYSQL_DATABASE_USERNAME@|${{ secrets.MYSQL_DATABASE_USERNAME }}|g" ./src/main/resources/application-dev.yml
 
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
