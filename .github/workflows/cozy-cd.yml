@@ -17,12 +17,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      #      - name: make application-dev.yml
-      #        run: |
-      #          cd ./src/main/resources
-      #          touch ./application-dev.yml
-      #          echo "${{ secrets.PROD_YML }}" >> ./application-prod.yml
-      #        shell: bash
+      - name: make application-dev.yml
+        run: |
+          touch ./src/main/resources/application-dev.yml
+          echo "${{ secrets.DEV_YML }}" >> ./src/main/resources/application-dev.yml
+          shell: bash
 
       # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다.
       - name: Generate Environment Variables File for Production
@@ -34,10 +33,10 @@ jobs:
 
       - name: Set application.yml
         run: |
-          sed -i "s|${MYSQL_DATABASE_NAME}|${{ secrets.MYSQL_DATABASE_NAME }}|g" ./src/main/resources/application.yml
-          sed -i "s|${MYSQL_DATABASE_PASSWORD}|${{ secrets.MYSQL_DATABASE_PASSWORD }}|g" ./src/main/resources/application.yml
-          sed -i "s|${MYSQL_DATABASE_URL}|${{ secrets.MYSQL_DATABASE_URL }}|g" ./src/main/resources/application.yml
-          sed -i "s|${MYSQL_DATABASE_USERNAME}|${{ secrets.MYSQL_DATABASE_USERNAME }}|g" ./src/main/resources/application.yml
+          sed -i "s|@MYSQL_DATABASE_NAME@|${{ secrets.MYSQL_DATABASE_NAME }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@MYSQL_DATABASE_PASSWORD@|${{ secrets.MYSQL_DATABASE_PASSWORD }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@MYSQL_DATABASE_URL@|${{ secrets.MYSQL_DATABASE_URL }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@MYSQL_DATABASE_USERNAME@|${{ secrets.MYSQL_DATABASE_USERNAME }}|g" ./src/main/resources/application-dev.yml
 
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
@@ -51,24 +50,10 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
-      #      # DockerHub 로그인
-      #      - name: DockerHub Login
-      #        uses: docker/login-action@v2
-      #        with:
-      #          username: ${{ secrets.DOCKER_USERNAME }}
-      #          password: ${{ secrets.DOCKER_PASSWORD }}
-      #      # Docker 이미지 빌드
-      #      - name: Docker-Compose Image Build
-      #        run: docker-compose build
-      #
-      #      # DockerHub Push
-      #      - name: DockerHub Push
-      #        run: docker-compose push
-
       - name: Docker Hub build & push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker-compose build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
+          docker-compose build
           docker images
           docker-compose push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
