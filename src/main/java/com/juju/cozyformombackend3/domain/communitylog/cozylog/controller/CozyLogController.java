@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.ModifyCozyLogRequest;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CozyLogDetailResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CreateCozyLogResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.ModifyCozyLogResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogService;
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -53,5 +56,12 @@ public class CozyLogController {
 		userId = cozyLogService.deleteCozyLog(userId, removeCozyLogId);
 
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<SuccessResponse> cozyLogDetail(@LoginUserId Long userId, @PathVariable("id") Long cozyLogId) {
+		CozyLogDetailResponse response = cozyLogService.findCozyLogDetail(userId, cozyLogId);
+
+		return ResponseEntity.ok(SuccessResponse.of(200, response));
 	}
 }
