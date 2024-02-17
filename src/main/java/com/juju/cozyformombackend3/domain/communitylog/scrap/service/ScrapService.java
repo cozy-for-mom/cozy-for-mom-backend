@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.error.CozyLogErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.repository.CozyLogRepository;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.ApplyScrapRequest;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.UnscrapListRequest;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.error.ScrapErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.model.Scrap;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.repository.ScrapRepository;
@@ -61,5 +62,10 @@ public class ScrapService {
 	private User findUserById(Long userId) {
 		return userRepository.findByUserId(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+	}
+
+	@Transactional
+	public void deleteScrapList(Long userId, UnscrapListRequest request) {
+		scrapRepository.deleteScrapByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
 	}
 }

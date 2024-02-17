@@ -2,8 +2,6 @@ package com.juju.cozyformombackend3.domain.communitylog.scrap.model;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import com.juju.cozyformombackend3.domain.user.model.User;
 
 import jakarta.persistence.Entity;
@@ -34,8 +32,7 @@ public class Scrap {
 	// private CozyLog cozyLog;
 	private Long cozyLogId;
 
-	@CreatedDate
-	private LocalDateTime createdAt;
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@Builder
 	public Scrap(User user, Long cozyLogId) {

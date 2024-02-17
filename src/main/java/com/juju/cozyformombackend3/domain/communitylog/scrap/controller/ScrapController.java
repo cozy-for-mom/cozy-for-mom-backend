@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.ApplyScrapRequest;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.UnscrapListRequest;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.service.ScrapService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -27,6 +28,14 @@ public class ScrapController {
 		URI location = URI.create("/api/v1/cozy-log/" + request.getCozyLogId());
 
 		return ResponseEntity.created(location).body(SuccessResponse.of(201, null));
+	}
+
+	@PostMapping("/unscraps")
+	public ResponseEntity<SuccessResponse> unscrapList(@LoginUserId Long userId,
+		@RequestBody UnscrapListRequest request) {
+		scrapService.deleteScrapList(userId, request);
+
+		return ResponseEntity.ok(SuccessResponse.of(200, null));
 	}
 
 }
