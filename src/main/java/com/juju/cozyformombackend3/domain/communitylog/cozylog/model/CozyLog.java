@@ -46,6 +46,9 @@ public class CozyLog extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
+	@Column(name = "view")
+	private Long view = 0L;
+
 	@OneToMany(mappedBy = "cozyLog", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
 	private final List<CozyLogImage> cozyLogImageList = new ArrayList<>();
 

@@ -11,10 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cozy_log_image")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CozyLogImage extends BaseEntity {
 	@Id
