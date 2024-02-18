@@ -16,7 +16,7 @@ public class ErrorResponse {
 
 	@Builder
 	public ErrorResponse(LocalDateTime timestamp, int status, String message) {
-		this.timestamp = DateParser.dateTimeToString(timestamp);
+		this.timestamp = DateParser.dateTimeToStringFormatDateTime(timestamp);
 		this.status = status;
 		this.message = message;
 	}

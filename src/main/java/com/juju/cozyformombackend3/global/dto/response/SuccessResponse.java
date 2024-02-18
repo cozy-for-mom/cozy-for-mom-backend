@@ -16,7 +16,7 @@ public class SuccessResponse<T> {
 
 	@Builder
 	public SuccessResponse(int status, T data) {
-		this.timestamp = DateParser.dateTimeToString(LocalDateTime.now());
+		this.timestamp = DateParser.dateTimeToStringFormatDateTime(LocalDateTime.now());
 		this.status = status;
 		this.data = data;
 	}

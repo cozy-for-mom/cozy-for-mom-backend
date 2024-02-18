@@ -1,17 +1,17 @@
 package com.juju.cozyformombackend3.domain.userlog.supplement.dto.response;
 
-import com.juju.cozyformombackend3.domain.userlog.supplement.dto.object.FindDailySupplementIntake;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import static com.juju.cozyformombackend3.global.util.DateParser.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.juju.cozyformombackend3.global.util.DateParser.dateTimeToString;
+import com.juju.cozyformombackend3.domain.userlog.supplement.dto.object.FindDailySupplementIntake;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
@@ -53,7 +53,7 @@ public class GetDailySupplementResponse {
 						.targetCount(intake.getTargetCount())
 						.realCount(1)
 						.build();
-					ds.datetimes.add(dateTimeToString(intake.getDatetime()));
+					ds.datetimes.add(dateTimeToStringFormatDateTime(intake.getDatetime()));
 					return ds;
 				},
 				(s1, s2) -> {
