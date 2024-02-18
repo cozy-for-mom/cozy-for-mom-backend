@@ -1,11 +1,16 @@
 package com.juju.cozyformombackend3.domain.communitylog.cozylog.service;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.ModifyCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CozyLogDetailResponse;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.GetCozyLogListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.error.CozyLogErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLog;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogMode;
@@ -77,5 +82,11 @@ public class CozyLogService {
 	private CozyLog findCozyLogById(Long cozyLogId) {
 		return cozyLogRepository.findById(cozyLogId)
 			.orElseThrow(() -> new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG));
+	}
+
+	public GetCozyLogListResponse findCozyLogList(Pageable pageable, CozyLogSort sort) {
+		Slice<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListOrderBySort(sort, pageable);
+
+		return GetCozyLogListResponse.of(cozyLogs);
 	}
 }
