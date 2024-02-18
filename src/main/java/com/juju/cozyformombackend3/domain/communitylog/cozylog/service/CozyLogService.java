@@ -87,6 +87,6 @@ public class CozyLogService {
 	public GetCozyLogListResponse findCozyLogList(Pageable pageable, CozyLogSort sort) {
 		Slice<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListOrderBySort(sort, pageable);
 
-		return new GetCozyLogListResponse(cozyLogs);
+		return GetCozyLogListResponse.of(cozyLogs);
 	}
 }
