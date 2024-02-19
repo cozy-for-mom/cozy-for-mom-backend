@@ -19,8 +19,8 @@ jobs:
 
       - name: make application-dev.yml
         run: |
-          touch ./src/main/resources/application-dev.yml
-          echo "${{ secrets.DEV_YML }}" > ./src/main/resources/application-dev.yml
+          cd ./src/main/resources    
+          echo "${{ secrets.DEV_YML }}" | base64 -d > application-dev.yml
 
       #        run: |
       #          touch ./src/main/resources/application-dev.yml
@@ -74,6 +74,7 @@ jobs:
           script: |
             cd /home/ubuntu/cozy-dev/
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            sudo docker-compose down
             sudo docker rm -f $(sudo docker ps -qa)
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
             sudo docker-compose up -d
