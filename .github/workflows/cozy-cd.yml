@@ -21,7 +21,7 @@ jobs:
         run: |
           cd ./src/main/resources    
           echo "${{ secrets.DEV_YML }}" | base64 -d > application-dev.yml
-
+        shell: bash
       #        run: |
       #          touch ./src/main/resources/application-dev.yml
       #          echo $DEV_YML >> ./src/main/resources/application-dev.yml
