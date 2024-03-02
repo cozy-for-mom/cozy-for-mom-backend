@@ -66,13 +66,22 @@ public class GrowthController {
 		return ResponseEntity.ok(SuccessResponse.of(200, null));
 	}
 
-	@GetMapping
+	@GetMapping("/{id}")
 	public ResponseEntity<SuccessResponse> getGrowth(
-		@PathVariable(name = "id") Long babyProfileId,
-		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-		Long userId = 1L;
-		FindGrowthResponse response = growthService.getGrowth(userId, babyProfileId, date);
+		@LoginUserId Long userId,
+		@PathVariable(name = "id") Long reportId) {
+		FindGrowthResponse response = growthService.getGrowth(userId, reportId);
 
-		return ResponseEntity.ok(SuccessResponse.of(200, response));
+		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}
+
+	// @GetMapping
+	// public ResponseEntity<SuccessResponse> getGrowth(
+	// 	@PathVariable(name = "id") Long babyProfileId,
+	// 	@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+	// 	Long userId = 1L;
+	// 	FindGrowthResponse response = growthService.getGrowth(userId, babyProfileId, date);
+	//
+	// 	return ResponseEntity.ok(SuccessResponse.of(200, response));
+	// }
 }

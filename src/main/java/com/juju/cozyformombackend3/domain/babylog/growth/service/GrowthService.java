@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyRepository;
-import com.juju.cozyformombackend3.domain.babylog.growth.dto.object.FindGrowthDiaryRecord;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.SaveGrowthRequest;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.UpdateGrowthRequest;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.FindGrowthResponse;
@@ -107,16 +106,11 @@ public class GrowthService {
 		});
 	}
 
-	public FindGrowthResponse getGrowth(Long userId, Long babyProfileId, LocalDate date) {
-		//        FindGrowthDiaryRecord findGrowthDiaryRecord = babyProfileRepository.searchGrowthRecord(userId, date);
-		BabyProfile findBabyProfile = babyProfileRepository.findByBabyProfileId(babyProfileId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
-		GrowthDiary findGrowthDiary = growthDiaryRepository.findByBabyProfileAndRecordAt(findBabyProfile, date)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장일기입니다."));
-		FindGrowthDiaryRecord findGrowthDiaryRecord = new FindGrowthDiaryRecord(findBabyProfile.getBabyProfileId(),
-			findGrowthDiary, findBabyProfile.getBabyList());
+	public FindGrowthResponse getGrowth(Long userId, Long reportId) {
+		GrowthReport findReport = growthReportRepository.findById(reportId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장 보고서 아이디입니다."));
 
-		return FindGrowthResponse.of(findGrowthDiaryRecord);
+		return FindGrowthResponse.of(findReport);
 	}
 
 	private User findUserById(Long userId) {

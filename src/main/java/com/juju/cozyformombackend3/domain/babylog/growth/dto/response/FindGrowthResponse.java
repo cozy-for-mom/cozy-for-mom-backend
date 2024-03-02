@@ -1,15 +1,15 @@
 package com.juju.cozyformombackend3.domain.babylog.growth.dto.response;
 
+import java.util.List;
+
 import com.juju.cozyformombackend3.domain.babylog.baby.model.Baby;
-import com.juju.cozyformombackend3.domain.babylog.growth.dto.object.FindGrowthDiaryRecord;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthRecord;
+import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthReport;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 @Builder
@@ -17,20 +17,27 @@ import java.util.List;
 public class FindGrowthResponse {
 	private final Long babyProfileId;
 	private final String date;
+	private final Long growthReportId;
 	private final String growthImagePath;
+	private final Long growthDiaryId;
+	private final String title;
 	private final String content;
 	private final List<BabyInfo> babies;
 
-	public static FindGrowthResponse of(FindGrowthDiaryRecord record) {
-		List<BabyInfo> babyInfoList = record.getBabies().stream()
-			.map(baby -> BabyInfo.of(baby, record.getGrowthDiary().getRecordAt().toString()))
+	public static FindGrowthResponse of(GrowthReport report) {
+		List<Baby> babies = report.getGrowthDiary().getBabyProfile().getBabyList();
+		List<BabyInfo> babyInfoList = report.getGrowthRecordList().stream()
+			.map(record -> BabyInfo.of(record, babies))
 			.toList();
 
 		return FindGrowthResponse.builder()
-			.babyProfileId(record.getBabyProfileId())
-			.date(record.getGrowthDiary().getRecordAt().toString())
-			.growthImagePath(record.getGrowthDiary().getGrowthImageUrl())
-			.content(record.getGrowthDiary().getContent())
+			.babyProfileId(report.getGrowthDiary().getBabyProfile().getBabyProfileId())
+			.date(report.getRecordDate().toString())
+			.growthReportId(report.getId())
+			.growthImagePath(report.getGrowthDiary().getGrowthImageUrl())
+			.growthDiaryId(report.getGrowthDiary().getGrowthDiaryId())
+			.title(report.getGrowthDiary().getTitle())
+			.content(report.getGrowthDiary().getContent())
 			.babies(babyInfoList)
 			.build();
 	}
@@ -43,19 +50,18 @@ public class FindGrowthResponse {
 		private final String babyName;
 		private final GrowthInfo growthInfo;
 
-		private static BabyInfo of(Baby baby, String date) {
-			GrowthRecord growthRecord = baby.getGrowthRecordList().stream()
-				.filter(record -> record.getRecordAt().toString().equals(date))
+		private static BabyInfo of(GrowthRecord record, List<Baby> babies) {
+			Baby matchBaby = babies.stream()
+				.filter(baby -> record.getBaby().equals(baby))
 				.findFirst()
-				.orElse(null);
+				.orElseThrow();
 
 			return BabyInfo.builder()
-				.babyId(baby.getBabyId())
-				.babyName(baby.getName())
-				.growthInfo(GrowthInfo.of(growthRecord))
+				.babyId(matchBaby.getBabyId())
+				.babyName(matchBaby.getName())
+				.growthInfo(GrowthInfo.of(record))
 				.build();
 		}
-
 	}
 
 	@Getter
