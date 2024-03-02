@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.juju.cozyformombackend3.domain.communitylog.comment.model.Comment;
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-	
+public interface CommentRepository extends JpaRepository<Comment, Long>, CustomCommentRepository {
+
 }

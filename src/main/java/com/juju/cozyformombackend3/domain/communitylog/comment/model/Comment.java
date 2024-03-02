@@ -29,7 +29,7 @@ public class Comment extends BaseEntity {
 	@Column(name = "content", nullable = false, columnDefinition = "TEXT")
 	private String content;
 
-	@Column(name = "parent_comment_id", nullable = false)
+	@Column(name = "parent_comment_id")
 	private Long parentCommentId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -69,5 +69,9 @@ public class Comment extends BaseEntity {
 
 	public void update(String comment) {
 		this.content = comment;
+	}
+
+	public void isParentComment() {
+		this.parentCommentId = this.getId();
 	}
 }

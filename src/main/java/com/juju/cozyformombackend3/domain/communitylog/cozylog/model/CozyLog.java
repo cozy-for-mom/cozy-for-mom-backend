@@ -89,9 +89,11 @@ public class CozyLog extends BaseEntity {
 		imageList.forEach(image -> image.updateCozyLog(this));
 	}
 
-	public void addComment(Comment comment) {
+	public Comment addComment(Comment comment) {
 		this.commentList.add(comment);
 		comment.updateCozyLog(this);
+
+		return comment;
 	}
 
 	@Override
