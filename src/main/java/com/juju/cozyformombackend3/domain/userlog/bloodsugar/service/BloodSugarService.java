@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodBloodSugarCondition;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodicBloodSugar;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
@@ -25,16 +26,22 @@ import lombok.RequiredArgsConstructor;
 public class BloodSugarService {
 
 	private final BloodSugarRepository bloodSugarRepository;
+	private final UserRepository userRepository;
 
 	@Transactional
-	public SaveBloodSugarRecordResponse saveBloodSugarRecord(SaveBloodSugarRecordRequest request, User user) {
+	public SaveBloodSugarRecordResponse saveBloodSugarRecord(SaveBloodSugarRecordRequest request, Long userId) {
+		User user = userRepository.findByUserId(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 		Long savedRecordId = user.addBloodSugarRecord(request.getDate(), request.getType(), request.getLevel());
 		return SaveBloodSugarRecordResponse.of(savedRecordId);
 	}
 
 	@Transactional
 	public ModifyBloodSugarRecordResponse updateBloodSugarRecord(Long recordId, ModifyBloodSugarRecordRequest request,
-		User user) {
+		Long userId) {
+		User user = userRepository.findByUserId(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
 		BloodSugarRecord modifiedRecord = bloodSugarRepository.findById(recordId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 혈당 기록입니다."));
 		if (modifiedRecord.getUser() != user) {
@@ -44,7 +51,10 @@ public class BloodSugarService {
 		return ModifyBloodSugarRecordResponse.of(modifiedRecord.getBloodSugarId());
 	}
 
-	public void deleteBloodSugarRecord(Long recordId, User user) {
+	public void deleteBloodSugarRecord(Long recordId, Long userId) {
+		User user = userRepository.findByUserId(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
 		BloodSugarRecord deletedRecord = bloodSugarRepository.findById(recordId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 혈당 기록입니다."));
 		if (deletedRecord.getUser() != user) {
@@ -53,7 +63,7 @@ public class BloodSugarService {
 		bloodSugarRepository.delete(deletedRecord);
 	}
 
-	public FindDailyBloodSugarListResponse findDailyBloodSugarRecord(long userId, String date) {
+	public FindDailyBloodSugarListResponse findDailyBloodSugarRecord(Long userId, String date) {
 		return FindDailyBloodSugarListResponse.of(bloodSugarRepository.searchAllByCreatedAt(userId, date));
 	}
 

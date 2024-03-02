@@ -12,8 +12,7 @@ public enum RecordPeriod {
 
 	private final String periodKeyword;
 
-	public static RecordPeriod of(
-		String periodKeyword) {
+	public static RecordPeriod of(String periodKeyword) {
 		if (periodKeyword.isBlank())
 			return null;
 		return Arrays.stream(values())

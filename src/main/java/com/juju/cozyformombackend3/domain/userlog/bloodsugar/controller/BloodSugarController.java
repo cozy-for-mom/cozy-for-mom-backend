@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodBloodSugarCondition;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
@@ -36,38 +35,42 @@ public class BloodSugarController {
 	private final BloodSugarService bloodSugarService;
 
 	@PostMapping
-	public ResponseEntity<SuccessResponse> saveBloodSugarRecord(@RequestBody SaveBloodSugarRecordRequest request) {
-		User user = new User();
+	public ResponseEntity<SuccessResponse> saveBloodSugarRecord(
+		@LoginUserId Long userId,
+		@RequestBody SaveBloodSugarRecordRequest request) {
 
-		SaveBloodSugarRecordResponse response = bloodSugarService.saveBloodSugarRecord(request, user);
+		SaveBloodSugarRecordResponse response = bloodSugarService.saveBloodSugarRecord(request, userId);
 		URI uri = URI.create("/api/v1/bloodsugar/" + response.getBloodSugarRecordId());
 
 		return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
 	}
 
 	@PutMapping
-	public ResponseEntity<SuccessResponse> modifyBloodSugarRecord(@PathVariable(name = "id") Long id,
+	public ResponseEntity<SuccessResponse> modifyBloodSugarRecord(
+		@LoginUserId Long userId,
+		@PathVariable(name = "id") Long id,
 		@RequestBody ModifyBloodSugarRecordRequest request) {
-		User user = new User();
 
-		ModifyBloodSugarRecordResponse response = bloodSugarService.updateBloodSugarRecord(id, request, user);
+		ModifyBloodSugarRecordResponse response = bloodSugarService.updateBloodSugarRecord(id, request, userId);
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<SuccessResponse> removeBloodSugarRecord(@PathVariable(name = "id") Long id) {
-		User user = new User();
-
-		bloodSugarService.deleteBloodSugarRecord(id, user);
+	public ResponseEntity<SuccessResponse> removeBloodSugarRecord(
+		@LoginUserId Long userId,
+		@PathVariable(name = "id") Long id) {
+		bloodSugarService.deleteBloodSugarRecord(id, userId);
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, null));
 	}
 
 	@GetMapping()
-	public ResponseEntity<SuccessResponse> searchDailyBloodSugarRecord(@RequestParam(name = "date") String date) {
+	public ResponseEntity<SuccessResponse> searchDailyBloodSugarRecord(
+		@LoginUserId Long userId,
+		@RequestParam(name = "date") String date) {
 		// TODO: 2021-10-04 date validation
-		FindDailyBloodSugarListResponse response = bloodSugarService.findDailyBloodSugarRecord(1L, date);
+		FindDailyBloodSugarListResponse response = bloodSugarService.findDailyBloodSugarRecord(userId, date);
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}
