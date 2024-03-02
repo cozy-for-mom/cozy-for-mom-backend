@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodBloodSugarCondition;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.FindBloodSugarListResponse;
@@ -22,6 +21,7 @@ import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.Modify
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.service.BloodSugarService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
+import com.juju.cozyformombackend3.global.dto.request.FindPeriodRecordCondition;
 import com.juju.cozyformombackend3.global.dto.request.RecordPeriod;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
@@ -82,7 +82,7 @@ public class BloodSugarController {
 		@RequestParam(name = "type", defaultValue = "daily") RecordPeriod type,
 		@RequestParam(name = "size", defaultValue = "10") Long size) {
 		FindBloodSugarListResponse response = bloodSugarService.findBloodSugarRecord(
-			FindPeriodBloodSugarCondition.of(userId, date, type, size));
+			FindPeriodRecordCondition.of(userId, date, type, size));
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}

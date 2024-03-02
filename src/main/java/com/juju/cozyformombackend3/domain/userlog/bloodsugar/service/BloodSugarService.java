@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodBloodSugarCondition;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodicBloodSugar;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
@@ -17,6 +16,7 @@ import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.Modify
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.repository.BloodSugarRepository;
+import com.juju.cozyformombackend3.global.dto.request.FindPeriodRecordCondition;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,7 +67,7 @@ public class BloodSugarService {
 		return FindDailyBloodSugarListResponse.of(bloodSugarRepository.searchAllByCreatedAt(userId, date));
 	}
 
-	public FindBloodSugarListResponse findBloodSugarRecord(FindPeriodBloodSugarCondition condition) {
+	public FindBloodSugarListResponse findBloodSugarRecord(FindPeriodRecordCondition condition) {
 		List<FindPeriodicBloodSugar> findPeriodicBloodSugars = bloodSugarRepository.findPeriodRecordByDate(condition);
 
 		return FindBloodSugarListResponse.of(condition.getType().name(), findPeriodicBloodSugars);
