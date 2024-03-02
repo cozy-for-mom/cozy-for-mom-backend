@@ -22,4 +22,11 @@ public class DateParser {
 		}
 		return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
+
+	public static LocalDateTime stringToLocalDateTime(String datetime) {
+		String formatPattern = "yyyy-MM-dd HH:mm:ss";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatPattern);
+
+		return LocalDateTime.parse(datetime, formatter);
+	}
 }
