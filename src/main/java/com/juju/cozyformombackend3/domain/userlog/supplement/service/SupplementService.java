@@ -47,8 +47,14 @@ public class SupplementService {
 		return UpdateSupplementResponse.of(findSupplement.getSupplementId());
 	}
 
+	@Transactional
+	public void deleteSupplement(Long supplementId) {
+		supplementRepository.deleteById(supplementId);
+	}
+
 	private User findByUserId(Long userId) {
 		return userRepository.findByUserId(userId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 	}
+
 }
