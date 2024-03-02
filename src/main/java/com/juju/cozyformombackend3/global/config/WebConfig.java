@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
 import com.juju.cozyformombackend3.global.auth.LoginUserArgumentResolver;
+import com.juju.cozyformombackend3.global.dto.request.RecordPeriod;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,13 +27,22 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
+
 		registry.addConverter(new CozyLogSortConverter());
+		registry.addConverter(new RecordPeriodConverter());
 	}
 
 	private static class CozyLogSortConverter implements Converter<String, CozyLogSort> {
 		@Override
 		public CozyLogSort convert(String keyword) {
 			return CozyLogSort.of(keyword);
+		}
+	}
+
+	private static class RecordPeriodConverter implements Converter<String, RecordPeriod> {
+		@Override
+		public RecordPeriod convert(String keyword) {
+			return RecordPeriod.of(keyword);
 		}
 	}
 }

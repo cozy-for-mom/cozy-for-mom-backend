@@ -1,8 +1,8 @@
 package com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request;
 
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecordType;
-
 import java.time.LocalDate;
+
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecordType;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ModifyBloodSugarRecordRequest {
 
-	private Long id;
 	private LocalDate date;
 	private String type;
 	private double level;

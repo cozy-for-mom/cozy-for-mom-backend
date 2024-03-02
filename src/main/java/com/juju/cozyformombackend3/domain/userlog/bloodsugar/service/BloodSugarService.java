@@ -1,5 +1,13 @@
 package com.juju.cozyformombackend3.domain.userlog.bloodsugar.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodBloodSugarCondition;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodicBloodSugar;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
@@ -9,16 +17,8 @@ import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.Modify
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.repository.BloodSugarRepository;
-import com.juju.cozyformombackend3.domain.user.model.User;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,16 +26,23 @@ import java.time.LocalDate;
 public class BloodSugarService {
 
 	private final BloodSugarRepository bloodSugarRepository;
+	private final UserRepository userRepository;
 
 	@Transactional
-	public SaveBloodSugarRecordResponse saveBloodSugarRecord(SaveBloodSugarRecordRequest request, User user) {
+	public SaveBloodSugarRecordResponse saveBloodSugarRecord(SaveBloodSugarRecordRequest request, Long userId) {
+		User user = userRepository.findByUserId(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 		Long savedRecordId = user.addBloodSugarRecord(request.getDate(), request.getType(), request.getLevel());
 		return SaveBloodSugarRecordResponse.of(savedRecordId);
 	}
 
 	@Transactional
-	public ModifyBloodSugarRecordResponse updateBloodSugarRecord(ModifyBloodSugarRecordRequest request, User user) {
-		BloodSugarRecord modifiedRecord = bloodSugarRepository.findById(request.getId())
+	public ModifyBloodSugarRecordResponse updateBloodSugarRecord(Long recordId, ModifyBloodSugarRecordRequest request,
+		Long userId) {
+		User user = userRepository.findByUserId(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+		BloodSugarRecord modifiedRecord = bloodSugarRepository.findById(recordId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 혈당 기록입니다."));
 		if (modifiedRecord.getUser() != user) {
 			throw new IllegalArgumentException("본인의 혈당 기록만 수정할 수 있습니다.");
@@ -44,7 +51,10 @@ public class BloodSugarService {
 		return ModifyBloodSugarRecordResponse.of(modifiedRecord.getBloodSugarId());
 	}
 
-	public void deleteBloodSugarRecord(Long recordId, User user) {
+	public void deleteBloodSugarRecord(Long recordId, Long userId) {
+		User user = userRepository.findByUserId(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
 		BloodSugarRecord deletedRecord = bloodSugarRepository.findById(recordId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 혈당 기록입니다."));
 		if (deletedRecord.getUser() != user) {
@@ -53,41 +63,13 @@ public class BloodSugarService {
 		bloodSugarRepository.delete(deletedRecord);
 	}
 
-	public FindDailyBloodSugarListResponse findDailyBloodSugarRecord(long userId, String date) {
+	public FindDailyBloodSugarListResponse findDailyBloodSugarRecord(Long userId, String date) {
 		return FindDailyBloodSugarListResponse.of(bloodSugarRepository.searchAllByCreatedAt(userId, date));
 	}
 
-	public FindBloodSugarListResponse findBloodSugarRecord(long userId, String date, String type, Pageable pageable) {
-		//        List<FindPeriodicBloodSugar> findPeriodicRecordList = bloodSugarRepository.searchAllByPeriodType(userId, date, type, pageable);
-		Slice<FindPeriodicBloodSugar> response = null;
-		LocalDate localDate = LocalDate.parse(date);
+	public FindBloodSugarListResponse findBloodSugarRecord(FindPeriodBloodSugarCondition condition) {
+		List<FindPeriodicBloodSugar> findPeriodicBloodSugars = bloodSugarRepository.findPeriodRecordByDate(condition);
 
-		if (type.equals("daily")) {
-			response = findAllByDailyType(userId, localDate, pageable);
-			return FindBloodSugarListResponse.of("daily", response);
-		} else if (type.equals("weekly")) {
-			response = findAllByWeeklyType(userId, localDate, pageable);
-			return FindBloodSugarListResponse.of("weekly", response);
-		} else if (type.equals("monthly")) {
-			//            response = findAllByMonthlyType(userId, localDate, pageable);
-			//            response = bloodSugarRepository.searchAllByMonthlyType(userId, date, pageable);
-		} else {
-			throw new IllegalArgumentException("존재하지 않는 기간 타입입니다.");
-		}
-		return null;
-	}
-
-	private Slice<FindPeriodicBloodSugar> findAllByWeeklyType(long userId, LocalDate date, Pageable pageable) {
-		Slice<FindPeriodicBloodSugar> bloodSugarList = bloodSugarRepository.searchAllByWeeklyType(userId, date,
-			pageable);
-
-		return bloodSugarList;
-	}
-
-	private Slice<FindPeriodicBloodSugar> findAllByDailyType(long userId, LocalDate date, Pageable pageable) {
-		Slice<FindPeriodicBloodSugar> bloodSugarList = bloodSugarRepository.searchAllByDailyType(userId, date,
-			pageable);
-
-		return bloodSugarList;
+		return FindBloodSugarListResponse.of(condition.getType().name(), findPeriodicBloodSugars);
 	}
 }
