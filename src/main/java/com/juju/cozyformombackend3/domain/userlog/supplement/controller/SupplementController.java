@@ -3,6 +3,7 @@ package com.juju.cozyformombackend3.domain.userlog.supplement.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,7 +28,7 @@ public class SupplementController {
 
 	private final SupplementService supplementService;
 
-	@PostMapping("")
+	@PostMapping
 	public ResponseEntity<SuccessResponse> registerSupplement(
 		@LoginUserId Long userId,
 		@RequestBody RegisterSupplementRequest request) {
@@ -47,4 +48,14 @@ public class SupplementController {
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<SuccessResponse> removeSupplement(
+		@LoginUserId Long userId,
+		@PathVariable(name = "id") Long supplementId) {
+		supplementService.deleteSupplement(supplementId);
+
+		return ResponseEntity.noContent().build();
+	}
+
 }
