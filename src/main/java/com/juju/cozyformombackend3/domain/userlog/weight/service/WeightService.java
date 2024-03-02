@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
-import com.juju.cozyformombackend3.domain.userlog.weight.dto.request.DeleteWeightRequest;
 import com.juju.cozyformombackend3.domain.userlog.weight.dto.request.RecordWeightRequest;
+import com.juju.cozyformombackend3.domain.userlog.weight.dto.request.UpdateWeightRequest;
 import com.juju.cozyformombackend3.domain.userlog.weight.dto.response.GetWeightListResponse;
 import com.juju.cozyformombackend3.domain.userlog.weight.exception.WeightErrorCode;
 import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
@@ -36,17 +36,17 @@ public class WeightService {
 	}
 
 	@Transactional
-	public void updateWeight(Long userId, RecordWeightRequest request) {
+	public void updateWeight(Long userId, LocalDate date, UpdateWeightRequest request) {
 		User user = findUserById(userId);
-		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, request.getDate())
+		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, date)
 			.orElseThrow(() -> new BusinessException(WeightErrorCode.RECORD_DATE_NOT_FOUND));
 		weightRecord.updateWeight(request.getWeight());
 	}
 
 	@Transactional
-	public void deleteWeight(Long userId, DeleteWeightRequest request) {
+	public void deleteWeight(Long userId, LocalDate date) {
 		User user = findUserById(userId);
-		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, request.getDate())
+		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, date)
 			.orElseThrow(() -> new BusinessException(WeightErrorCode.RECORD_DATE_NOT_FOUND));
 		weightRepository.delete(weightRecord);
 	}

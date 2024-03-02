@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.userlog.weight.dto.request.DeleteWeightRequest;
 import com.juju.cozyformombackend3.domain.userlog.weight.dto.request.RecordWeightRequest;
+import com.juju.cozyformombackend3.domain.userlog.weight.dto.request.UpdateWeightRequest;
 import com.juju.cozyformombackend3.domain.userlog.weight.dto.response.GetWeightListResponse;
 import com.juju.cozyformombackend3.domain.userlog.weight.service.WeightService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
@@ -40,16 +40,17 @@ public class WeightController {
 	@PutMapping()
 	public ResponseEntity<SuccessResponse> updateWeight(
 		@LoginUserId Long userId,
-		@RequestBody RecordWeightRequest request) {
-		weightService.updateWeight(userId, request);
+		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+		@RequestBody UpdateWeightRequest request) {
+		weightService.updateWeight(userId, date, request);
 		return ResponseEntity.ok(SuccessResponse.of(200, null));
 	}
 
 	@DeleteMapping()
 	public ResponseEntity<SuccessResponse> deleteWeight(
 		@LoginUserId Long userId,
-		@RequestBody DeleteWeightRequest request) {
-		weightService.deleteWeight(userId, request);
+		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+		weightService.deleteWeight(userId, date);
 		return ResponseEntity.ok(SuccessResponse.of(204, null));
 	}
 
