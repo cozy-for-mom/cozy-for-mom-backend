@@ -1,5 +1,7 @@
 package com.juju.cozyformombackend3.domain.babylog.growth.model;
 
+import java.time.LocalDate;
+
 import com.juju.cozyformombackend3.domain.babylog.baby.model.Baby;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.UpdateGrowthRequest.BabyInfoRequest;
 
@@ -12,9 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-import java.time.LocalDate;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +32,10 @@ public class GrowthRecord {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "baby_id")
 	private Baby baby;
+
+	@ManyToOne()
+	@JoinColumn(name = "id")
+	private GrowthReport growthReport;
 
 	@Column(name = "record_at", nullable = false)
 	private LocalDate recordAt;
@@ -74,5 +77,9 @@ public class GrowthRecord {
 		this.headCircum = baby.getGrowthInfo().getHeadCircum();
 		this.abdomenCircum = baby.getGrowthInfo().getAbdomenCircum();
 		this.thighLength = baby.getGrowthInfo().getThighLength();
+	}
+
+	public void updateGrowthReport(GrowthReport growthReport) {
+		this.growthReport = growthReport;
 	}
 }
