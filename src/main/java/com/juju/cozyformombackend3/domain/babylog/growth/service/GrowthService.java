@@ -1,13 +1,18 @@
 package com.juju.cozyformombackend3.domain.babylog.growth.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyRepository;
+import com.juju.cozyformombackend3.domain.babylog.growth.dto.object.GrowthSummary;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.SaveGrowthRequest;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.UpdateGrowthRequest;
+import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.FindGrowthListResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.FindGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.SaveGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.UpdateGrowthResponse;
@@ -105,5 +110,15 @@ public class GrowthService {
 	private GrowthReport findGrowthReportById(Long reportId) {
 		return growthReportRepository.findById(reportId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장 보고서 아이디입니다."));
+	}
+
+	public FindGrowthListResponse getGrowthList(Long reportId, Long size) {
+		List<GrowthSummary> growthSummaryList = growthReportRepository
+			.findGrowthSummaryListByLastIdAndSize(reportId, size);
+
+		// TODO
+		LocalDate nextExaminationDate = LocalDate.now().plusWeeks(1);
+
+		return FindGrowthListResponse.of(nextExaminationDate.toString(), growthSummaryList);
 	}
 }
