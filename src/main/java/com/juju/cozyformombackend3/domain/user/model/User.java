@@ -106,14 +106,8 @@ public class User extends BaseEntity {
 
 	}
 
-	public Long registerSupplement(String supplementName, int targetCount) {
-		Supplement supplement = Supplement.builder()
-			.user(this)
-			.supplementName(supplementName)
-			.targetCount(targetCount)
-			.build();
+	public void registerSupplement(Supplement supplement) {
 		supplementList.add(supplement);
-		return supplement.getSupplementId();
 	}
 
 	public Long addBloodSugarRecord(LocalDate date, BloodSugarRecordType type, double level) {

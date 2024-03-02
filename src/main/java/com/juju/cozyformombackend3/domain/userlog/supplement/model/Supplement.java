@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.UpdateSupplementRequest;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 
 import jakarta.persistence.CascadeType;
@@ -66,5 +67,10 @@ public class Supplement extends BaseEntity {
 		for (LocalDateTime datetime : datetimeList) {
 			supplementRecordList.removeIf(supplementRecord -> supplementRecord.getRecordAt().equals(datetime));
 		}
+	}
+
+	public void update(UpdateSupplementRequest request) {
+		this.supplementName = request.getSupplementName();
+		this.targetCount = request.getTargetCount();
 	}
 }
