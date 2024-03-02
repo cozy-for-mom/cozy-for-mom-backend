@@ -1,5 +1,9 @@
 package com.juju.cozyformombackend3.domain.userlog.supplement.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 
@@ -14,11 +18,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -59,13 +58,8 @@ public class Supplement extends BaseEntity {
 
 	}
 
-	public Long saveSupplementRecord(LocalDateTime datetime) {
-		SupplementRecord supplementRecord = SupplementRecord.builder()
-			.supplement(this)
-			.recordAt(datetime)
-			.build();
-		supplementRecordList.add(supplementRecord);
-		return supplementRecord.getSupplementRecordId();
+	public void addSupplementRecord(SupplementRecord record) {
+		supplementRecordList.add(record);
 	}
 
 	public void deleteSupplementRecord(List<LocalDateTime> datetimeList) {
