@@ -34,7 +34,7 @@ public class CustomBloodSugarRepositoryImpl implements CustomBloodSugarRepositor
 
 	@Override
 	public List<FindPeriodicBloodSugar> findPeriodRecordByDate(FindPeriodRecordCondition condition) {
-		LocalDate endDate = LocalDate.parse(condition.getDate());
+		LocalDate endDate = condition.getDate();
 		Long size = condition.getSize();
 
 		return switch (condition.getType()) {

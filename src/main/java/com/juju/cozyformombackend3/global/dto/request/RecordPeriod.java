@@ -2,8 +2,10 @@ package com.juju.cozyformombackend3.global.dto.request;
 
 import java.util.Arrays;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum RecordPeriod {
 	DAILY("daily"),

@@ -1,7 +1,9 @@
 package com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller;
 
 import java.net.URI;
+import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,7 +80,7 @@ public class BloodSugarController {
 	@GetMapping("/period")
 	public ResponseEntity<SuccessResponse> searchBloodSugarRecord(
 		@LoginUserId Long userId,
-		@RequestParam(name = "date") String date,
+		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
 		@RequestParam(name = "type", defaultValue = "daily") RecordPeriod type,
 		@RequestParam(name = "size", defaultValue = "10") Long size) {
 		FindBloodSugarListResponse response = bloodSugarService.findBloodSugarRecord(
