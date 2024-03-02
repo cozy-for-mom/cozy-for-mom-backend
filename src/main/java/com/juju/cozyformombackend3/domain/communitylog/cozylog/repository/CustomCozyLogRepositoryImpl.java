@@ -25,13 +25,13 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
-	private final JPAQueryFactory queryFactory;
+	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
 	public Slice<CozyLogSummary> findCozyLogListOrderBySort(CozyLogSort sort, Pageable pageable) {
 		OrderSpecifier orderSpecifier = createOrderSpecifier(sort);
 
-		List<CozyLogSummary> contents = queryFactory
+		List<CozyLogSummary> contents = jpaQueryFactory
 			.select(new QCozyLogSummary(
 				cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
 				cozyLog.createdAt, cozyLog.mode,
