@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.RegisterSupplementRequest;
-import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.UpdateSupplementRequest;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.RegisterSupplementResponse;
-import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.UpdateSupplementResponse;
 import com.juju.cozyformombackend3.domain.userlog.supplement.service.SupplementService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
-import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import lombok.RequiredArgsConstructor;
+
+import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.UpdateSupplementRequest;
+import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.UpdateSupplementResponse;
+import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,7 +28,7 @@ public class SupplementController {
 
 	private final SupplementService supplementService;
 
-	@PostMapping("")
+	@PostMapping
 	public ResponseEntity<SuccessResponse> registerSupplement(
 		@LoginUserId Long userId,
 		@RequestBody RegisterSupplementRequest request) {

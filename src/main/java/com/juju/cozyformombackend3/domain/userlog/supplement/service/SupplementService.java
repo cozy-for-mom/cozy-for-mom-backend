@@ -51,4 +51,9 @@ public class SupplementService {
 		return userRepository.findByUserId(userId)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 	}
+
+	private User findByUserId(Long userId) {
+		return userRepository.findByUserId(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+	}
 }
