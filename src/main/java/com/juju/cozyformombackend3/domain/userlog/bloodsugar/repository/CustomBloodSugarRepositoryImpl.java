@@ -13,6 +13,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindDaliyBloodSugar;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodBloodSugarCondition;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodicBloodSugar;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.QFindDaliyBloodSugar;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.QFindPeriodicBloodSugar;
@@ -108,6 +109,53 @@ public class CustomBloodSugarRepositoryImpl implements CustomBloodSugarRepositor
 			.collect(Collectors.toList());
 
 		return new SliceImpl<>(averages, pageable, hasNextPage(averages, pageable.getPageSize()));
+	}
+
+	@Override
+	public List<FindPeriodicBloodSugar> findPeriodRecordByDate(FindPeriodBloodSugarCondition condition) {
+		LocalDate endDate = LocalDate.parse(condition.getDate());
+		Long size = condition.getSize();
+
+		return switch (condition.getType()) {
+			case MONTHLY -> findMonthlyRecordByDate(endDate, size);
+			case WEEKLY -> findWeeklyRecordByDate(endDate, size);
+			default -> findDailyRecordByDate(endDate, size);
+		};
+	}
+
+	private List<FindPeriodicBloodSugar> findMonthlyRecordByDate(LocalDate endDate, Long size) {
+		return jpaQueryFactory.select(new QFindPeriodicBloodSugar(
+				getDateFromDateTime(bloodSugarRecord.createdAt.max()),
+				bloodSugarRecord.level.avg()))
+			.from(bloodSugarRecord)
+			.where(bloodSugarRecord.createdAt
+				.between(endDate.minusMonths(size).withDayOfMonth(1).atStartOfDay(),
+					endDate.atTime(23, 59, 59)))
+			.groupBy(bloodSugarRecord.createdAt.month())
+			.fetch();
+	}
+
+	private List<FindPeriodicBloodSugar> findWeeklyRecordByDate(LocalDate endDate, Long size) {
+		return jpaQueryFactory.select(new QFindPeriodicBloodSugar(
+				getDateFromDateTime(bloodSugarRecord.createdAt.max()),
+				bloodSugarRecord.level.avg()))
+			.from(bloodSugarRecord)
+			.where(bloodSugarRecord.createdAt
+				.between(endDate.minusWeeks(size).atStartOfDay(),
+					endDate.atTime(23, 59, 59)))
+			.groupBy(bloodSugarRecord.createdAt.week())
+			.fetch();
+	}
+
+	private List<FindPeriodicBloodSugar> findDailyRecordByDate(LocalDate endDate, Long size) {
+		return jpaQueryFactory.select(new QFindPeriodicBloodSugar(
+				getDateFromDateTime(bloodSugarRecord.createdAt),
+				bloodSugarRecord.level.avg()))
+			.from(bloodSugarRecord)
+			.where(bloodSugarRecord.createdAt
+				.between(endDate.minusDays(size).atStartOfDay(), endDate.atTime(23, 59, 59)))
+			.groupBy(bloodSugarRecord.createdAt)
+			.fetch();
 	}
 
 	private boolean hasNextPage(List<FindPeriodicBloodSugar> data, int pageSize) {

@@ -2,7 +2,6 @@ package com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodBloodSugarCondition;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.FindBloodSugarListResponse;
@@ -22,6 +22,8 @@ import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.FindDa
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.ModifyBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.service.BloodSugarService;
+import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
+import com.juju.cozyformombackend3.global.dto.request.RecordPeriod;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -71,10 +73,13 @@ public class BloodSugarController {
 	}
 
 	@GetMapping("/period")
-	public ResponseEntity<SuccessResponse> searchBloodSugarRecord(@RequestParam(name = "date") String date,
-		@RequestParam(name = "type") String type,
-		Pageable pageable) {
-		FindBloodSugarListResponse response = bloodSugarService.findBloodSugarRecord(1L, date, type, pageable);
+	public ResponseEntity<SuccessResponse> searchBloodSugarRecord(
+		@LoginUserId Long userId,
+		@RequestParam(name = "date") String date,
+		@RequestParam(name = "type", defaultValue = "daily") RecordPeriod type,
+		@RequestParam(name = "size", defaultValue = "10") Long size) {
+		FindBloodSugarListResponse response = bloodSugarService.findBloodSugarRecord(
+			FindPeriodBloodSugarCondition.of(userId, date, type, size));
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}
