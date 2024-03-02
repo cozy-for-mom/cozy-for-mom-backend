@@ -21,10 +21,10 @@ public class CustomSupplementRecordRepositoryImpl implements CustomSupplementRec
 				supplementRecord.supplement.supplementId,
 				supplementRecord.supplement.supplementName,
 				supplementRecord.supplement.targetCount,
-				supplementRecord.createdAt))
+				supplementRecord.recordAt))
 			.from(supplementRecord)
 			.where(supplementRecord.supplement.user.userId.eq(userId)
-				.and(getDateFromDateTime(supplementRecord.createdAt).eq(date)))
+				.and(getDateFromDateTime(supplementRecord.recordAt).eq(date)))
 			.fetch();
 	}
 }

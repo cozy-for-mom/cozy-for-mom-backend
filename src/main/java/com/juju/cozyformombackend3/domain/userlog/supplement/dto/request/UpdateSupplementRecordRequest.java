@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SaveSupplementRecordRequest {
-
+public class UpdateSupplementRecordRequest {
 	private String supplementName;
 	private String datetime;
 }
