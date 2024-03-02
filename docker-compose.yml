@@ -1,0 +1,17 @@
+version: '3'
+services:
+  cozyformom-application:
+    container_name: cozyformom-application
+    image: anso33/cozy-for-mom
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - MYSQL_DATABASE_URL=${MYSQL_DATABASE_URL}
+      - MYSQL_DATABASE_USERNAME=${MYSQL_DATABASE_USERNAME}
+      - MYSQL_DATABASE_PASSWORD=${MYSQL_DATABASE_PASSWORD}
