@@ -41,7 +41,11 @@ public class CommentService {
 			.orElseThrow(() -> new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG));
 		User writer = userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
-		foundCozyLog.addComment(request.toEntity(writer));
+		Comment savedComment = commentRepository.save(request.toEntity(writer));
+		foundCozyLog.addComment(savedComment);
+		if (Objects.isNull(request.getParentId())) {
+			savedComment.isParentComment();
+		}
 
 		return foundCozyLog.getId();
 	}
@@ -68,7 +72,8 @@ public class CommentService {
 			.filter(comment -> comment.getCommentId().equals(comment.getParentId()))
 			.collect(Collectors.toMap(CommentDto::getCommentId, Function.identity()));
 		commentList.forEach(comment -> {
-			if (!Objects.equals(comment.getCommentId(), comment.getParentId())) {
+			if (Objects.nonNull(comment.getParentId()) &&
+				!Objects.equals(comment.getCommentId(), comment.getParentId())) {
 				response.get(comment.getParentId()).addChildComment(comment);
 			}
 		});
