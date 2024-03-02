@@ -57,7 +57,7 @@ public class GrowthController {
 		@PathVariable(name = "id") Long reportId) {
 		growthService.deleteGrowth(userId, reportId);
 
-		return ResponseEntity.ok(SuccessResponse.of(200, null));
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/{id}")
