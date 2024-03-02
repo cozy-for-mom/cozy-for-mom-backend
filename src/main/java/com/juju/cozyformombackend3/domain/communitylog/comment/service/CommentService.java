@@ -1,10 +1,18 @@
 package com.juju.cozyformombackend3.domain.communitylog.comment.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.communitylog.comment.dto.CommentDto;
 import com.juju.cozyformombackend3.domain.communitylog.comment.dto.request.CreateCommentRequest;
 import com.juju.cozyformombackend3.domain.communitylog.comment.dto.request.ModifyCommentRequest;
+import com.juju.cozyformombackend3.domain.communitylog.comment.dto.response.FindCommentListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.comment.error.CommentErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.comment.model.Comment;
 import com.juju.cozyformombackend3.domain.communitylog.comment.repository.CommentRepository;
@@ -33,7 +41,11 @@ public class CommentService {
 			.orElseThrow(() -> new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG));
 		User writer = userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
-		foundCozyLog.addComment(request.toEntity(writer));
+		Comment savedComment = commentRepository.save(request.toEntity(writer));
+		foundCozyLog.addComment(savedComment);
+		if (Objects.isNull(request.getParentId())) {
+			savedComment.isParentComment();
+		}
 
 		return foundCozyLog.getId();
 	}
@@ -52,5 +64,19 @@ public class CommentService {
 		Comment foundComment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new BusinessException(CommentErrorCode.NOT_FOUND_COMMENT));
 		foundComment.delete();
+	}
+
+	public FindCommentListResponse findCommentList(Long cozyLogId) {
+		List<CommentDto> commentList = commentRepository.findAllByCozyLogId(cozyLogId);
+		Map<Long, CommentDto> response = commentList.stream()
+			.filter(comment -> comment.getCommentId().equals(comment.getParentId()))
+			.collect(Collectors.toMap(CommentDto::getCommentId, Function.identity()));
+		commentList.forEach(comment -> {
+			if (Objects.nonNull(comment.getParentId()) &&
+				!Objects.equals(comment.getCommentId(), comment.getParentId())) {
+				response.get(comment.getParentId()).addChildComment(comment);
+			}
+		});
+		return FindCommentListResponse.of(response.values().stream().toList());
 	}
 }
