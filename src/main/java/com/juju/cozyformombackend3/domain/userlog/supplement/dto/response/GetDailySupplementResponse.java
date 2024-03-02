@@ -2,6 +2,7 @@ package com.juju.cozyformombackend3.domain.userlog.supplement.dto.response;
 
 import static com.juju.cozyformombackend3.global.util.DateParser.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,30 +20,6 @@ public class GetDailySupplementResponse {
 	private final List<DailySupplement> supplements;
 
 	public static GetDailySupplementResponse of(List<FindDailySupplementIntake> findRecordList) {
-		//        List<DailySupplement> supplements = new ArrayList<>();
-		//        for (FindDailySupplementIntake findRecord : findRecordList) {
-		//            boolean isExist = false;
-		//            if (supplements != null) {
-		//                for (DailySupplement s : supplements) {
-		//                    if (s.getSupplementId().equals(findRecord.getSupplementId())) {
-		//                        s.getDatetimes().add(dateTimeToString(findRecord.getDatetime()));
-		//                        s.setRealCount(s.getRealCount() + 1);
-		//                        isExist = true;
-		//                        break;
-		//                    }
-		//                }
-		//            }
-		//            if (isExist == false) {
-		//                supplements.add(DailySupplement.builder()
-		//                        .supplementId(findRecord.getSupplementId())
-		//                        .supplementName(findRecord.getSupplementName())
-		//                        .targetCount(findRecord.getTargetCount())
-		//                        .realCount(1)
-		//                        .datetimes(List.of(dateTimeToString(findRecord.getDatetime())))
-		//                        .build());
-		//            }
-		//        }
-		//        return new GetDailySupplementResponse(supplements);
 		Map<Long, DailySupplement> supplementMap = findRecordList.stream()
 			.collect(Collectors.toMap(
 				FindDailySupplementIntake::getSupplementId,
@@ -53,12 +30,11 @@ public class GetDailySupplementResponse {
 						.targetCount(intake.getTargetCount())
 						.realCount(1)
 						.build();
-					ds.datetimes.add(dateTimeToStringFormatDateTime(intake.getDatetime()));
+					ds.records.add(SupplementRecordDto.of(intake.getRecordId(), intake.getDatetime()));
 					return ds;
 				},
 				(s1, s2) -> {
-					System.out.println(s1.getDatetimes().get(0));
-					s1.getDatetimes().addAll(s2.getDatetimes());
+					s1.getRecords().addAll(s2.getRecords());
 					s1.setRealCount(s1.getRealCount() + s2.getRealCount());
 					return s1;
 				}
@@ -77,11 +53,23 @@ public class GetDailySupplementResponse {
 		private final Long supplementId;
 		private final String supplementName;
 		private final int targetCount;
-		private final List<String> datetimes = new ArrayList<>();
+		private final List<SupplementRecordDto> records = new ArrayList<>();
 		private int realCount;
 
 		private void setRealCount(int realCount) {
 			this.realCount = realCount;
+		}
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	private static class SupplementRecordDto {
+		private final Long id;
+		private final String datetime;
+
+		public static SupplementRecordDto of(Long id, LocalDateTime datetime) {
+			return new SupplementRecordDto(id, dateTimeToStringFormatDateTime(datetime));
 		}
 	}
 }

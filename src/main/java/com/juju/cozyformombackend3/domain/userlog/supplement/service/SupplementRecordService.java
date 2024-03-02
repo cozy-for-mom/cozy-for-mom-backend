@@ -58,15 +58,7 @@ public class SupplementRecordService {
 
 	@Transactional
 	public void deleteSupplementRecord(Long userId, Long recordId) {
-		// User user = findByUserId(userId);
 		supplementRecordRepository.deleteById(recordId);
-		//
-		// for (DeleteSupplementRecordRequest deleteSupplementRecordRequest : request.getList()) {
-		// 	Supplement supplement = supplementRepository.findBySupplementNameAndUser(
-		// 			deleteSupplementRecordRequest.getSupplementName(), user)
-		// 		.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보충제입니다."));
-		// 	supplement.deleteSupplementRecord(deleteSupplementRecordRequest.getDatetimeList());
-		// }
 	}
 
 	public GetDailySupplementResponse getSupplementRecord(long userId, String date) {
