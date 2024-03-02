@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.DeleteSupplementRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.SaveSupplementRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.UpdateSupplementRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.GetDailySupplementResponse;
@@ -21,7 +20,6 @@ import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.SaveSu
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.UpdateSupplementRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.supplement.service.SupplementRecordService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
-import com.juju.cozyformombackend3.global.dto.request.ListRequest;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -57,11 +55,10 @@ public class SupplementRecordController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<SuccessResponse> deleteSupplementRecord(
 		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long recordId,
-		@RequestBody ListRequest<DeleteSupplementRecordRequest> request) {
-		supplementRecordService.deleteSupplementRecord(userId, request);
+		@PathVariable(name = "id") Long recordId) {
+		supplementRecordService.deleteSupplementRecord(userId, recordId);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, null));
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping

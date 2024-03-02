@@ -11,7 +11,6 @@ import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.object.FindDailySupplementIntake;
-import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.DeleteSupplementRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.SaveSupplementRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.UpdateSupplementRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.GetDailySupplementResponse;
@@ -21,7 +20,6 @@ import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
 import com.juju.cozyformombackend3.domain.userlog.supplement.model.SupplementRecord;
 import com.juju.cozyformombackend3.domain.userlog.supplement.repository.SupplementRecordRepository;
 import com.juju.cozyformombackend3.domain.userlog.supplement.repository.SupplementRepository;
-import com.juju.cozyformombackend3.global.dto.request.ListRequest;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
@@ -59,14 +57,16 @@ public class SupplementRecordService {
 	}
 
 	@Transactional
-	public void deleteSupplementRecord(Long userId, ListRequest<DeleteSupplementRecordRequest> request) {
-		User user = findByUserId(userId);
-		for (DeleteSupplementRecordRequest deleteSupplementRecordRequest : request.getList()) {
-			Supplement supplement = supplementRepository.findBySupplementNameAndUser(
-					deleteSupplementRecordRequest.getSupplementName(), user)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보충제입니다."));
-			supplement.deleteSupplementRecord(deleteSupplementRecordRequest.getDatetimeList());
-		}
+	public void deleteSupplementRecord(Long userId, Long recordId) {
+		// User user = findByUserId(userId);
+		supplementRecordRepository.deleteById(recordId);
+		//
+		// for (DeleteSupplementRecordRequest deleteSupplementRecordRequest : request.getList()) {
+		// 	Supplement supplement = supplementRepository.findBySupplementNameAndUser(
+		// 			deleteSupplementRecordRequest.getSupplementName(), user)
+		// 		.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보충제입니다."));
+		// 	supplement.deleteSupplementRecord(deleteSupplementRecordRequest.getDatetimeList());
+		// }
 	}
 
 	public GetDailySupplementResponse getSupplementRecord(long userId, String date) {
