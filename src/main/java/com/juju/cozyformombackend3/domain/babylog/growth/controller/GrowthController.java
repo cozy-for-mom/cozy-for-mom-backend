@@ -45,13 +45,12 @@ public class GrowthController {
 		return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
 	}
 
-	@PutMapping
+	@PutMapping("/{id}")
 	public ResponseEntity<SuccessResponse> modifyGrowth(
 		@LoginUserId Long userId,
+		@PathVariable(name = "id") Long reportId,
 		@RequestBody UpdateGrowthRequest request) {
-		User user = new User();
-
-		UpdateGrowthResponse response = growthService.updateGrowth(user, request);
+		UpdateGrowthResponse response = growthService.updateGrowth(userId, reportId, request);
 
 		return ResponseEntity.ok(SuccessResponse.of(200, response));
 	}
@@ -74,14 +73,4 @@ public class GrowthController {
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}
-
-	// @GetMapping
-	// public ResponseEntity<SuccessResponse> getGrowth(
-	// 	@PathVariable(name = "id") Long babyProfileId,
-	// 	@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-	// 	Long userId = 1L;
-	// 	FindGrowthResponse response = growthService.getGrowth(userId, babyProfileId, date);
-	//
-	// 	return ResponseEntity.ok(SuccessResponse.of(200, response));
-	// }
 }

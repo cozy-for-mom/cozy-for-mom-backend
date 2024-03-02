@@ -66,6 +66,7 @@ public class GrowthDiary {
 	public void update(UpdateGrowthRequest.GrowthDiaryDto growthDiaryDto) {
 		this.recordAt = growthDiaryDto.getDate();
 		this.growthImageUrl = growthDiaryDto.getGrowthImageUrl();
+		this.title = growthDiaryDto.getTitle();
 		this.content = growthDiaryDto.getContent();
 	}
 

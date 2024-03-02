@@ -13,15 +13,11 @@ import lombok.NoArgsConstructor;
 public class UpdateGrowthRequest {
 
 	private Long growthDiaryId;
-
 	private Long babyProfileId;
-
 	private LocalDate date;
-
 	private String growthImageUrl;
-
+	private String title;
 	private String content;
-
 	private List<BabyInfoRequest> babies;
 
 	public BabyInfoRequest getBabyInfo(Long growthRecordId) {
@@ -32,7 +28,7 @@ public class UpdateGrowthRequest {
 	}
 
 	public GrowthDiaryDto getGrowthDiaryDto() {
-		return GrowthDiaryDto.of(growthDiaryId, babyProfileId, date, growthImageUrl, content);
+		return GrowthDiaryDto.of(growthDiaryId, babyProfileId, date, growthImageUrl, title, content);
 	}
 
 	@Getter
@@ -73,6 +69,8 @@ public class UpdateGrowthRequest {
 		private LocalDate date;
 
 		private String growthImageUrl;
+
+		private String title;
 
 		private String content;
 	}

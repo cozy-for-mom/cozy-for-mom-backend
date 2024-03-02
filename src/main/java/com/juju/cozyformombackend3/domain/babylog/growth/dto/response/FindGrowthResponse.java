@@ -18,7 +18,7 @@ public class FindGrowthResponse {
 	private final Long babyProfileId;
 	private final String date;
 	private final Long growthReportId;
-	private final String growthImagePath;
+	private final String growthImageUrl;
 	private final Long growthDiaryId;
 	private final String title;
 	private final String content;
@@ -34,7 +34,7 @@ public class FindGrowthResponse {
 			.babyProfileId(report.getGrowthDiary().getBabyProfile().getBabyProfileId())
 			.date(report.getRecordDate().toString())
 			.growthReportId(report.getId())
-			.growthImagePath(report.getGrowthDiary().getGrowthImageUrl())
+			.growthImageUrl(report.getGrowthDiary().getGrowthImageUrl())
 			.growthDiaryId(report.getGrowthDiary().getGrowthDiaryId())
 			.title(report.getGrowthDiary().getTitle())
 			.content(report.getGrowthDiary().getContent())

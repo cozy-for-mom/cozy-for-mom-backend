@@ -2,7 +2,6 @@ package com.juju.cozyformombackend3.domain.babylog.growth.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,23 +61,19 @@ public class GrowthService {
 	}
 
 	@Transactional
-	public UpdateGrowthResponse updateGrowth(User user, UpdateGrowthRequest request) {
-		BabyProfile foundBabyProfile = findBabyProfileById(request.getBabyProfileId());
-		isUserAuthorized(foundBabyProfile.getUser(), user);
+	public UpdateGrowthResponse updateGrowth(Long userId, Long reportId, UpdateGrowthRequest request) {
+		User user = findUserById(userId);
+		GrowthReport findReport = findGrowthReportById(reportId);
+		isUserAuthorized(findReport.getGrowthDiary().getBabyProfile().getUser(), user);
 
-		GrowthDiary foundGrowthDairy = growthDiaryRepository.findById(request.getGrowthDiaryId())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장일기입니다."));
-		foundGrowthDairy.update(request.getGrowthDiaryDto());
-
-		List<Long> foundGrowthRecordList = request.getBabies().stream()
-			.map(baby -> {
+		findReport.getGrowthDiary().update(request.getGrowthDiaryDto());
+		request.getBabies().stream()
+			.forEach(baby -> {
 				GrowthRecord foundGrowthRecord = growthRecordRepository.findById(baby.getGrowthRecordId())
 					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 record입니다."));
 				foundGrowthRecord.update(baby);
-				return foundGrowthRecord.getGrowthRecordId();
-			}).collect(Collectors.toList());
-
-		return UpdateGrowthResponse.of(foundGrowthDairy.getGrowthDiaryId(), foundGrowthRecordList);
+			});
+		return UpdateGrowthResponse.of(findReport);
 	}
 
 	private BabyProfile findBabyProfileById(Long babyProfileId) {
@@ -107,8 +102,7 @@ public class GrowthService {
 	}
 
 	public FindGrowthResponse getGrowth(Long userId, Long reportId) {
-		GrowthReport findReport = growthReportRepository.findById(reportId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장 보고서 아이디입니다."));
+		GrowthReport findReport = findGrowthReportById(reportId);
 
 		return FindGrowthResponse.of(findReport);
 	}
@@ -116,5 +110,10 @@ public class GrowthService {
 	private User findUserById(Long userId) {
 		return userRepository.findByUserId(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+	}
+
+	private GrowthReport findGrowthReportById(Long reportId) {
+		return growthReportRepository.findById(reportId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장 보고서 아이디입니다."));
 	}
 }
