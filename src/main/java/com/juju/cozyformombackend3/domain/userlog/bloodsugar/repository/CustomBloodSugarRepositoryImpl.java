@@ -7,10 +7,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindDaliyBloodSugar;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodBloodSugarCondition;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodicBloodSugar;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.QFindDaliyBloodSugar;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.QFindPeriodicBloodSugar;
+import com.juju.cozyformombackend3.global.dto.request.FindPeriodRecordCondition;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,8 @@ public class CustomBloodSugarRepositoryImpl implements CustomBloodSugarRepositor
 	}
 
 	@Override
-	public List<FindPeriodicBloodSugar> findPeriodRecordByDate(FindPeriodBloodSugarCondition condition) {
-		LocalDate endDate = LocalDate.parse(condition.getDate());
+	public List<FindPeriodicBloodSugar> findPeriodRecordByDate(FindPeriodRecordCondition condition) {
+		LocalDate endDate = condition.getDate();
 		Long size = condition.getSize();
 
 		return switch (condition.getType()) {

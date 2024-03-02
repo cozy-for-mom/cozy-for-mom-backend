@@ -1,5 +1,7 @@
 package com.juju.cozyformombackend3.domain.userlog.weight.model;
 
+import java.time.LocalDate;
+
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 
@@ -12,15 +14,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-import java.time.LocalDate;
-
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@Table(name = "weight_record")
 @Entity
+@Table(name = "weight_record")
+@Getter
+@NoArgsConstructor
 public class WeightRecord extends BaseEntity {
 
 	@Column(name = "weight_id", nullable = false)
