@@ -1,8 +1,5 @@
 package com.juju.cozyformombackend3.domain.babylog.growth.service;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,18 +84,11 @@ public class GrowthService {
 		}
 	}
 
-	public void deleteGrowth(User user, LocalDate date) {
-		List<GrowthDiary> growthDiaryList = growthDiaryRepository.findAllByRecordAt(date);
-		growthDiaryList.forEach(growthDiary -> {
-			isUserAuthorized(growthDiary.getBabyProfile().getUser(), user);
-			growthDiaryRepository.delete(growthDiary);
-		});
-
-		List<GrowthRecord> growthRecordList = growthRecordRepository.findAllByRecordAt(date);
-		growthRecordList.forEach(growthRecord -> {
-			isUserAuthorized(growthRecord.getBaby().getBabyProfile().getUser(), user);
-			growthRecordRepository.delete(growthRecord);
-		});
+	@Transactional
+	public void deleteGrowth(Long userId, Long reportId) {
+		GrowthReport findReport = findGrowthReportById(reportId);
+		growthDiaryRepository.delete(findReport.getGrowthDiary());
+		growthReportRepository.delete(findReport);
 	}
 
 	public FindGrowthResponse getGrowth(Long userId, Long reportId) {

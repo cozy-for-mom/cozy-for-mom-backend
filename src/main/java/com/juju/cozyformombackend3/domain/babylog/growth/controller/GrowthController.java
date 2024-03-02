@@ -1,9 +1,7 @@
 package com.juju.cozyformombackend3.domain.babylog.growth.controller;
 
 import java.net.URI;
-import java.time.LocalDate;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.SaveGrowthRequest;
@@ -21,7 +18,6 @@ import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.FindGrowth
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.SaveGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.UpdateGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.service.GrowthService;
-import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
@@ -55,12 +51,11 @@ public class GrowthController {
 		return ResponseEntity.ok(SuccessResponse.of(200, response));
 	}
 
-	@DeleteMapping
+	@DeleteMapping("/{id}")
 	public ResponseEntity<SuccessResponse> removeGrowth(
-		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-		User user = new User();
-
-		growthService.deleteGrowth(user, date);
+		@LoginUserId Long userId,
+		@PathVariable(name = "id") Long reportId) {
+		growthService.deleteGrowth(userId, reportId);
 
 		return ResponseEntity.ok(SuccessResponse.of(200, null));
 	}
