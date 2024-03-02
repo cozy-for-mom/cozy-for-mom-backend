@@ -40,21 +40,27 @@ public class GrowthDiary {
 	@Column(name = "growth_image_url", columnDefinition = "TEXT")
 	private String growthImageUrl;
 
+	@Column(name = "title", columnDefinition = "TEXT")
+	private String title;
+
 	@Column(name = "content", columnDefinition = "TEXT")
 	private String content;
 
 	@OneToOne
 	private GrowthReport growthReport;
 
-	private GrowthDiary(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String content) {
+	private GrowthDiary(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String title,
+		String content) {
 		this.babyProfile = babyProfile;
 		this.recordAt = recordAt;
 		this.growthImageUrl = growthImageUrl;
+		this.title = title;
 		this.content = content;
 	}
 
-	public static GrowthDiary of(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String content) {
-		return new GrowthDiary(babyProfile, recordAt, growthImageUrl, content);
+	public static GrowthDiary of(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String title,
+		String content) {
+		return new GrowthDiary(babyProfile, recordAt, growthImageUrl, title, content);
 	}
 
 	public void update(UpdateGrowthRequest.GrowthDiaryDto growthDiaryDto) {

@@ -1,12 +1,12 @@
 package com.juju.cozyformombackend3.domain.babylog.growth.dto.request;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import com.juju.cozyformombackend3.domain.babylog.baby.model.Baby;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthDiary;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthRecord;
-
-import java.time.LocalDate;
-import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,20 +17,18 @@ import lombok.NoArgsConstructor;
 public class SaveGrowthRequest {
 
 	private Long babyProfileId;
-
 	private LocalDate date;
-
 	private String growthImageUrl;
-
+	private String title;
 	private String content;
-
 	private List<BabyInfoRequest> babies;
 
 	public GrowthDiary toGrowthDiary(BabyProfile babyProfile) {
-		return GrowthDiary.of(babyProfile, date, growthImageUrl, content);
+		return GrowthDiary.of(babyProfile, date, growthImageUrl, title, content);
 	}
 
 	public GrowthRecord toGrowthRecord(Baby baby) {
+		System.out.println(baby.getName());
 		GrowthInfoRequest growthInfo = (babies.stream()
 			.filter(babyInfo -> babyInfo.getBabyId().equals(baby.getBabyId()))
 			.findFirst()
@@ -43,24 +41,16 @@ public class SaveGrowthRequest {
 
 	@Getter
 	private static class BabyInfoRequest {
-
 		private Long babyId;
-
 		private String babyName;
-
 		private GrowthInfoRequest growthInfo;
 	}
 
 	private static class GrowthInfoRequest {
-
 		private double weight;
-
 		private double headDiameter;
-
 		private double headCircum;
-
 		private double abdomenCircum;
-
 		private double thighLength;
 	}
 }
