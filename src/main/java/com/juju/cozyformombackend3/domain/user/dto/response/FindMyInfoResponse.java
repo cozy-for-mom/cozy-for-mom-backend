@@ -25,6 +25,10 @@ public class FindMyInfoResponse {
 	private BabyProfileDto recentBabyProfile;
 	private Long dDay;
 
+	public Long getdDay() {
+		return this.dDay;
+	}
+
 	public static FindMyInfoResponse of(UserSummary summary) {
 		FindMyInfoResponse response = new FindMyInfoResponse(summary.getName(), summary.getNickname(),
 			summary.getIntroduce(), summary.getImageUrl(), summary.getBirth(), summary.getEmail());
@@ -39,13 +43,6 @@ public class FindMyInfoResponse {
 				return dto;
 			})
 			.toList();
-		// .map(babyProfile -> BabyProfileDto.of(babyProfile))
-		// .peek(dto -> {
-		// 	if (Objects.equals(dto.getBabyProfileId(), summary.getRecentBabyProfileId())) {
-		// 		response.recentBabyProfile = dto;
-		// 		response.dDay = Duration.between(LocalDateTime.now(), dto.getDueAt()).toDays();
-		// 	}
-		// }).toList();
 
 		return response;
 	}
