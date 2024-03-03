@@ -10,6 +10,7 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyL
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.ModifyCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CozyLogDetailResponse;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.FindMyCozyLogListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.GetCozyLogListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.error.CozyLogErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLog;
@@ -92,5 +93,12 @@ public class CozyLogService {
 		List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListOrderBySort(sort, reportId, size);
 
 		return GetCozyLogListResponse.of(cozyLogs);
+	}
+
+	public FindMyCozyLogListResponse findMyCozyLog(Long userId, Long reportId, Long size) {
+		List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListByWriterId(userId, reportId, size);
+		Long count = cozyLogRepository.countByUserUserId(userId);
+
+		return FindMyCozyLogListResponse.of(count, cozyLogs);
 	}
 }

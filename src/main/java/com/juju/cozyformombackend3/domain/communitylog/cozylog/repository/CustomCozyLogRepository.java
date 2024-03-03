@@ -7,4 +7,6 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyL
 
 public interface CustomCozyLogRepository {
 	List<CozyLogSummary> findCozyLogListOrderBySort(CozyLogSort keyword, Long reportId, Long size);
+
+	List<CozyLogSummary> findCozyLogListByWriterId(Long userId, Long reportId, Long size);
 }
