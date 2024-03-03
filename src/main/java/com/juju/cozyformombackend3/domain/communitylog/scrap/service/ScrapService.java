@@ -1,12 +1,16 @@
 package com.juju.cozyformombackend3.domain.communitylog.scrap.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.error.CozyLogErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.repository.CozyLogRepository;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.ApplyScrapRequest;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.UnscrapListRequest;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.response.FindScrapListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.error.ScrapErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.model.Scrap;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.repository.ScrapRepository;
@@ -67,5 +71,12 @@ public class ScrapService {
 	@Transactional
 	public void deleteScrapList(Long userId, UnscrapListRequest request) {
 		scrapRepository.deleteScrapByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
+	}
+
+	public FindScrapListResponse findScrapList(Long userId, Long reportId, Long size) {
+		List<CozyLogSummary> cozyLogs = scrapRepository.findScrapListById(userId, reportId, size);
+		Long count = scrapRepository.countByUserUserId(userId);
+
+		return FindScrapListResponse.of(count, cozyLogs);
 	}
 }
