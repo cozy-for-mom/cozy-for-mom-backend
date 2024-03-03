@@ -9,4 +9,6 @@ public interface CustomCozyLogRepository {
 	List<CozyLogSummary> findCozyLogListOrderBySort(CozyLogSort keyword, Long reportId, Long size);
 
 	List<CozyLogSummary> findCozyLogListByWriterId(Long userId, Long reportId, Long size);
+
+	void deleteCozyLogByUserIdAndCozyLogIds(Long userId, List<Long> cozyLogIds);
 }

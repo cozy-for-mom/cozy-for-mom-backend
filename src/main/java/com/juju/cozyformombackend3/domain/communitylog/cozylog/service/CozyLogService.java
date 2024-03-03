@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.DeleteMyCozyLogListRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.ModifyCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CozyLogDetailResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.FindMyCozyLogListResponse;
@@ -100,5 +101,10 @@ public class CozyLogService {
 		Long count = cozyLogRepository.countByUserUserId(userId);
 
 		return FindMyCozyLogListResponse.of(count, cozyLogs);
+	}
+
+	@Transactional
+	public void deleteCozyLogList(Long userId, DeleteMyCozyLogListRequest request) {
+		cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
 	}
 }
