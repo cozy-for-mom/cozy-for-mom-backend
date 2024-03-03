@@ -78,6 +78,25 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 			.fetch();
 	}
 
+	@Override
+	public void deleteCozyLogByUserIdAndCozyLogIds(Long userId, List<Long> cozyLogIds) {
+		jpaQueryFactory.delete(comment)
+			.where(comment.cozyLog.id.in(cozyLogIds))
+			.execute();
+
+		jpaQueryFactory.delete(cozyLogImage)
+			.where(cozyLogImage.cozyLog.id.in(cozyLogIds))
+			.execute();
+
+		jpaQueryFactory.delete(scrap)
+			.where(scrap.cozyLogId.in(cozyLogIds))
+			.execute();
+
+		jpaQueryFactory.delete(cozyLog)
+			.where(cozyLog.user.userId.eq(userId).and(cozyLog.id.in(cozyLogIds)))
+			.execute();
+	}
+
 	private BooleanExpression ltReportId(Long reportId) {
 		if (reportId == 0) {
 			return null;

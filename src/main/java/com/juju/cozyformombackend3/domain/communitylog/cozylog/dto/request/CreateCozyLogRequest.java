@@ -26,13 +26,13 @@ public class CreateCozyLogRequest {
 	@Schema(defaultValue = "PUBLIC")
 	private String mode;
 
+	public CozyLog toEntity(User user) {
+		return CozyLog.of(user, this.title, this.content, getCozyLogImageList(), CozyLogMode.valueOf(this.mode));
+	}
+
 	private List<CozyLogImage> getCozyLogImageList() {
 		return imageList.stream()
 			.map(image -> CozyLogImage.of(null, image.getImageUrl(), image.getDescription()))
 			.toList();
-	}
-
-	public CozyLog toEntity(User user) {
-		return CozyLog.of(user, this.title, this.content, getCozyLogImageList(), CozyLogMode.valueOf(this.mode));
 	}
 }
