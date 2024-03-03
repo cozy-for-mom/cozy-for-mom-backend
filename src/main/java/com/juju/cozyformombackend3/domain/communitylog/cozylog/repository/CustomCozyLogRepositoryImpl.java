@@ -5,12 +5,7 @@ import static com.juju.cozyformombackend3.domain.communitylog.cozylog.model.QCoz
 import static com.juju.cozyformombackend3.domain.communitylog.cozylog.model.QCozyLogImage.*;
 import static com.juju.cozyformombackend3.domain.communitylog.scrap.model.QScrap.*;
 
-import java.util.Collections;
 import java.util.List;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.QCozyLogSummary;
@@ -18,7 +13,9 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyL
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogMode;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -28,10 +25,16 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
-	public Slice<CozyLogSummary> findCozyLogListOrderBySort(CozyLogSort sort, Pageable pageable) {
+	public List<CozyLogSummary> findCozyLogListOrderBySort(CozyLogSort sort, Long reportId, Long size) {
 		OrderSpecifier orderSpecifier = createOrderSpecifier(sort);
 
-		List<CozyLogSummary> contents = jpaQueryFactory
+		SubQueryExpression<Long> firstImageSubQuery = JPAExpressions
+			.select(cozyLogImage.id.min())
+			.from(cozyLogImage)
+			.where(cozyLogImage.cozyLog.id.eq(cozyLog.id));
+
+		// List<CozyLogSummary> contents =
+		return jpaQueryFactory
 			.select(new QCozyLogSummary(
 				cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
 				cozyLog.createdAt, cozyLog.mode,
@@ -41,17 +44,14 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 			.from(cozyLog)
 			.leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
 			.leftJoin(scrap).on(scrap.cozyLogId.eq(cozyLog.id))
-			.leftJoin(cozyLogImage).on(cozyLogImage.cozyLog.id.eq(cozyLog.id))
-			.where(isPublicCozyLog())
+			.leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
+			// .leftJoin(cozyLogImage).on(cozyLogImage.cozyLog.id.eq(cozyLog.id))
+			.where(isPublicCozyLog().and(cozyLog.id.lt(reportId)))
 			.groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
 				cozyLogImage.cozyLogImageUrl)
 			.orderBy(orderSpecifier, cozyLog.id.desc())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize() + 1)
+			.limit(size)
 			.fetch();
-
-		return new SliceImpl<>(contents, pageable,
-			hasNextPage(Collections.singletonList(contents), pageable.getPageSize()));
 	}
 
 	private OrderSpecifier createOrderSpecifier(CozyLogSort sort) {
