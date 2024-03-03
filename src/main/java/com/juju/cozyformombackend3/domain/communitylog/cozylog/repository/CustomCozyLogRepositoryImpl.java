@@ -45,13 +45,19 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 			.leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
 			.leftJoin(scrap).on(scrap.cozyLogId.eq(cozyLog.id))
 			.leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
-			// .leftJoin(cozyLogImage).on(cozyLogImage.cozyLog.id.eq(cozyLog.id))
-			.where(isPublicCozyLog().and(cozyLog.id.lt(reportId)))
+			.where(isPublicCozyLog().and(ltReportId(reportId)))
 			.groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
 				cozyLogImage.cozyLogImageUrl)
 			.orderBy(orderSpecifier, cozyLog.id.desc())
 			.limit(size)
 			.fetch();
+	}
+
+	private BooleanExpression ltReportId(Long reportId) {
+		if (reportId == 0) {
+			return null;
+		}
+		return cozyLog.id.lt(reportId);
 	}
 
 	private OrderSpecifier createOrderSpecifier(CozyLogSort sort) {
@@ -65,13 +71,4 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 	private BooleanExpression isPublicCozyLog() {
 		return cozyLog.mode.eq(CozyLogMode.PUBLIC);
 	}
-
-	private boolean hasNextPage(List<Object> contents, int pageSize) {
-		if (contents.size() > pageSize) {
-			contents.remove(pageSize);
-			return true;
-		}
-		return false;
-	}
-
 }
