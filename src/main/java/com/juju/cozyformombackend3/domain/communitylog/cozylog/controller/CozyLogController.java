@@ -23,7 +23,6 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.Crea
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.GetCozyLogListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.ModifyCozyLogResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogService;
-import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
@@ -36,10 +35,10 @@ public class CozyLogController {
 	private final CozyLogService cozyLogService;
 
 	@PostMapping
-	public ResponseEntity<SuccessResponse> createCozyLog(@RequestBody CreateCozyLogRequest request) {
-		User user = new User();
-
-		Long createdCozyLogId = cozyLogService.saveCozyLog(user, request);
+	public ResponseEntity<SuccessResponse> createCozyLog(
+		@LoginUserId Long userId,
+		@RequestBody CreateCozyLogRequest request) {
+		Long createdCozyLogId = cozyLogService.saveCozyLog(userId, request);
 		URI location = URI.create("/api/v1/cozy-log/" + createdCozyLogId);
 
 		return ResponseEntity.created(location)
@@ -47,24 +46,27 @@ public class CozyLogController {
 	}
 
 	@PutMapping
-	public ResponseEntity<SuccessResponse> modifyCozyLog(@RequestBody ModifyCozyLogRequest request) {
-		User user = new User();
-		Long modifiedCozyLogId = cozyLogService.updateCozyLog(user, request);
+	public ResponseEntity<SuccessResponse> modifyCozyLog(
+		@LoginUserId Long userId,
+		@RequestBody ModifyCozyLogRequest request) {
+		Long modifiedCozyLogId = cozyLogService.updateCozyLog(userId, request);
 
 		return ResponseEntity.ok(SuccessResponse.of(200, ModifyCozyLogResponse.of(modifiedCozyLogId)));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> removeCozyLog(@PathVariable("id") Long removeCozyLogId) {
-		Long userId = 1L;
-
-		userId = cozyLogService.deleteCozyLog(userId, removeCozyLogId);
+	public ResponseEntity<Void> removeCozyLog(
+		@LoginUserId Long userId,
+		@PathVariable("id") Long removeCozyLogId) {
+		cozyLogService.deleteCozyLog(userId, removeCozyLogId);
 
 		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<SuccessResponse> cozyLogDetail(@LoginUserId Long userId, @PathVariable("id") Long cozyLogId) {
+	public ResponseEntity<SuccessResponse> cozyLogDetail(
+		@LoginUserId Long userId,
+		@PathVariable("id") Long cozyLogId) {
 		CozyLogDetailResponse response = cozyLogService.findCozyLogDetail(userId, cozyLogId);
 
 		return ResponseEntity.ok(SuccessResponse.of(200, response));

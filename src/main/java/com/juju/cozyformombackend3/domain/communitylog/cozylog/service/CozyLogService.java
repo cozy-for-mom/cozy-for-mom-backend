@@ -16,7 +16,9 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLog;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogMode;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.repository.CozyLogRepository;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.repository.ScrapRepository;
+import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
@@ -28,15 +30,17 @@ public class CozyLogService {
 
 	private final CozyLogRepository cozyLogRepository;
 	private final ScrapRepository scrapRepository;
+	private final UserRepository userRepository;
 
 	@Transactional
-	public Long saveCozyLog(User user, CreateCozyLogRequest request) {
-
+	public Long saveCozyLog(Long userId, CreateCozyLogRequest request) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 		return cozyLogRepository.save(request.toEntity(user)).getId();
 	}
 
 	@Transactional
-	public Long updateCozyLog(User user, ModifyCozyLogRequest request) {
+	public Long updateCozyLog(Long userId, ModifyCozyLogRequest request) {
 		CozyLog foundCozyLog = findCozyLogById(request.getId());
 
 		foundCozyLog.updateTextContent(request.getTitle(), request.getContent(), request.getMode());
