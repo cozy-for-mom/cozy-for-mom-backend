@@ -3,7 +3,6 @@ package com.juju.cozyformombackend3.domain.user.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
@@ -28,8 +27,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,11 +58,17 @@ public class User extends BaseEntity {
 	@Column(name = "profile_image_url", nullable = false)
 	private String profileImageUrl;
 
-	@Temporal(TemporalType.DATE)
-	private Date birth;
+	@Column(name = "introduce", columnDefinition = "VARCHAR(255)")
+	private String introduce;
+
+	// @Temporal(TemporalType.DATE)
+	private LocalDate birth;
 
 	@Column(name = "email", nullable = false)
 	private String email;
+
+	@Column(name = "recent_baby_profild_id")
+	private Long recentBabyProfileId;
 
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
 	private final List<Supplement> supplementList = new ArrayList<>();
@@ -92,11 +95,13 @@ public class User extends BaseEntity {
 	private final List<Scrap> scrapList = new ArrayList<>();
 
 	@Builder
-	public User(UserType userType, String name, String nickname, String profileImageUrl, Date birth, String email) {
+	public User(UserType userType, String name, String nickname, String profileImageUrl, String introduce,
+		LocalDate birth, String email) {
 		this.userType = userType;
 		this.name = name;
 		this.nickname = nickname;
 		this.profileImageUrl = profileImageUrl;
+		this.introduce = introduce;
 		this.birth = birth;
 		this.email = email;
 	}
@@ -132,5 +137,9 @@ public class User extends BaseEntity {
 		mealRecordList.add(mealRecord);
 
 		return mealRecord.getMealId();
+	}
+
+	public void updateRecentBabyProfileId(Long recentBabyProfileId) {
+		this.recentBabyProfileId = recentBabyProfileId;
 	}
 }
