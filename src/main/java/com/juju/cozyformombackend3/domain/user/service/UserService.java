@@ -8,8 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.user.dto.object.UserSummary;
+import com.juju.cozyformombackend3.domain.user.dto.request.UpdateMyInfoRequest;
 import com.juju.cozyformombackend3.domain.user.dto.request.UpdateRecentBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.user.dto.response.FindMyInfoResponse;
+import com.juju.cozyformombackend3.domain.user.dto.response.UpdateMyInfoResponse;
 import com.juju.cozyformombackend3.domain.user.dto.response.UpdateRecentBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
@@ -32,6 +34,15 @@ public class UserService {
 			userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저")));
 
 		return FindMyInfoResponse.of(findUserSummary);
+	}
+
+	@Transactional
+	public UpdateMyInfoResponse updateMe(Long userId, UpdateMyInfoRequest request) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+		user.update(request);
+
+		return UpdateMyInfoResponse.of(userId);
 	}
 
 	@Transactional
@@ -59,4 +70,5 @@ public class UserService {
 
 		return UpdateRecentBabyProfileResponse.of(request.getBabyProfileId());
 	}
+
 }
