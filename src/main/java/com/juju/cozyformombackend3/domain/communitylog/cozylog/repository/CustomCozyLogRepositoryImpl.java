@@ -53,6 +53,31 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 			.fetch();
 	}
 
+	@Override
+	public List<CozyLogSummary> findCozyLogListByWriterId(Long userId, Long reportId, Long size) {
+		SubQueryExpression<Long> firstImageSubQuery = JPAExpressions
+			.select(cozyLogImage.id.min())
+			.from(cozyLogImage)
+			.where(cozyLogImage.cozyLog.id.eq(cozyLog.id));
+
+		return jpaQueryFactory.select(new QCozyLogSummary(
+				cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
+				cozyLog.createdAt, cozyLog.mode,
+				comment.id.count(), scrap.id.count(),
+				cozyLogImage.cozyLogImageUrl.coalesce(""), cozyLogImage.id.count()
+			))
+			.from(cozyLog)
+			.leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
+			.leftJoin(scrap).on(scrap.cozyLogId.eq(cozyLog.id))
+			.leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
+			.where(cozyLog.user.userId.eq(userId).and(ltReportId(reportId)))
+			.groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
+				cozyLogImage.cozyLogImageUrl)
+			.orderBy(cozyLog.createdAt.desc(), cozyLog.id.desc())
+			.limit(size)
+			.fetch();
+	}
+
 	private BooleanExpression ltReportId(Long reportId) {
 		if (reportId == 0) {
 			return null;
