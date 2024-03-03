@@ -12,4 +12,6 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long>, CustomScrap
 	boolean existsByCozyLogIdAndUserUserId(Long cozyLogId, Long userId);
 
 	Optional<Scrap> findByCozyLogIdAndUserUserId(Long cozyLogId, Long userId);
+
+	Long countByUserUserId(Long userId);
 }
