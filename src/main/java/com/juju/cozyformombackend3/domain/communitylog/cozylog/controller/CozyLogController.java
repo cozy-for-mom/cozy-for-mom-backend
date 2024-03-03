@@ -2,8 +2,6 @@ package com.juju.cozyformombackend3.domain.communitylog.cozylog.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,10 +72,11 @@ public class CozyLogController {
 
 	@GetMapping("/list")
 	public ResponseEntity<SuccessResponse> cozyLogList(
-		@PageableDefault(size = 10) Pageable pageable,
+		@RequestParam(value = "lastId", defaultValue = "0") Long reportId,
+		@RequestParam(value = "size", defaultValue = "10") Long size,
 		@RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
 	) {
-		GetCozyLogListResponse response = cozyLogService.findCozyLogList(pageable, sort);
+		GetCozyLogListResponse response = cozyLogService.findCozyLogList(reportId, size, sort);
 
 		return ResponseEntity.ok(SuccessResponse.of(200, response));
 	}

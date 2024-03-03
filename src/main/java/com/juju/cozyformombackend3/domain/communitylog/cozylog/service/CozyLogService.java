@@ -1,7 +1,7 @@
 package com.juju.cozyformombackend3.domain.communitylog.cozylog.service;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,8 +88,8 @@ public class CozyLogService {
 			.orElseThrow(() -> new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG));
 	}
 
-	public GetCozyLogListResponse findCozyLogList(Pageable pageable, CozyLogSort sort) {
-		Slice<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListOrderBySort(sort, pageable);
+	public GetCozyLogListResponse findCozyLogList(Long reportId, Long size, CozyLogSort sort) {
+		List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListOrderBySort(sort, reportId, size);
 
 		return GetCozyLogListResponse.of(cozyLogs);
 	}
