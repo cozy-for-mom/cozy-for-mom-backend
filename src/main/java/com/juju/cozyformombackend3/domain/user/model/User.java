@@ -10,12 +10,14 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLog;
 import com.juju.cozyformombackend3.domain.communitylog.like.model.Like;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.model.Scrap;
 import com.juju.cozyformombackend3.domain.user.dto.request.UpdateMyInfoRequest;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.error.BloodSugarErrorCode;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecordType;
 import com.juju.cozyformombackend3.domain.userlog.meal.model.MealRecord;
 import com.juju.cozyformombackend3.domain.userlog.meal.model.MealType;
 import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
 import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
+import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 
 import jakarta.persistence.CascadeType;
@@ -41,10 +43,10 @@ import lombok.NoArgsConstructor;
 @Entity
 public class User extends BaseEntity {
 
-	@Column(name = "user_id")
+	@Column(name = "id")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long userId;
+	private Long id;
 
 	@Column(name = "user_type", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -116,7 +118,7 @@ public class User extends BaseEntity {
 		supplementList.add(supplement);
 	}
 
-	public Long addBloodSugarRecord(LocalDate date, BloodSugarRecordType type, double level) {
+	public Long addBloodSugarRecord(LocalDate date, BloodSugarRecordType type, int level) {
 		BloodSugarRecord bloodSugarRecord = BloodSugarRecord.builder()
 			.user(this)
 			.recordAt(date)
@@ -126,18 +128,18 @@ public class User extends BaseEntity {
 
 		if (bloodSugarRecordList.stream()
 			.anyMatch(record -> record.getRecordAt().equals(date) && record.getBloodSugarRecordType().equals(type))) {
-			throw new IllegalArgumentException("이미 해당 날짜에 해당 타입의 혈당 기록이 존재합니다.");
+			throw new BusinessException(BloodSugarErrorCode.CONFLICT_ALREADY_EXIST_RECORD);
 		} else {
 			bloodSugarRecordList.add(bloodSugarRecord);
 		}
-		return bloodSugarRecord.getBloodSugarId();
+		return bloodSugarRecord.getId();
 	}
 
 	public Long addMealRecord(LocalDateTime datetime, MealType mealType, String mealImageUrl) {
 		MealRecord mealRecord = MealRecord.of(this, mealType, mealImageUrl, datetime);
 		mealRecordList.add(mealRecord);
 
-		return mealRecord.getMealId();
+		return mealRecord.getId();
 	}
 
 	public void updateRecentBabyProfileId(Long recentBabyProfileId) {

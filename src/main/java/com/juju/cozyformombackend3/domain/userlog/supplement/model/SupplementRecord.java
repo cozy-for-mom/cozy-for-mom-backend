@@ -23,10 +23,10 @@ import lombok.NoArgsConstructor;
 @Entity
 public class SupplementRecord extends BaseEntity {
 
-	@Column(name = "supplement_record_id", nullable = false)
+	@Column(name = "id", nullable = false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long supplementRecordId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplement_id")

@@ -18,10 +18,10 @@ public class CustomMealRecordRepositoryImpl implements CustomMealRecordRepositor
 
 	@Override
 	public List<DailyMealRecord> searchAllByUserIdAndDate(Long userId, String date) {
-		return queryFactory.select(new QDailyMealRecord(mealRecord.mealId, mealRecord.recordAt,
-				mealRecord.mealType, mealRecord.mealImageUrl))
+		return queryFactory.select(new QDailyMealRecord(mealRecord.id, mealRecord.recordAt,
+				mealRecord.mealType, mealRecord.imageUrl))
 			.from(mealRecord)
-			.where(mealRecord.user.userId.eq(userId), getDateFromDateTime(mealRecord.recordAt).eq(date))
+			.where(mealRecord.user.id.eq(userId), getDateFromDateTime(mealRecord.recordAt).eq(date))
 			.fetch();
 	}
 }

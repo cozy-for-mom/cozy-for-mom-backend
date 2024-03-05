@@ -1,18 +1,21 @@
 package com.juju.cozyformombackend3.global.auth.service;
 
-import com.juju.cozyformombackend3.domain.user.model.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import com.juju.cozyformombackend3.domain.user.model.User;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -38,14 +41,14 @@ public class TokenProvider {
 	private String makeToken(Date expiry, User user) {
 		Date now = new Date();
 		return Jwts.builder()
-						.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-						.setIssuer(issuer)
-						.setIssuedAt(now)
-						.setExpiration(expiry)
-						.setSubject(user.getEmail())
-						.claim("userId", user.getUserId())
-						.signWith(SignatureAlgorithm.HS256, secretKey)
-						.compact();
+			.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+			.setIssuer(issuer)
+			.setIssuedAt(now)
+			.setExpiration(expiry)
+			.setSubject(user.getEmail())
+			.claim("userId", user.getId())
+			.signWith(SignatureAlgorithm.HS256, secretKey)
+			.compact();
 	}
 
 	public boolean validToken(String token) {
@@ -61,8 +64,8 @@ public class TokenProvider {
 		Claims claims = getClaims(token);
 		Set<SimpleGrantedAuthority> authoritySet = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
 		return new UsernamePasswordAuthenticationToken(
-						new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authoritySet), token,
-						authoritySet);
+			new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authoritySet), token,
+			authoritySet);
 	}
 
 	public Long getUserId(String token) {

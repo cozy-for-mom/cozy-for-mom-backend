@@ -23,7 +23,7 @@ public class CustomScrapRepositoryImpl implements CustomScrapRepository {
 	@Override
 	public void deleteScrapByUserIdAndCozyLogIds(Long userId, List<Long> cozyLogIds) {
 		jpaQueryFactory.delete(scrap)
-			.where(scrap.user.userId.eq(userId).and(scrap.cozyLogId.in(cozyLogIds)))
+			.where(scrap.user.id.eq(userId).and(scrap.cozyLogId.in(cozyLogIds)))
 			.execute();
 	}
 
@@ -38,15 +38,15 @@ public class CustomScrapRepositoryImpl implements CustomScrapRepository {
 				cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
 				cozyLog.createdAt, cozyLog.mode,
 				comment.id.count(), scrap.id.count(),
-				cozyLogImage.cozyLogImageUrl.coalesce(""), cozyLogImage.id.count()
+				cozyLogImage.imageUrl.coalesce(""), cozyLogImage.id.count()
 			))
 			.from(scrap)
 			.leftJoin(cozyLog).on(cozyLog.id.eq(scrap.cozyLogId))
 			.leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
 			.leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
-			.where(scrap.user.userId.eq(userId).and(ltReportId(reportId)))
+			.where(scrap.user.id.eq(userId).and(ltReportId(reportId)))
 			.groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
-				cozyLogImage.cozyLogImageUrl, scrap.createdAt)
+				cozyLogImage.imageUrl, scrap.createdAt)
 			.orderBy(scrap.createdAt.desc())
 			.limit(size)
 			.fetch();

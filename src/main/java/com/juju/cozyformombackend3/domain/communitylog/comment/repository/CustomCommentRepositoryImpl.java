@@ -22,7 +22,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 				getDateFromDateTime(comment.createdAt),
 				getDateFromDateTime(comment.modifiedAt),
 				comment.isDeleted,
-				user.userId, user.nickname, user.profileImageUrl))
+				user.id, user.nickname, user.profileImageUrl))
 			.from(comment)
 			.leftJoin(comment.user, user)
 			.where(comment.cozyLog.id.eq(cozyLogId))

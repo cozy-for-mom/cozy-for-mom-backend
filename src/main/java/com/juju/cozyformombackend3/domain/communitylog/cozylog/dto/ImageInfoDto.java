@@ -22,6 +22,6 @@ public class ImageInfoDto {
 	private String description;
 
 	public static ImageInfoDto of(CozyLogImage image) {
-		return new ImageInfoDto(image.getId(), image.getCozyLogImageUrl(), image.getDescription());
+		return new ImageInfoDto(image.getId(), image.getImageUrl(), image.getDescription());
 	}
 }

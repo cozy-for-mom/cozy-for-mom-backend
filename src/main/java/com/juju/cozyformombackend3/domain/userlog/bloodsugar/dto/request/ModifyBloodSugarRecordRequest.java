@@ -14,7 +14,7 @@ public class ModifyBloodSugarRecordRequest {
 
 	private LocalDate date;
 	private String type;
-	private double level;
+	private int level;
 
 	public BloodSugarRecordType getType() {
 		return BloodSugarRecordType.ofDescription(type);

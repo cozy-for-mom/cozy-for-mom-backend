@@ -30,7 +30,7 @@ public class SaveGrowthRequest {
 	public GrowthRecord toGrowthRecord(Baby baby) {
 		System.out.println(baby.getName());
 		GrowthInfoRequest growthInfo = (babies.stream()
-			.filter(babyInfo -> babyInfo.getBabyId().equals(baby.getBabyId()))
+			.filter(babyInfo -> babyInfo.getBabyId().equals(baby.getId()))
 			.findFirst()
 			.orElseThrow(() -> new IllegalArgumentException("해당 아이의 성장 정보가 없습니다.")))
 			.getGrowthInfo();

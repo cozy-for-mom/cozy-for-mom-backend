@@ -1,5 +1,7 @@
 package com.juju.cozyformombackend3.domain.userlog.meal.model;
 
+import java.time.LocalDateTime;
+
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 
@@ -14,9 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-import java.time.LocalDateTime;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,10 +26,10 @@ import lombok.NoArgsConstructor;
 @Entity
 public class MealRecord extends BaseEntity {
 
-	@Column(name = "meal_id", nullable = false)
+	@Column(name = "id", nullable = false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long mealId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -40,25 +39,25 @@ public class MealRecord extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private MealType mealType;
 
-	@Column(name = "meal_image_url", nullable = false)
-	private String mealImageUrl;
+	@Column(name = "image_url", nullable = false)
+	private String imageUrl;
 
 	@Column(name = "record_at", nullable = false)
 	private LocalDateTime recordAt;
 
 	@Builder
-	private MealRecord(User user, MealType mealType, String mealImageUrl, LocalDateTime recordAt) {
+	private MealRecord(User user, MealType mealType, String imageUrl, LocalDateTime recordAt) {
 		this.user = user;
 		this.mealType = mealType;
-		this.mealImageUrl = mealImageUrl;
+		this.imageUrl = imageUrl;
 		this.recordAt = recordAt;
 	}
 
-	public static MealRecord of(User user, MealType mealType, String mealImageUrl, LocalDateTime recordAt) {
+	public static MealRecord of(User user, MealType mealType, String imageUrl, LocalDateTime recordAt) {
 		return MealRecord.builder()
 			.user(user)
 			.mealType(mealType)
-			.mealImageUrl(mealImageUrl)
+			.imageUrl(imageUrl)
 			.recordAt(recordAt)
 			.build();
 	}
@@ -67,11 +66,11 @@ public class MealRecord extends BaseEntity {
 	public void delete() {
 	}
 
-	public Long update(LocalDateTime datetime, MealType mealType, String mealImageUrl) {
+	public Long update(LocalDateTime datetime, MealType mealType, String imageUrl) {
 		this.recordAt = datetime;
 		this.mealType = mealType;
-		this.mealImageUrl = mealImageUrl;
+		this.imageUrl = imageUrl;
 
-		return this.mealId;
+		return this.id;
 	}
 }

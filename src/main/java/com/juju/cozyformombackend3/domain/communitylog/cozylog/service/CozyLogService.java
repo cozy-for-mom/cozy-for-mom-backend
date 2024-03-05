@@ -76,13 +76,13 @@ public class CozyLogService {
 	}
 
 	private void isMyCozyLog(Long userId, User user) {
-		if (userId != user.getUserId()) {
+		if (userId != user.getId()) {
 			throw new BusinessException(CozyLogErrorCode.FORBIDDEN_INACCESSIBLE);
 		}
 	}
 
 	private boolean isScrapedCozyLog(Long userId, Long cozyLogId) {
-		return scrapRepository.existsByCozyLogIdAndUserUserId(cozyLogId, userId);
+		return scrapRepository.existsByCozyLogIdAndUserId(cozyLogId, userId);
 	}
 
 	private CozyLog findCozyLogById(Long cozyLogId) {
@@ -98,7 +98,7 @@ public class CozyLogService {
 
 	public FindMyCozyLogListResponse findMyCozyLog(Long userId, Long reportId, Long size) {
 		List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListByWriterId(userId, reportId, size);
-		Long count = cozyLogRepository.countByUserUserId(userId);
+		Long count = cozyLogRepository.countByUserId(userId);
 
 		return FindMyCozyLogListResponse.of(count, cozyLogs);
 	}
