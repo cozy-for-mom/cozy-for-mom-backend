@@ -3,6 +3,9 @@ package com.juju.cozyformombackend3.domain.babylog.growth.dto.request;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
+import com.juju.cozyformombackend3.global.error.exception.BusinessException;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +27,7 @@ public class UpdateGrowthRequest {
 		return babies.stream()
 			.filter(babyInfo -> babyInfo.getGrowthRecordId().equals(growthRecordId))
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("해당 아이의 성장 정보가 없습니다."));
+			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY));
 	}
 
 	public GrowthDiaryDto getGrowthDiaryDto() {

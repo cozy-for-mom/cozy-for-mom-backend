@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
-import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyRepository;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.object.GrowthSummary;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.SaveGrowthRequest;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.UpdateGrowthRequest;
@@ -16,6 +16,7 @@ import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.FindGrowth
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.FindGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.SaveGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.UpdateGrowthResponse;
+import com.juju.cozyformombackend3.domain.babylog.growth.error.GrowthErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthDiary;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthRecord;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthReport;
@@ -39,7 +40,6 @@ public class GrowthService {
 	private final GrowthDiaryRepository growthDiaryRepository;
 	private final GrowthRecordRepository growthRecordRepository;
 	private final BabyProfileRepository babyProfileRepository;
-	private final BabyRepository babyRepository;
 
 	@Transactional
 	public SaveGrowthResponse saveGrowth(Long userId, SaveGrowthRequest request) {
@@ -72,7 +72,7 @@ public class GrowthService {
 		request.getBabies().stream()
 			.forEach(baby -> {
 				GrowthRecord foundGrowthRecord = growthRecordRepository.findById(baby.getGrowthRecordId())
-					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 record입니다."));
+					.orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_GROWTH_RECORD));
 				foundGrowthRecord.update(baby);
 			});
 		return UpdateGrowthResponse.of(findReport);
@@ -80,12 +80,12 @@ public class GrowthService {
 
 	private BabyProfile findBabyProfileById(Long babyProfileId) {
 		return babyProfileRepository.findById(babyProfileId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이입니다."));
+			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
 	}
 
 	private void isUserAuthorized(User mom, User target) {
 		if (mom != target) {
-			throw new IllegalArgumentException("권한이 없습니다.");
+			throw new BusinessException(UserErrorCode.FORBIDDEN_NOT_YOUR_RESOURCE);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class GrowthService {
 
 	private GrowthReport findGrowthReportById(Long reportId) {
 		return growthReportRepository.findById(reportId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 성장 보고서 아이디입니다."));
+			.orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_GROWTH_REPORT));
 	}
 
 	public FindGrowthListResponse getGrowthList(Long reportId, Long size) {
