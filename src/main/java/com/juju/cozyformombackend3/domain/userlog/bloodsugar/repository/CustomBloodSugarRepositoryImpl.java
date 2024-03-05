@@ -23,10 +23,10 @@ public class CustomBloodSugarRepositoryImpl implements CustomBloodSugarRepositor
 	@Override
 	public List<FindDaliyBloodSugar> searchAllByCreatedAt(Long userId, String createdAt) {
 		return jpaQueryFactory
-			.select(new QFindDaliyBloodSugar(bloodSugarRecord.bloodSugarId, bloodSugarRecord.bloodSugarRecordType,
+			.select(new QFindDaliyBloodSugar(bloodSugarRecord.id, bloodSugarRecord.bloodSugarRecordType,
 				bloodSugarRecord.level))
 			.from(bloodSugarRecord)
-			.where(bloodSugarRecord.user.userId.eq(userId),
+			.where(bloodSugarRecord.user.id.eq(userId),
 				getDateFromDateTime(bloodSugarRecord.createdAt).eq(createdAt))
 			.orderBy(bloodSugarRecord.createdAt.asc())
 			.fetch();

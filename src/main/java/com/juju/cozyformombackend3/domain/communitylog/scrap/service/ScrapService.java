@@ -39,7 +39,7 @@ public class ScrapService {
 	}
 
 	private void deleteScrap(Long userId, ApplyScrapRequest request) {
-		Scrap foundScrap = scrapRepository.findByCozyLogIdAndUserUserId(request.getCozyLogId(), userId)
+		Scrap foundScrap = scrapRepository.findByCozyLogIdAndUserId(request.getCozyLogId(), userId)
 			.orElseThrow(() -> new BusinessException(ScrapErrorCode.NOT_FOUND_NOT_EXIST));
 		scrapRepository.delete(foundScrap);
 	}
@@ -52,7 +52,7 @@ public class ScrapService {
 	}
 
 	private void existsScrap(Long userId, Long cozyLogId) {
-		if (scrapRepository.existsByCozyLogIdAndUserUserId(cozyLogId, userId)) {
+		if (scrapRepository.existsByCozyLogIdAndUserId(cozyLogId, userId)) {
 			throw new BusinessException(ScrapErrorCode.CONFLICT_ALREADY_EXIST);
 		}
 	}
@@ -64,7 +64,7 @@ public class ScrapService {
 	}
 
 	private User findUserById(Long userId) {
-		return userRepository.findByUserId(userId)
+		return userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 	}
 
@@ -75,7 +75,7 @@ public class ScrapService {
 
 	public FindScrapListResponse findScrapList(Long userId, Long reportId, Long size) {
 		List<CozyLogSummary> cozyLogs = scrapRepository.findScrapListById(userId, reportId, size);
-		Long count = scrapRepository.countByUserUserId(userId);
+		Long count = scrapRepository.countByUserId(userId);
 
 		return FindScrapListResponse.of(count, cozyLogs);
 	}

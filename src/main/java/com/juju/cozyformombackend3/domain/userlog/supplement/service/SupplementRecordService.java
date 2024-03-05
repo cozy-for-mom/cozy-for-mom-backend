@@ -37,14 +37,14 @@ public class SupplementRecordService {
 	@Transactional
 	public SaveSupplementRecordResponse saveSupplementRecord(Long userId, SaveSupplementRecordRequest request) {
 		User user = findByUserId(userId);
-		Supplement supplement = supplementRepository.findBySupplementNameAndUser(request.getSupplementName(), user)
+		Supplement supplement = supplementRepository.findByNameAndUser(request.getSupplementName(), user)
 			.orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT));
 		SupplementRecord supplementRecord = supplementRecordRepository.save(SupplementRecord.builder()
 			.supplement(supplement)
 			.recordAt(stringToLocalDateTime(request.getDatetime()))
 			.build());
 
-		return SaveSupplementRecordResponse.of(supplementRecord.getSupplementRecordId());
+		return SaveSupplementRecordResponse.of(supplementRecord.getId());
 	}
 
 	@Transactional
@@ -54,7 +54,7 @@ public class SupplementRecordService {
 			.orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT_RECORD));
 		findRecord.update(stringToLocalDateTime(request.getDatetime()));
 
-		return UpdateSupplementRecordResponse.of(findRecord.getSupplementRecordId());
+		return UpdateSupplementRecordResponse.of(findRecord.getId());
 	}
 
 	@Transactional
@@ -70,7 +70,7 @@ public class SupplementRecordService {
 	}
 
 	private User findByUserId(Long userId) {
-		return userRepository.findByUserId(userId)
+		return userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 	}
 

@@ -49,7 +49,7 @@ public class GrowthService {
 
 		GrowthDiary savedDiary = growthDiaryRepository.save(request.toGrowthDiary(foundBabyProfile));
 		GrowthReport saveReport = GrowthReport.builder().growthDiary(savedDiary)
-			.recordDate(request.getDate())
+			.recordAt(request.getDate())
 			.build();
 		GrowthReport savedReport = growthReportRepository.save(saveReport);
 		foundBabyProfile.getBabyList().stream()
@@ -69,12 +69,11 @@ public class GrowthService {
 		isUserAuthorized(findReport.getGrowthDiary().getBabyProfile().getUser(), user);
 
 		findReport.getGrowthDiary().update(request.getGrowthDiaryDto());
-		request.getBabies().stream()
-			.forEach(baby -> {
-				GrowthRecord foundGrowthRecord = growthRecordRepository.findById(baby.getGrowthRecordId())
-					.orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_GROWTH_RECORD));
-				foundGrowthRecord.update(baby);
-			});
+		request.getBabies().forEach(baby -> {
+			GrowthRecord foundGrowthRecord = growthRecordRepository.findById(baby.getGrowthRecordId())
+				.orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_GROWTH_RECORD));
+			foundGrowthRecord.update(baby);
+		});
 		return UpdateGrowthResponse.of(findReport);
 	}
 
@@ -103,7 +102,7 @@ public class GrowthService {
 	}
 
 	private User findUserById(Long userId) {
-		return userRepository.findByUserId(userId)
+		return userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 	}
 

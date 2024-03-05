@@ -1,5 +1,9 @@
 package com.juju.cozyformombackend3.domain.babylog.baby.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthDiary;
 import com.juju.cozyformombackend3.domain.user.model.User;
 
@@ -14,11 +18,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,8 +36,8 @@ public class BabyProfile {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "baby_profile_id", nullable = false)
-	private Long babyProfileId;
+	@Column(name = "id", nullable = false)
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")

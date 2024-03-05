@@ -32,7 +32,7 @@ public class WeightService {
 	@Transactional
 	public void recordWeight(Long userId, RecordWeightRequest request) {
 		User user = findUserById(userId);
-		if (weightRepository.existsByUserAndRecordDate(user, request.getDate())) {
+		if (weightRepository.existsByUserAndRecordAt(user, request.getDate())) {
 			throw new BusinessException(WeightErrorCode.RECORD_DATE_ALREADY_EXISTS);
 		}
 		weightRepository.save(request.toEntity(user));
@@ -41,7 +41,7 @@ public class WeightService {
 	@Transactional
 	public void updateWeight(Long userId, LocalDate date, UpdateWeightRequest request) {
 		User user = findUserById(userId);
-		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, date)
+		WeightRecord weightRecord = weightRepository.findByUserAndRecordAt(user, date)
 			.orElseThrow(() -> new BusinessException(WeightErrorCode.RECORD_DATE_NOT_FOUND));
 		weightRecord.updateWeight(request.getWeight());
 	}
@@ -49,22 +49,22 @@ public class WeightService {
 	@Transactional
 	public void deleteWeight(Long userId, LocalDate date) {
 		User user = findUserById(userId);
-		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, date)
+		WeightRecord weightRecord = weightRepository.findByUserAndRecordAt(user, date)
 			.orElseThrow(() -> new BusinessException(WeightErrorCode.RECORD_DATE_NOT_FOUND));
 		weightRepository.delete(weightRecord);
 	}
 
 	public FindWeightListResponse findWeight(FindPeriodRecordCondition condition) {
 		User user = findUserById(condition.getUserId());
-		WeightRecord weightRecord = weightRepository.findByUserAndRecordDate(user, condition.getDate())
-			.orElse(WeightRecord.builder().user(user).weight(0d).recordDate(condition.getDate()).build());
+		WeightRecord weightRecord = weightRepository.findByUserAndRecordAt(user, condition.getDate())
+			.orElse(WeightRecord.builder().user(user).weight(0d).recordAt(condition.getDate()).build());
 		List<FindPeriodicWeight> findPeriodicWeights = weightRepository.findPeriodRecordByDate(condition);
 
 		return FindWeightListResponse.of(condition.getType(), weightRecord.getWeight(), findPeriodicWeights);
 	}
 
 	private User findUserById(Long userId) {
-		return userRepository.findByUserId(userId)
+		return userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 	}
 }

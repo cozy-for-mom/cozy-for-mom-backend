@@ -30,17 +30,17 @@ public class SupplementService {
 	@Transactional
 	public RegisterSupplementResponse registerSupplement(Long userId, RegisterSupplementRequest request) {
 		User user = findByUserId(userId);
-		if (supplementRepository.existsBySupplementName(request.getSupplementName())) {
+		if (supplementRepository.existsByName(request.getSupplementName())) {
 			throw new BusinessException(SupplementErrorCode.CONFLICT_ALREADY_REGISTER_SUPPLEMENT);
 		}
 		Supplement savedSupplement = supplementRepository.save(Supplement.builder()
 			.user(user)
-			.supplementName(request.getSupplementName())
+			.name(request.getSupplementName())
 			.targetCount(request.getTargetCount())
 			.build());
 		user.registerSupplement(savedSupplement);
 
-		return RegisterSupplementResponse.of(savedSupplement.getSupplementId());
+		return RegisterSupplementResponse.of(savedSupplement.getId());
 	}
 
 	@Transactional
@@ -49,7 +49,7 @@ public class SupplementService {
 			.orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT));
 		findSupplement.update(request);
 
-		return UpdateSupplementResponse.of(findSupplement.getSupplementId());
+		return UpdateSupplementResponse.of(findSupplement.getId());
 	}
 
 	@Transactional
@@ -58,7 +58,7 @@ public class SupplementService {
 	}
 
 	private User findByUserId(Long userId) {
-		return userRepository.findByUserId(userId)
+		return userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 	}
 

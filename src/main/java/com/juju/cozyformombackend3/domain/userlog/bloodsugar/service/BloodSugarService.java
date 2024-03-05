@@ -33,7 +33,7 @@ public class BloodSugarService {
 
 	@Transactional
 	public SaveBloodSugarRecordResponse saveBloodSugarRecord(SaveBloodSugarRecordRequest request, Long userId) {
-		User user = userRepository.findByUserId(userId)
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 		Long savedRecordId = user.addBloodSugarRecord(request.getDate(), request.getType(), request.getLevel());
 		return SaveBloodSugarRecordResponse.of(savedRecordId);
@@ -42,7 +42,7 @@ public class BloodSugarService {
 	@Transactional
 	public ModifyBloodSugarRecordResponse updateBloodSugarRecord(Long recordId, ModifyBloodSugarRecordRequest request,
 		Long userId) {
-		User user = userRepository.findByUserId(userId)
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 
 		BloodSugarRecord modifiedRecord = bloodSugarRepository.findById(recordId)
@@ -51,11 +51,11 @@ public class BloodSugarService {
 			throw new BusinessException(BloodSugarErrorCode.FORBIDDEN_NOT_YOUR_RESOURCE);
 		}
 		modifiedRecord.update(request.getDate(), request.getType(), request.getLevel());
-		return ModifyBloodSugarRecordResponse.of(modifiedRecord.getBloodSugarId());
+		return ModifyBloodSugarRecordResponse.of(modifiedRecord.getId());
 	}
 
 	public void deleteBloodSugarRecord(Long recordId, Long userId) {
-		User user = userRepository.findByUserId(userId)
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 
 		BloodSugarRecord deletedRecord = bloodSugarRepository.findById(recordId)

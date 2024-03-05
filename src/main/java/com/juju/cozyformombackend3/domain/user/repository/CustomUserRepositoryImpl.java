@@ -21,7 +21,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
 		List<BabyProfile> babyProfiles = jpaQueryFactory
 			.select(babyProfile)
 			.from(babyProfile)
-			.where(babyProfile.user.userId.eq(userId))
+			.where(babyProfile.user.id.eq(userId))
 			.fetch();
 
 		UserSummary summary = (UserSummary)jpaQueryFactory.select(new QUserSummary(
@@ -29,7 +29,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
 				user.email, user.recentBabyProfileId))
 			.from(user)
 			.leftJoin(user.babyProfileList, babyProfile)
-			.where(user.userId.eq(userId))
+			.where(user.id.eq(userId))
 			.fetch();
 
 		summary.setBabyProfile(babyProfiles);

@@ -1,5 +1,7 @@
 package com.juju.cozyformombackend3.domain.userlog.bloodsugar.model;
 
+import java.time.LocalDate;
+
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 
@@ -14,9 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
-import java.time.LocalDate;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,17 +26,17 @@ import lombok.NoArgsConstructor;
 @Entity
 public class BloodSugarRecord extends BaseEntity {
 
-	@Column(name = "blood_sugar_id", nullable = false)
+	@Column(name = "id", nullable = false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long bloodSugarId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	@Column(name = "level", nullable = false)
-	private Double level;
+	private int level;
 
 	@Column(name = "blood_sugar_record_type", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -46,7 +45,7 @@ public class BloodSugarRecord extends BaseEntity {
 	private LocalDate recordAt;
 
 	@Builder
-	public BloodSugarRecord(User user, Double level, BloodSugarRecordType bloodSugarRecordType, LocalDate recordAt) {
+	public BloodSugarRecord(User user, int level, BloodSugarRecordType bloodSugarRecordType, LocalDate recordAt) {
 		this.user = user;
 		this.level = level;
 		this.bloodSugarRecordType = bloodSugarRecordType;
@@ -58,7 +57,7 @@ public class BloodSugarRecord extends BaseEntity {
 
 	}
 
-	public void update(LocalDate date, BloodSugarRecordType type, double level) {
+	public void update(LocalDate date, BloodSugarRecordType type, int level) {
 		this.recordAt = date;
 		this.bloodSugarRecordType = type;
 		this.level = level;

@@ -26,15 +26,15 @@ public class GrowthRecord {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "growth_record_id")
-	private Long growthRecordId;
+	@Column(name = "id")
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "baby_id")
 	private Baby baby;
 
 	@ManyToOne()
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "growth_report_id")
 	private GrowthReport growthReport;
 
 	@Column(name = "record_at", nullable = false)

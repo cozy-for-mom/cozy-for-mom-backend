@@ -18,12 +18,12 @@ public class CustomGrowthReportRepositoryImpl implements CustomGrowthReportRepos
 
 	@Override
 	public List<GrowthSummary> findGrowthSummaryListByLastIdAndSize(Long reportId, Long size) {
-		return jpaQueryFactory.select(new QGrowthSummary(growthReport.id, growthReport.recordDate,
-				growthDiary.growthImageUrl, growthDiary.title, growthDiary.content))
+		return jpaQueryFactory.select(new QGrowthSummary(growthReport.id, growthReport.recordAt,
+				growthDiary.imageUrl, growthDiary.title, growthDiary.content))
 			.from(growthReport)
 			.leftJoin(growthReport.growthDiary, growthDiary)
 			.where(ltReportId(reportId))
-			.orderBy(growthReport.recordDate.desc())
+			.orderBy(growthReport.recordAt.desc())
 			.limit(size)
 			.fetch();
 	}

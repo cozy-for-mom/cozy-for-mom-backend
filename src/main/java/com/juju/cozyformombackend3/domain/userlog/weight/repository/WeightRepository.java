@@ -10,7 +10,7 @@ import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
 
 public interface WeightRepository extends JpaRepository<WeightRecord, Long>, CustomWeightRepository {
 
-	boolean existsByUserAndRecordDate(User user, LocalDate date);
+	boolean existsByUserAndRecordAt(User user, LocalDate date);
 
-	Optional<WeightRecord> findByUserAndRecordDate(User user, LocalDate date);
+	Optional<WeightRecord> findByUserAndRecordAt(User user, LocalDate date);
 }

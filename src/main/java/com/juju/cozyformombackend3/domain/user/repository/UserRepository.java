@@ -11,6 +11,4 @@ import com.juju.cozyformombackend3.domain.user.model.User;
 public interface UserRepository extends JpaRepository<User, Long>, CustomUserRepository {
 
 	Optional<User> findByEmail(String email);
-
-	Optional<User> findByUserId(Long userId);
 }

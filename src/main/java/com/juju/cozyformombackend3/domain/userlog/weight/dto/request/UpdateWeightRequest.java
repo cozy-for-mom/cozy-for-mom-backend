@@ -16,7 +16,7 @@ public class UpdateWeightRequest {
 
 	public WeightRecord toEntity(LocalDate date, User user) {
 		return WeightRecord.builder()
-			.recordDate(date)
+			.recordAt(date)
 			.user(user)
 			.weight(weight)
 			.build();

@@ -32,25 +32,25 @@ public class Supplement extends BaseEntity {
 	@OneToMany(mappedBy = "supplement", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
 	private final List<SupplementRecord> supplementRecordList = new ArrayList<>();
 
-	@Column(name = "supplement_id")
+	@Column(name = "id")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long supplementId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@Column(name = "supplement_name", nullable = false)
-	private String supplementName;
+	@Column(name = "name", nullable = false)
+	private String name;
 
 	@Column(name = "target_count", nullable = false)
 	private Integer targetCount;
 
 	@Builder
-	public Supplement(User user, String supplementName, Integer targetCount) {
+	public Supplement(User user, String name, Integer targetCount) {
 		this.user = user;
-		this.supplementName = supplementName;
+		this.name = name;
 		this.targetCount = targetCount;
 	}
 
@@ -70,7 +70,7 @@ public class Supplement extends BaseEntity {
 	}
 
 	public void update(UpdateSupplementRequest request) {
-		this.supplementName = request.getSupplementName();
+		this.name = request.getSupplementName();
 		this.targetCount = request.getTargetCount();
 	}
 }

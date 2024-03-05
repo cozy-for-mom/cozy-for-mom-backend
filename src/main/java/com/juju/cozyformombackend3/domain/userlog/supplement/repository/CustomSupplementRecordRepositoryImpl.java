@@ -18,13 +18,13 @@ public class CustomSupplementRecordRepositoryImpl implements CustomSupplementRec
 	@Override
 	public List<FindDailySupplementIntake> findDailySupplementIntake(long userId, String date) {
 		return queryFactory.select(new QFindDailySupplementIntake(
-				supplementRecord.supplement.supplementId,
-				supplementRecord.supplement.supplementName,
+				supplementRecord.supplement.id,
+				supplementRecord.supplement.name,
 				supplementRecord.supplement.targetCount,
-				supplementRecord.supplementRecordId,
+				supplementRecord.id,
 				supplementRecord.recordAt))
 			.from(supplementRecord)
-			.where(supplementRecord.supplement.user.userId.eq(userId)
+			.where(supplementRecord.supplement.user.id.eq(userId)
 				.and(getDateFromDateTime(supplementRecord.recordAt).eq(date)))
 			.fetch();
 	}
