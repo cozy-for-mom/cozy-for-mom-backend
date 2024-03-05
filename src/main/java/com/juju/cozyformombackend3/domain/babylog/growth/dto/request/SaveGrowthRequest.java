@@ -46,6 +46,7 @@ public class SaveGrowthRequest {
 		private GrowthInfoRequest growthInfo;
 	}
 
+	@Getter
 	private static class GrowthInfoRequest {
 		private double weight;
 		private double headDiameter;
