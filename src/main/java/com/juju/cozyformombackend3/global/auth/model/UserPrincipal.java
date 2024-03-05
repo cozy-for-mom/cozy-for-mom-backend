@@ -1,11 +1,13 @@
 package com.juju.cozyformombackend3.global.auth.model;
 
-import com.juju.cozyformombackend3.domain.user.model.User;
 import java.util.Collection;
 import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.juju.cozyformombackend3.domain.user.model.User;
 
 public class UserPrincipal implements UserDetails {
 
@@ -15,7 +17,7 @@ public class UserPrincipal implements UserDetails {
 
 	public UserPrincipal(User user) {
 		this.user = user;
-		if (user.getUserId() == null) {
+		if (user.getId() == null) {
 			this.grantedAuthorityList = List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
 		} else {
 			this.grantedAuthorityList = List.of(new SimpleGrantedAuthority("ROLE_USER"));

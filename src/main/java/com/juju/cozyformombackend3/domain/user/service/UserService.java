@@ -59,7 +59,7 @@ public class UserService {
 		// });
 
 		Optional<BabyProfile> matchingProfile = user.getBabyProfileList().stream()
-			.filter(profile -> Objects.equals(profile.getBabyProfileId(), request.getBabyProfileId()))
+			.filter(profile -> Objects.equals(profile.getId(), request.getBabyProfileId()))
 			.findFirst();
 
 		matchingProfile.ifPresentOrElse(

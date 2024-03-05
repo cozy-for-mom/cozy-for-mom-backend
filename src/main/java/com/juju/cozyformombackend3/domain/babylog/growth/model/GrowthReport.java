@@ -31,8 +31,8 @@ public class GrowthReport extends BaseEntity {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "record_date")
-	private LocalDate recordDate;
+	@Column(name = "record_at")
+	private LocalDate recordAt;
 
 	@OneToOne
 	private GrowthDiary growthDiary;
@@ -41,8 +41,8 @@ public class GrowthReport extends BaseEntity {
 	private List<GrowthRecord> growthRecordList = new ArrayList<>();
 
 	@Builder
-	private GrowthReport(LocalDate recordDate, GrowthDiary growthDiary) {
-		this.recordDate = recordDate;
+	private GrowthReport(LocalDate recordAt, GrowthDiary growthDiary) {
+		this.recordAt = recordAt;
 		this.growthDiary = growthDiary;
 		growthDiary.updateGrowthReport(this);
 	}

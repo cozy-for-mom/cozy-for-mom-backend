@@ -29,7 +29,7 @@ public class CozyLogDetailResponse {
 
 	public static CozyLogDetailResponse of(CozyLog foundCozyLog, Long scrapCount, boolean isScraped) {
 		return CozyLogDetailResponse.builder()
-			.writer(new Writer(foundCozyLog.getUser().getUserId(), foundCozyLog.getUser().getNickname()))
+			.writer(new Writer(foundCozyLog.getUser().getId(), foundCozyLog.getUser().getNickname()))
 			.title(foundCozyLog.getTitle())
 			.content(foundCozyLog.getContent())
 			.imageList(getImageDtoList(foundCozyLog.getCozyLogImageList()))

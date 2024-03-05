@@ -24,10 +24,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WeightRecord extends BaseEntity {
 
-	@Column(name = "weight_id", nullable = false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long weightId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -36,14 +35,14 @@ public class WeightRecord extends BaseEntity {
 	@Column(name = "weight", nullable = false)
 	private Double weight;
 
-	@Column(name = "record_date", nullable = false)
-	private LocalDate recordDate;
+	@Column(name = "record_at", nullable = false)
+	private LocalDate recordAt;
 
 	@Builder
-	public WeightRecord(User user, Double weight, LocalDate recordDate) {
+	public WeightRecord(User user, Double weight, LocalDate recordAt) {
 		this.user = user;
 		this.weight = weight;
-		this.recordDate = recordDate;
+		this.recordAt = recordAt;
 	}
 
 	@Override

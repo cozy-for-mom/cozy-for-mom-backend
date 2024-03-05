@@ -16,10 +16,10 @@ public class SaveGrowthResponse {
 	private List<Long> growthRecordIdList;
 
 	public static SaveGrowthResponse of(GrowthReport report) {
-		return new SaveGrowthResponse(report.getId(), report.getGrowthDiary().getGrowthDiaryId(),
+		return new SaveGrowthResponse(report.getId(), report.getGrowthDiary().getId(),
 			report.getGrowthRecordList()
 				.stream()
-				.map(growthRecord -> growthRecord.getGrowthRecordId())
+				.map(growthRecord -> growthRecord.getId())
 				.toList());
 	}
 }

@@ -31,11 +31,11 @@ public class FindGrowthResponse {
 			.toList();
 
 		return FindGrowthResponse.builder()
-			.babyProfileId(report.getGrowthDiary().getBabyProfile().getBabyProfileId())
-			.date(report.getRecordDate().toString())
+			.babyProfileId(report.getGrowthDiary().getBabyProfile().getId())
+			.date(report.getRecordAt().toString())
 			.growthReportId(report.getId())
-			.growthImageUrl(report.getGrowthDiary().getGrowthImageUrl())
-			.growthDiaryId(report.getGrowthDiary().getGrowthDiaryId())
+			.growthImageUrl(report.getGrowthDiary().getImageUrl())
+			.growthDiaryId(report.getGrowthDiary().getId())
 			.title(report.getGrowthDiary().getTitle())
 			.content(report.getGrowthDiary().getContent())
 			.babies(babyInfoList)
@@ -57,7 +57,7 @@ public class FindGrowthResponse {
 				.orElseThrow();
 
 			return BabyInfo.builder()
-				.babyId(matchBaby.getBabyId())
+				.babyId(matchBaby.getId())
 				.babyName(matchBaby.getName())
 				.growthInfo(GrowthInfo.of(record))
 				.build();
@@ -80,7 +80,7 @@ public class FindGrowthResponse {
 				return null;
 			}
 			return GrowthInfo.builder()
-				.growthRecordId(record.getGrowthRecordId())
+				.growthRecordId(record.getId())
 				.weight(record.getWeight())
 				.headDiameter(record.getHeadDiameter())
 				.headCircum(record.getHeadCircum())

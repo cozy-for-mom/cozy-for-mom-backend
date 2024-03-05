@@ -9,7 +9,7 @@ import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
 
 public interface SupplementRepository extends JpaRepository<Supplement, Long> {
 
-	boolean existsBySupplementName(String supplementName);
+	boolean existsByName(String supplementName);
 
-	Optional<Supplement> findBySupplementNameAndUser(String supplementName, User user);
+	Optional<Supplement> findByNameAndUser(String supplementName, User user);
 }

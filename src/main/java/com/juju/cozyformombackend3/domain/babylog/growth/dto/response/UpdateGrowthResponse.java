@@ -15,10 +15,10 @@ public class UpdateGrowthResponse {
 	private List<Long> growthRecordIdList;
 
 	public static UpdateGrowthResponse of(GrowthReport report) {
-		return new UpdateGrowthResponse(report.getId(), report.getGrowthDiary().getGrowthDiaryId(),
+		return new UpdateGrowthResponse(report.getId(), report.getGrowthDiary().getId(),
 			report.getGrowthRecordList()
 				.stream()
-				.map(growthRecord -> growthRecord.getGrowthRecordId())
+				.map(growthRecord -> growthRecord.getId())
 				.toList());
 	}
 }

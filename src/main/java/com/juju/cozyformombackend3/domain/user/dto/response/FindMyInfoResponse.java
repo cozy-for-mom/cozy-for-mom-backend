@@ -36,7 +36,7 @@ public class FindMyInfoResponse {
 		response.babyProfile = summary.getBabyProfile().stream()
 			.map(babyProfile -> {
 				BabyProfileDto dto = BabyProfileDto.of(babyProfile);
-				if (Objects.equals(babyProfile.getBabyProfileId(), summary.getRecentBabyProfileId())) {
+				if (Objects.equals(babyProfile.getId(), summary.getRecentBabyProfileId())) {
 					response.recentBabyProfile = dto;
 					response.dDay = Duration.between(LocalDateTime.now(), babyProfile.getDueAt()).toDays();
 				}
@@ -57,8 +57,8 @@ public class FindMyInfoResponse {
 		}
 
 		public static BabyProfileDto of(BabyProfile profile) {
-			BabyProfileDto dto = new BabyProfileDto(profile.getBabyProfileId());
-			profile.getBabyList().forEach(baby -> dto.babies.add(BabyDto.of(baby.getBabyId(), baby.getName())));
+			BabyProfileDto dto = new BabyProfileDto(profile.getId());
+			profile.getBabyList().forEach(baby -> dto.babies.add(BabyDto.of(baby.getId(), baby.getName())));
 
 			return dto;
 		}

@@ -9,10 +9,10 @@ import lombok.Getter;
 public class FindDaliyBloodSugar {
 	private final Long id;
 	private final String type;
-	private final double level;
+	private final int level;
 
 	@QueryProjection
-	public FindDaliyBloodSugar(Long id, BloodSugarRecordType type, double level) {
+	public FindDaliyBloodSugar(Long id, BloodSugarRecordType type, int level) {
 		this.id = id;
 		this.type = type.getDescription();
 		this.level = level;

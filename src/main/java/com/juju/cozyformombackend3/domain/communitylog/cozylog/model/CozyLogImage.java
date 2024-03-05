@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -23,26 +24,27 @@ public class CozyLogImage extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "cozy_log_image_url", nullable = false, columnDefinition = "TEXT")
-	private String cozyLogImageUrl;
+	@Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
+	private String imageUrl;
 
 	@Column(name = "description")
 	private String description;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cozy_log_id")
 	private CozyLog cozyLog;
 
-	private CozyLogImage(CozyLog cozyLog, String cozyLogImageUrl, String description) {
-		this.cozyLogImageUrl = cozyLogImageUrl;
+	private CozyLogImage(CozyLog cozyLog, String imageUrl, String description) {
+		this.imageUrl = imageUrl;
 		this.description = description;
 		this.cozyLog = cozyLog;
 	}
 
-	public static CozyLogImage of(CozyLog cozyLog, String cozyLogImageUrl, String description) {
+	public static CozyLogImage of(CozyLog cozyLog, String imageUrl, String description) {
 		if (cozyLog == null) {
-			return new CozyLogImage(null, cozyLogImageUrl, description);
+			return new CozyLogImage(null, imageUrl, description);
 		}
-		return new CozyLogImage(cozyLog, cozyLogImageUrl, description);
+		return new CozyLogImage(cozyLog, imageUrl, description);
 	}
 
 	public void updateCozyLog(CozyLog cozyLog) {

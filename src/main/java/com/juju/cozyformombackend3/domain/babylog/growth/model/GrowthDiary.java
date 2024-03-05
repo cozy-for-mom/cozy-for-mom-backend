@@ -27,8 +27,8 @@ public class GrowthDiary {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "growth_diary_id")
-	private Long growthDiaryId;
+	@Column(name = "id")
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "baby_profile_id")
@@ -37,8 +37,8 @@ public class GrowthDiary {
 	@Column(name = "record_at", nullable = false)
 	private LocalDate recordAt;
 
-	@Column(name = "growth_image_url", columnDefinition = "TEXT")
-	private String growthImageUrl;
+	@Column(name = "image_url", columnDefinition = "TEXT")
+	private String imageUrl;
 
 	@Column(name = "title", columnDefinition = "TEXT")
 	private String title;
@@ -53,7 +53,7 @@ public class GrowthDiary {
 		String content) {
 		this.babyProfile = babyProfile;
 		this.recordAt = recordAt;
-		this.growthImageUrl = growthImageUrl;
+		this.imageUrl = growthImageUrl;
 		this.title = title;
 		this.content = content;
 	}
@@ -65,7 +65,7 @@ public class GrowthDiary {
 
 	public void update(UpdateGrowthRequest.GrowthDiaryDto growthDiaryDto) {
 		this.recordAt = growthDiaryDto.getDate();
-		this.growthImageUrl = growthDiaryDto.getGrowthImageUrl();
+		this.imageUrl = growthDiaryDto.getGrowthImageUrl();
 		this.title = growthDiaryDto.getTitle();
 		this.content = growthDiaryDto.getContent();
 	}

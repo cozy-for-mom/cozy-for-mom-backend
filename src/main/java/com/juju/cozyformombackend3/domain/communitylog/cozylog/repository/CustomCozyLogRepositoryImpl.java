@@ -39,7 +39,7 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 				cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
 				cozyLog.createdAt, cozyLog.mode,
 				comment.id.count(), scrap.id.count(),
-				cozyLogImage.cozyLogImageUrl.coalesce(""), cozyLogImage.id.count()
+				cozyLogImage.imageUrl.coalesce(""), cozyLogImage.id.count()
 			))
 			.from(cozyLog)
 			.leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
@@ -47,7 +47,7 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 			.leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
 			.where(isPublicCozyLog().and(ltReportId(reportId)))
 			.groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
-				cozyLogImage.cozyLogImageUrl)
+				cozyLogImage.imageUrl)
 			.orderBy(orderSpecifier, cozyLog.id.desc())
 			.limit(size)
 			.fetch();
@@ -64,15 +64,15 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 				cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
 				cozyLog.createdAt, cozyLog.mode,
 				comment.id.count(), scrap.id.count(),
-				cozyLogImage.cozyLogImageUrl.coalesce(""), cozyLogImage.id.count()
+				cozyLogImage.imageUrl.coalesce(""), cozyLogImage.id.count()
 			))
 			.from(cozyLog)
 			.leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
 			.leftJoin(scrap).on(scrap.cozyLogId.eq(cozyLog.id))
 			.leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
-			.where(cozyLog.user.userId.eq(userId).and(ltReportId(reportId)))
+			.where(cozyLog.user.id.eq(userId).and(ltReportId(reportId)))
 			.groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
-				cozyLogImage.cozyLogImageUrl)
+				cozyLogImage.imageUrl)
 			.orderBy(cozyLog.createdAt.desc(), cozyLog.id.desc())
 			.limit(size)
 			.fetch();
@@ -93,7 +93,7 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
 			.execute();
 
 		jpaQueryFactory.delete(cozyLog)
-			.where(cozyLog.user.userId.eq(userId).and(cozyLog.id.in(cozyLogIds)))
+			.where(cozyLog.user.id.eq(userId).and(cozyLog.id.in(cozyLogIds)))
 			.execute();
 	}
 
