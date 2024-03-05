@@ -16,6 +16,7 @@ import com.juju.cozyformombackend3.domain.userlog.supplement.dto.request.UpdateS
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.GetDailySupplementResponse;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.SaveSupplementRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.response.UpdateSupplementRecordResponse;
+import com.juju.cozyformombackend3.domain.userlog.supplement.error.SupplementErrorCode;
 import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
 import com.juju.cozyformombackend3.domain.userlog.supplement.model.SupplementRecord;
 import com.juju.cozyformombackend3.domain.userlog.supplement.repository.SupplementRecordRepository;
@@ -37,7 +38,7 @@ public class SupplementRecordService {
 	public SaveSupplementRecordResponse saveSupplementRecord(Long userId, SaveSupplementRecordRequest request) {
 		User user = findByUserId(userId);
 		Supplement supplement = supplementRepository.findBySupplementNameAndUser(request.getSupplementName(), user)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보충제입니다."));
+			.orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT));
 		SupplementRecord supplementRecord = supplementRecordRepository.save(SupplementRecord.builder()
 			.supplement(supplement)
 			.recordAt(stringToLocalDateTime(request.getDatetime()))
@@ -50,7 +51,7 @@ public class SupplementRecordService {
 	public UpdateSupplementRecordResponse updateSupplementRecord(Long userId, Long recordId,
 		UpdateSupplementRecordRequest request) {
 		SupplementRecord findRecord = supplementRecordRepository.findById(recordId)
-			.orElseThrow(() -> new IllegalArgumentException("등록되지 않은 기록입니다."));
+			.orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT_RECORD));
 		findRecord.update(stringToLocalDateTime(request.getDatetime()));
 
 		return UpdateSupplementRecordResponse.of(findRecord.getSupplementRecordId());
