@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.user.dto.object.UserSummary;
 import com.juju.cozyformombackend3.domain.user.dto.request.UpdateMyInfoRequest;
@@ -31,7 +32,7 @@ public class UserService {
 	public FindMyInfoResponse findMe(Long userId) {
 		// UserSummary findUserSummary = userRepository.findUserSummaryById(userId);
 		UserSummary findUserSummary = new UserSummary(
-			userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저")));
+			userRepository.findById(userId).orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER)));
 
 		return FindMyInfoResponse.of(findUserSummary);
 	}
@@ -64,7 +65,7 @@ public class UserService {
 		matchingProfile.ifPresentOrElse(
 			profile -> user.updateRecentBabyProfileId(request.getBabyProfileId()),
 			() -> {
-				throw new IllegalArgumentException("No matching baby profile found for the given profile ID");
+				throw new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE);
 			}
 		);
 

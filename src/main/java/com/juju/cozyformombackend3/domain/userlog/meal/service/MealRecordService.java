@@ -1,21 +1,23 @@
 package com.juju.cozyformombackend3.domain.userlog.meal.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.object.DailyMealRecord;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.request.CreateMealRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.request.UpdateMealRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.response.CreateMealRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.response.GetMealRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.response.UpdateMealRecordResponse;
+import com.juju.cozyformombackend3.domain.userlog.meal.error.MealErrorCode;
 import com.juju.cozyformombackend3.domain.userlog.meal.model.MealRecord;
 import com.juju.cozyformombackend3.domain.userlog.meal.repository.MealRecordRepository;
-import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -52,17 +54,17 @@ public class MealRecordService {
 
 	private MealRecord findMealRecordById(Long id) {
 		return mealRecordRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("해당 식사 기록이 존재하지 않습니다."));
+			.orElseThrow(() -> new BusinessException(MealErrorCode.NOT_FOUND_MEAL_RECORD));
 	}
 
 	private void isMealRecordOwner(User recordOwner, User requestUser) {
 		if (recordOwner != requestUser) {
-			throw new IllegalArgumentException("해당 식사 기록에 대한 권한이 없습니다.");
+			// throw new BusinessException("해당 식사 기록에 대한 권한이 없습니다."
+			throw new BusinessException(MealErrorCode.FORBIDDEN_NOT_YOUR_RESOURCE);
 		}
 	}
 
 	public GetMealRecordResponse getMealRecord(Long userId, String date) {
-		System.out.println(date);
 		List<DailyMealRecord> findRecordList = mealRecordRepository.searchAllByUserIdAndDate(userId, date);
 
 		return GetMealRecordResponse.of(findRecordList);

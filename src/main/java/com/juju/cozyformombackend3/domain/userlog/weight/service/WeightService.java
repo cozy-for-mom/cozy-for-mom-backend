@@ -13,7 +13,7 @@ import com.juju.cozyformombackend3.domain.userlog.weight.dto.object.FindPeriodic
 import com.juju.cozyformombackend3.domain.userlog.weight.dto.request.RecordWeightRequest;
 import com.juju.cozyformombackend3.domain.userlog.weight.dto.request.UpdateWeightRequest;
 import com.juju.cozyformombackend3.domain.userlog.weight.dto.response.FindWeightListResponse;
-import com.juju.cozyformombackend3.domain.userlog.weight.exception.WeightErrorCode;
+import com.juju.cozyformombackend3.domain.userlog.weight.error.WeightErrorCode;
 import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
 import com.juju.cozyformombackend3.domain.userlog.weight.repository.WeightRepository;
 import com.juju.cozyformombackend3.global.dto.request.FindPeriodRecordCondition;

@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.userlog.weight.exception;
+package com.juju.cozyformombackend3.domain.userlog.weight.error;
 
 import com.juju.cozyformombackend3.global.error.code.ErrorCode;
 
