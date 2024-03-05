@@ -1,7 +1,6 @@
 package com.juju.cozyformombackend3.domain.userlog.weight.repository;
 
 import static com.juju.cozyformombackend3.domain.userlog.weight.model.QWeightRecord.*;
-import static com.juju.cozyformombackend3.global.repository.DateParser.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,38 +28,35 @@ public class CustomWeightRepositoryImpl implements CustomWeightRepository {
 
 	private List<FindPeriodicWeight> findMonthlyRecordByDate(LocalDate endDate, Long size) {
 		return jpaQueryFactory.select(new QFindPeriodicWeight(
-				getDateFromDateTime(weightRecord.createdAt.max()),
+				weightRecord.recordAt.stringValue(),
 				weightRecord.weight.avg()))
 			.from(weightRecord)
-			.where(weightRecord.createdAt
-				.between(endDate.minusMonths(size).withDayOfMonth(1).atStartOfDay(),
-					endDate.atTime(23, 59, 59)))
-			.groupBy(weightRecord.createdAt.month())
+			.where(weightRecord.recordAt
+				.between(endDate.minusMonths(size).withDayOfMonth(1), endDate))
+			.groupBy(weightRecord.recordAt.month())
 			.fetch();
 	}
 
 	private List<FindPeriodicWeight> findWeeklyRecordByDate(LocalDate endDate, Long size) {
 
 		return jpaQueryFactory.select(new QFindPeriodicWeight(
-				getDateFromDateTime(weightRecord.createdAt.max()),
+				weightRecord.recordAt.stringValue(),
 				weightRecord.weight.avg()))
 			.from(weightRecord)
-			.where(weightRecord.createdAt
-				.between(endDate.minusWeeks(size).atStartOfDay(),
-					endDate.atTime(23, 59, 59)))
-			.groupBy(weightRecord.createdAt.week())
+			.where(weightRecord.recordAt
+				.between(endDate.minusWeeks(size), endDate))
+			.groupBy(weightRecord.recordAt.week())
 			.fetch();
 	}
 
 	private List<FindPeriodicWeight> findDailyRecordByDate(LocalDate endDate, Long size) {
 		return jpaQueryFactory.select(new QFindPeriodicWeight(
-				getDateFromDateTime(weightRecord.createdAt),
+				weightRecord.recordAt.stringValue(),
 				weightRecord.weight.avg()))
 			.from(weightRecord)
-			.where(weightRecord.createdAt
-				.between(endDate.minusDays(size).atStartOfDay(),
-					endDate.atTime(23, 59, 59)))
-			.groupBy(weightRecord.createdAt)
+			.where(weightRecord.recordAt
+				.between(endDate.minusDays(size), endDate))
+			.groupBy(weightRecord.recordAt)
 			.fetch();
 	}
 }
