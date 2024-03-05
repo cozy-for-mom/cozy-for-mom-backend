@@ -16,9 +16,11 @@ import com.juju.cozyformombackend3.domain.userlog.supplement.repository.Suppleme
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 @RequiredArgsConstructor
 public class SupplementService {
 
