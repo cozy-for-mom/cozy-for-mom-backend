@@ -1,7 +1,5 @@
 package com.juju.cozyformombackend3.domain.babylog.baby.model;
 
-import com.juju.cozyformombackend3.domain.userlog.meal.model.MealType;
-
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
@@ -13,8 +11,8 @@ public enum Gender {
 
 	private final String type;
 
-	public static MealType ofType(String type) {
-		return Arrays.stream(MealType.values())
+	public static Gender ofType(String type) {
+		return Arrays.stream(Gender.values())
 			.filter(e -> e.getType().equals(type))
 			.findAny()
 			.orElseThrow(() -> new NoSuchElementException("이런 타입의 음식 없음"));

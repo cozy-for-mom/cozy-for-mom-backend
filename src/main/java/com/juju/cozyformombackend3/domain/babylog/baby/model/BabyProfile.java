@@ -1,6 +1,6 @@
 package com.juju.cozyformombackend3.domain.babylog.baby.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,19 +47,27 @@ public class BabyProfile {
 	private int twins;
 
 	@Column(name = "pregnant_at", nullable = false)
-	private LocalDateTime pregnantAt;
+	private LocalDate pregnantAt;
 
 	@Column(name = "due_at", nullable = false)
-	private LocalDateTime dueAt;
+	private LocalDate dueAt;
 
-	private BabyProfile(User user, int twins, LocalDateTime pregnantAt, LocalDateTime dueAt) {
+	@Column(name = "image_url", columnDefinition = "TEXT")
+	private String imageUrl;
+
+	private BabyProfile(User user, int twins, LocalDate pregnantAt, LocalDate dueAt, String imageUrl) {
 		this.user = user;
 		this.twins = twins;
 		this.pregnantAt = pregnantAt;
 		this.dueAt = dueAt;
+		this.imageUrl = imageUrl;
 	}
 
-	public static BabyProfile of(User user, int twins, LocalDateTime pregnantAt, LocalDateTime dueAt) {
-		return new BabyProfile(user, twins, pregnantAt, dueAt);
+	public static BabyProfile of(User user, int twins, LocalDate pregnantAt, LocalDate dueAt, String imageUrl) {
+		return new BabyProfile(user, twins, pregnantAt, dueAt, imageUrl);
+	}
+
+	public void addBaby(List<Baby> babyList) {
+		this.babyList.addAll(babyList);
 	}
 }

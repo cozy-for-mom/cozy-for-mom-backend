@@ -1,5 +1,6 @@
 package com.juju.cozyformombackend3.global.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -28,5 +29,12 @@ public class DateParser {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatPattern);
 
 		return LocalDateTime.parse(datetime, formatter);
+	}
+
+	public static LocalDate stringToLocalDate(String date) {
+		String formatPattern = "yyyy-MM-dd";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatPattern);
+
+		return LocalDate.parse(date, formatter);
 	}
 }
