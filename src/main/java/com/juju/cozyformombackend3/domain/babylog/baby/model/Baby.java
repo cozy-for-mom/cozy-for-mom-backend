@@ -3,6 +3,7 @@ package com.juju.cozyformombackend3.domain.babylog.baby.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthRecord;
 
 import jakarta.persistence.CascadeType;
@@ -54,6 +55,15 @@ public class Baby {
 
 	public static Baby of(BabyProfile babyProfile, String name, Gender gender) {
 		return new Baby(babyProfile, name, gender);
+	}
+
+	public void update(ModifyBabyProfileRequest.BabyDto baby) {
+
+	}
+
+	public void update(String name, Gender gender) {
+		this.name = name;
+		this.gender = gender;
 	}
 }
 

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthDiary;
 import com.juju.cozyformombackend3.domain.user.model.User;
 
@@ -69,5 +70,10 @@ public class BabyProfile {
 
 	public void addBaby(List<Baby> babyList) {
 		this.babyList.addAll(babyList);
+	}
+
+	public void update(ModifyBabyProfileRequest request) {
+		this.dueAt = request.getDueAt();
+		this.imageUrl = request.getProfileImageUrl();
 	}
 }
