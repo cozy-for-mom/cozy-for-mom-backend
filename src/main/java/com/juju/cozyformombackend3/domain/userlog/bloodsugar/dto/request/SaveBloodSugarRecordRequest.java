@@ -17,6 +17,6 @@ public class SaveBloodSugarRecordRequest {
 	private int level;
 
 	public BloodSugarRecordType getType() {
-		return BloodSugarRecordType.valueOf(type);
+		return BloodSugarRecordType.ofDescription(type);
 	}
 }

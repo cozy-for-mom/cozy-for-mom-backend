@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public enum MealType {
-	BREAKFAST(1, "BREAKFAST"), LUNCH(2, "LUNCH"), DINNER(3, "DINNER"), SNACK(4, "SNACK");
+	BREAKFAST(1, "아침"), LUNCH(2, "점심"), DINNER(3, "저녁"), SNACK(4, "간식");
 
 	private final int code;
 
