@@ -65,7 +65,6 @@ public class MealRecordController {
 	public ResponseEntity<SuccessResponse> getMealRecord(
 		@LoginUserId Long userId,
 		@RequestParam(name = "date") String date) {
-		log.info(userId + " " + date);
 		GetMealRecordResponse response = mealRecordService.getMealRecord(userId, date);
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
