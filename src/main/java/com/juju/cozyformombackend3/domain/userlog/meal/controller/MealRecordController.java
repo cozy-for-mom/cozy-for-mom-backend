@@ -23,9 +23,11 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/v1/meal")
 public class MealRecordController {
 
@@ -63,6 +65,7 @@ public class MealRecordController {
 	public ResponseEntity<SuccessResponse> getMealRecord(
 		@LoginUserId Long userId,
 		@RequestParam(name = "date") String date) {
+		log.info(userId + " " + date);
 		GetMealRecordResponse response = mealRecordService.getMealRecord(userId, date);
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
