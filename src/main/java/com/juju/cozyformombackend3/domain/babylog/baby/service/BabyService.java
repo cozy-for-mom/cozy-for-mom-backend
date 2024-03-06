@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.CreateBabyProfileRequest;
+import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.CreateBabyProfileResponse;
+import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.ModifyBabyProfileResponse;
+import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
 import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
@@ -35,5 +38,20 @@ public class BabyService {
 	private User findUserById(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+	}
+
+	@Transactional
+	public ModifyBabyProfileResponse updateBabyProfile(Long userId, Long babyProfileId,
+		ModifyBabyProfileRequest request) {
+		final BabyProfile findBabyProfile = babyProfileRepository.findById(babyProfileId)
+			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
+		findBabyProfile.update(request);
+		findBabyProfile.getBabyList().forEach(baby -> {
+			ModifyBabyProfileRequest.BabyDto dto = request.getBaby(baby.getId());
+			baby.update(dto.getName(), dto.getGender());
+		});
+
+		return ModifyBabyProfileResponse.of(findBabyProfile.getId(),
+			findBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
 	}
 }
