@@ -73,6 +73,6 @@ public class BloodSugarService {
 	public FindBloodSugarListResponse findBloodSugarRecord(FindPeriodRecordCondition condition) {
 		List<FindPeriodicBloodSugar> findPeriodicBloodSugars = bloodSugarRepository.findPeriodRecordByDate(condition);
 
-		return FindBloodSugarListResponse.of(condition.getType().name(), findPeriodicBloodSugars);
+		return FindBloodSugarListResponse.of(condition.getType().getPeriodKeyword(), findPeriodicBloodSugars);
 	}
 }
