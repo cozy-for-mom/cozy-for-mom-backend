@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.object.DailyMealRecord;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.request.CreateMealRecordRequest;
 import com.juju.cozyformombackend3.domain.userlog.meal.dto.request.UpdateMealRecordRequest;
@@ -25,9 +27,11 @@ import lombok.RequiredArgsConstructor;
 public class MealRecordService {
 
 	private final MealRecordRepository mealRecordRepository;
+	private final UserRepository userRepository;
 
 	@Transactional
-	public CreateMealRecordResponse creatdMealRecord(User user, CreateMealRecordRequest request) {
+	public CreateMealRecordResponse creatdMealRecord(Long userId, CreateMealRecordRequest request) {
+		User user = findUserById(userId);
 		Long savedRecordId = user.addMealRecord(request.getDatetime(), request.getMealType(),
 			request.getMealImageUrl());
 
@@ -35,7 +39,8 @@ public class MealRecordService {
 	}
 
 	@Transactional
-	public UpdateMealRecordResponse updateMealRecord(UpdateMealRecordRequest request, User user) {
+	public UpdateMealRecordResponse updateMealRecord(Long userId, UpdateMealRecordRequest request) {
+		User user = findUserById(userId);
 		MealRecord foundMealRecord = findMealRecordById(request.getId());
 		isMealRecordOwner(foundMealRecord.getUser(), user);
 		Long updatedRecordId = foundMealRecord.update(request.getDatetime(), request.getMealType(),
@@ -45,7 +50,8 @@ public class MealRecordService {
 	}
 
 	@Transactional
-	public void deleteMealRecord(Long id, User user) {
+	public void deleteMealRecord(Long userId, Long id) {
+		User user = findUserById(userId);
 		MealRecord foundMealRecord = findMealRecordById(id);
 		isMealRecordOwner(foundMealRecord.getUser(), user);
 
@@ -68,5 +74,10 @@ public class MealRecordService {
 		List<DailyMealRecord> findRecordList = mealRecordRepository.searchAllByUserIdAndDate(userId, date);
 
 		return GetMealRecordResponse.of(findRecordList);
+	}
+
+	private User findUserById(Long userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 	}
 }
