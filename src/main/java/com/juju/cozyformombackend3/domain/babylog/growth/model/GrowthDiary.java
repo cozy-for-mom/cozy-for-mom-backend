@@ -2,17 +2,14 @@ package com.juju.cozyformombackend3.domain.babylog.growth.model;
 
 import java.time.LocalDate;
 
-import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.UpdateGrowthRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -30,9 +27,9 @@ public class GrowthDiary {
 	@Column(name = "id")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "baby_profile_id")
-	private BabyProfile babyProfile;
+	// @ManyToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "baby_profile_id")
+	// private BabyProfile babyProfile;
 
 	@Column(name = "record_at", nullable = false)
 	private LocalDate recordAt;
@@ -47,20 +44,22 @@ public class GrowthDiary {
 	private String content;
 
 	@OneToOne
+	@JoinColumn(name = "growth_report_id")
 	private GrowthReport growthReport;
 
-	private GrowthDiary(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String title,
-		String content) {
-		this.babyProfile = babyProfile;
+	private GrowthDiary(LocalDate recordAt, String growthImageUrl, String title,
+		String content, GrowthReport growthReport) {
+		// this.babyProfile = babyProfile;
 		this.recordAt = recordAt;
 		this.imageUrl = growthImageUrl;
 		this.title = title;
 		this.content = content;
+		this.growthReport = growthReport;
 	}
 
-	public static GrowthDiary of(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String title,
+	public static GrowthDiary of(LocalDate recordAt, String growthImageUrl, String title,
 		String content) {
-		return new GrowthDiary(babyProfile, recordAt, growthImageUrl, title, content);
+		return new GrowthDiary(recordAt, growthImageUrl, title, content, null);
 	}
 
 	public void update(UpdateGrowthRequest.GrowthDiaryDto growthDiaryDto) {

@@ -1,12 +1,7 @@
 package com.juju.cozyformombackend3.domain.babylog.baby.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
-import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthRecord;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,8 +23,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Baby {
 
-	@OneToMany(mappedBy = "baby", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	List<GrowthRecord> growthRecordList = new ArrayList<>();
+	// @OneToMany(mappedBy = "baby", orphanRemoval = true)
+	// List<GrowthRecord> growthRecordList = new ArrayList<>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

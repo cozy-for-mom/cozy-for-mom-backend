@@ -25,13 +25,13 @@ public class FindGrowthResponse {
 	private final List<BabyInfo> babies;
 
 	public static FindGrowthResponse of(GrowthReport report) {
-		List<Baby> babies = report.getGrowthDiary().getBabyProfile().getBabyList();
+		List<Baby> babies = report.getBabyProfile().getBabyList();
 		List<BabyInfo> babyInfoList = report.getGrowthRecordList().stream()
 			.map(record -> BabyInfo.of(record, babies))
 			.toList();
 
 		return FindGrowthResponse.builder()
-			.babyProfileId(report.getGrowthDiary().getBabyProfile().getId())
+			.babyProfileId(report.getBabyProfile().getId())
 			.date(report.getRecordAt().toString())
 			.growthReportId(report.getId())
 			.growthImageUrl(report.getGrowthDiary().getImageUrl())
@@ -52,7 +52,7 @@ public class FindGrowthResponse {
 
 		private static BabyInfo of(GrowthRecord record, List<Baby> babies) {
 			Baby matchBaby = babies.stream()
-				.filter(baby -> record.getBaby().equals(baby))
+				.filter(baby -> record.getBabyId().equals(baby.getId()))
 				.findFirst()
 				.orElseThrow();
 
