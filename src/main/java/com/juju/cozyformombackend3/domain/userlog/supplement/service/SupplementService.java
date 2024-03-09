@@ -24,42 +24,43 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class SupplementService {
 
-	private final SupplementRepository supplementRepository;
-	private final UserRepository userRepository;
+    private final SupplementRepository supplementRepository;
+    private final UserRepository userRepository;
 
-	@Transactional
-	public RegisterSupplementResponse registerSupplement(Long userId, RegisterSupplementRequest request) {
-		User user = findByUserId(userId);
-		if (supplementRepository.existsByName(request.getSupplementName())) {
-			throw new BusinessException(SupplementErrorCode.CONFLICT_ALREADY_REGISTER_SUPPLEMENT);
-		}
-		Supplement savedSupplement = supplementRepository.save(Supplement.builder()
-			.user(user)
-			.name(request.getSupplementName())
-			.targetCount(request.getTargetCount())
-			.build());
-		user.registerSupplement(savedSupplement);
+    @Transactional
+    public RegisterSupplementResponse registerSupplement(Long userId, RegisterSupplementRequest request) {
+        User user = findByUserId(userId);
+		
+        if (supplementRepository.existsByName(request.getSupplementName())) {
+            throw new BusinessException(SupplementErrorCode.CONFLICT_ALREADY_REGISTER_SUPPLEMENT);
+        }
+        Supplement savedSupplement = supplementRepository.save(Supplement.builder()
+            .user(user)
+            .name(request.getSupplementName())
+            .targetCount(request.getTargetCount())
+            .build());
+        user.registerSupplement(savedSupplement);
 
-		return RegisterSupplementResponse.of(savedSupplement.getId());
-	}
+        return RegisterSupplementResponse.of(savedSupplement.getId());
+    }
 
-	@Transactional
-	public UpdateSupplementResponse updateSupplement(Long supplementId, UpdateSupplementRequest request) {
-		Supplement findSupplement = supplementRepository.findById(supplementId)
-			.orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT));
-		findSupplement.update(request);
+    @Transactional
+    public UpdateSupplementResponse updateSupplement(Long supplementId, UpdateSupplementRequest request) {
+        Supplement findSupplement = supplementRepository.findById(supplementId)
+            .orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT));
+        findSupplement.update(request);
 
-		return UpdateSupplementResponse.of(findSupplement.getId());
-	}
+        return UpdateSupplementResponse.of(findSupplement.getId());
+    }
 
-	@Transactional
-	public void deleteSupplement(Long supplementId) {
-		supplementRepository.deleteById(supplementId);
-	}
+    @Transactional
+    public void deleteSupplement(Long supplementId) {
+        supplementRepository.deleteById(supplementId);
+    }
 
-	private User findByUserId(Long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
-	}
+    private User findByUserId(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+    }
 
 }

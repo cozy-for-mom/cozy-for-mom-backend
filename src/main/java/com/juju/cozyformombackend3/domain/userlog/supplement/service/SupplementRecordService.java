@@ -1,7 +1,5 @@
 package com.juju.cozyformombackend3.domain.userlog.supplement.service;
 
-import static com.juju.cozyformombackend3.global.util.DateParser.*;
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -30,48 +28,48 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SupplementRecordService {
 
-	private final SupplementRecordRepository supplementRecordRepository;
-	private final SupplementRepository supplementRepository;
-	private final UserRepository userRepository;
+    private final SupplementRecordRepository supplementRecordRepository;
+    private final SupplementRepository supplementRepository;
+    private final UserRepository userRepository;
 
-	@Transactional
-	public SaveSupplementRecordResponse saveSupplementRecord(Long userId, SaveSupplementRecordRequest request) {
-		User user = findByUserId(userId);
-		Supplement supplement = supplementRepository.findByNameAndUser(request.getSupplementName(), user)
-			.orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT));
-		SupplementRecord supplementRecord = supplementRecordRepository.save(SupplementRecord.builder()
-			.supplement(supplement)
-			.recordAt(stringToLocalDateTime(request.getDatetime()))
-			.build());
+    @Transactional
+    public SaveSupplementRecordResponse saveSupplementRecord(Long userId, SaveSupplementRecordRequest request) {
+        User user = findByUserId(userId);
+        Supplement supplement = supplementRepository.findByNameAndUser(request.getSupplementName(), user)
+            .orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT));
+        SupplementRecord supplementRecord = supplementRecordRepository.save(SupplementRecord.builder()
+            .supplement(supplement)
+            .recordAt(request.getRecordAt())
+            .build());
 
-		return SaveSupplementRecordResponse.of(supplementRecord.getId());
-	}
+        return SaveSupplementRecordResponse.of(supplementRecord.getId());
+    }
 
-	@Transactional
-	public UpdateSupplementRecordResponse updateSupplementRecord(Long userId, Long recordId,
-		UpdateSupplementRecordRequest request) {
-		SupplementRecord findRecord = supplementRecordRepository.findById(recordId)
-			.orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT_RECORD));
-		findRecord.update(stringToLocalDateTime(request.getDatetime()));
+    @Transactional
+    public UpdateSupplementRecordResponse updateSupplementRecord(Long userId, Long recordId,
+        UpdateSupplementRecordRequest request) {
+        SupplementRecord findRecord = supplementRecordRepository.findById(recordId)
+            .orElseThrow(() -> new BusinessException(SupplementErrorCode.NOT_FOUND_SUPPLEMENT_RECORD));
+        findRecord.update(request.getRecordAt());
 
-		return UpdateSupplementRecordResponse.of(findRecord.getId());
-	}
+        return UpdateSupplementRecordResponse.of(findRecord.getId());
+    }
 
-	@Transactional
-	public void deleteSupplementRecord(Long userId, Long recordId) {
-		supplementRecordRepository.deleteById(recordId);
-	}
+    @Transactional
+    public void deleteSupplementRecord(Long userId, Long recordId) {
+        supplementRecordRepository.deleteById(recordId);
+    }
 
-	public GetDailySupplementResponse getSupplementRecord(long userId, String date) {
-		List<FindDailySupplementIntake> findRecordList = supplementRecordRepository
-			.findDailySupplementIntake(userId, date);
+    public GetDailySupplementResponse getSupplementRecord(long userId, String date) {
+        List<FindDailySupplementIntake> findRecordList = supplementRecordRepository
+            .findDailySupplementIntake(userId, date);
 
-		return GetDailySupplementResponse.of(findRecordList);
-	}
+        return GetDailySupplementResponse.of(findRecordList);
+    }
 
-	private User findByUserId(Long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
-	}
+    private User findByUserId(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+    }
 
 }
