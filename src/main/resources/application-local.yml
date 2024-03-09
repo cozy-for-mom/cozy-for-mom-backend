@@ -27,6 +27,20 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         use_sql_comments: true
     open-in-view: false
+
+cloud:
+  aws:
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    stack:
+      auto: false
+    region:
+      static: ${AWS_REGION}
+      region: ${AWS_REGION}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+
 #
 #  security:
 #    oauth2:
@@ -48,11 +62,6 @@ spring:
 #            scope:
 #              - profile
 #              - account_email
-
-#logging:
-#  level: # ? package ?? ?? ??? ??? ? ??.
-#    com.juju: debug
-##    com.juju.study.controller: debug
 
 jwt:
   issuer: juju
