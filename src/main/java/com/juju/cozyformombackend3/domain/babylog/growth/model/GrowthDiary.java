@@ -30,9 +30,9 @@ public class GrowthDiary {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "baby_profile_id")
-    private BabyProfile babyProfile;
+	// @ManyToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "baby_profile_id")
+	// private BabyProfile babyProfile;
 
     @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageUrl;
@@ -43,21 +43,23 @@ public class GrowthDiary {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @OneToOne
-    private GrowthReport growthReport;
+	@OneToOne
+	@JoinColumn(name = "growth_report_id")
+	private GrowthReport growthReport;
 
-    private GrowthDiary(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String title,
-        String content) {
-        this.babyProfile = babyProfile;
-        this.imageUrl = growthImageUrl;
-        this.title = title;
-        this.content = content;
-    }
+	private GrowthDiary(LocalDate recordAt, String growthImageUrl, String title,
+		String content, GrowthReport growthReport) {
+		// this.babyProfile = babyProfile;
+		this.imageUrl = growthImageUrl;
+		this.title = title;
+		this.content = content;
+		this.growthReport = growthReport;
+	}
 
-    public static GrowthDiary of(BabyProfile babyProfile, LocalDate recordAt, String growthImageUrl, String title,
-        String content) {
-        return new GrowthDiary(babyProfile, recordAt, growthImageUrl, title, content);
-    }
+	public static GrowthDiary of(LocalDate recordAt, String growthImageUrl, String title,
+		String content) {
+		return new GrowthDiary(recordAt, growthImageUrl, title, content, null);
+	}
 
     public void update(UpdateGrowthRequest.GrowthDiaryDto growthDiaryDto) {
         this.imageUrl = growthDiaryDto.getGrowthImageUrl();
