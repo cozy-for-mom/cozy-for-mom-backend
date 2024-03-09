@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
-import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthDiary;
+import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthReport;
 import com.juju.cozyformombackend3.domain.user.model.User;
 
 import jakarta.persistence.CascadeType;
@@ -32,8 +32,11 @@ public class BabyProfile {
 	@OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
 	List<Baby> babyList = new ArrayList<>();
 
+	// @OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	// List<GrowthDiary> growthDiaryList = new ArrayList<>();
+
 	@OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	List<GrowthDiary> growthDiaryList = new ArrayList<>();
+	List<GrowthReport> growthReportList = new ArrayList<>();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

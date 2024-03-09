@@ -7,6 +7,7 @@ import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.CreateBabyPro
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.CreateBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.ModifyBabyProfileResponse;
+import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.RemoveBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
@@ -53,5 +54,19 @@ public class BabyService {
 
 		return ModifyBabyProfileResponse.of(findBabyProfile.getId(),
 			findBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
+	}
+
+	@Transactional
+	public RemoveBabyProfileResponse deleteBabyProfile(Long userId, Long babyProfileId) {
+		User user = findUserById(userId);
+		if (user.getRecentBabyProfileId() == babyProfileId) {
+			user.updateRecentBabyProfileId(null);
+		}
+		final BabyProfile deleteBabyProfile = babyProfileRepository.findById(babyProfileId)
+			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
+		babyProfileRepository.delete(deleteBabyProfile);
+
+		return RemoveBabyProfileResponse.of(deleteBabyProfile.getId(),
+			deleteBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
 	}
 }
