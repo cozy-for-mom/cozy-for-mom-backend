@@ -36,7 +36,6 @@ public class CozyLog extends BaseEntity {
 
     @Column(name = "title",
         columnDefinition = "VARCHAR(100) NOT NULL, FULLTEXT INDEX full_text_idx_title (title) WITH PARSER ngram")
-    // columnDefinition = "VARCHAR(100) NOT NULL, FULLTEXT full_text_idx_title (title) WITH PARSER ngram")
     private String title;
 
     @Column(name = "content",

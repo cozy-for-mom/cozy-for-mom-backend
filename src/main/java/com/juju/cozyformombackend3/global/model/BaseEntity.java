@@ -1,23 +1,28 @@
 package com.juju.cozyformombackend3.global.model;
 
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
-import lombok.Getter;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
 
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 public abstract class BaseEntity {
 
-	@CreatedDate
-	private LocalDateTime createdAt;
+    @CreatedDate
+    @Column(name = "created_at", columnDefinition = "DATETIME", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-	@LastModifiedDate
-	private LocalDateTime modifiedAt;
+    @LastModifiedDate
+    @Column(name = "modified_at", columnDefinition = "DATETIME")
+    private LocalDateTime modifiedAt;
 
-	public abstract void delete();
+    public abstract void delete();
 }
