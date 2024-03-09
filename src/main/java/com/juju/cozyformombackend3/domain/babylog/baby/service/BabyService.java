@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.CreateBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.CreateBabyProfileResponse;
+import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.GetBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.ModifyBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.RemoveBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
@@ -68,5 +69,12 @@ public class BabyService {
 
 		return RemoveBabyProfileResponse.of(deleteBabyProfile.getId(),
 			deleteBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
+	}
+
+	public GetBabyProfileResponse getBabyProfile(Long userId, Long babyProfileId) {
+		BabyProfile foundBabyProfile = babyProfileRepository.findById(babyProfileId)
+			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
+
+		return GetBabyProfileResponse.of(foundBabyProfile);
 	}
 }

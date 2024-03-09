@@ -26,7 +26,7 @@ public class CozyLogSummary {
 		this.id = id;
 		this.title = title;
 		this.summary = summary;
-		this.date = DateParser.dateTimeToStringFormatDate(datetime);
+		this.date = DateParser.dateTimeToStringFormatDateTime(datetime);
 		this.mode = mode.name();
 		this.commentCount = commentCount;
 		this.scrapCount = scrapCount;

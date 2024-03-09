@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.CreateBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.CreateBabyProfileResponse;
+import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.GetBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.ModifyBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.RemoveBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.babylog.baby.service.BabyService;
@@ -53,6 +55,15 @@ public class BabyController {
 		@LoginUserId Long userId,
 		@PathVariable(name = "id") Long babyProfileId) {
 		RemoveBabyProfileResponse response = babyService.deleteBabyProfile(userId, babyProfileId);
+
+		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<SuccessResponse> getBabyProfile(
+		@LoginUserId Long userId,
+		@PathVariable(name = "id") Long babyProfileId) {
+		GetBabyProfileResponse response = babyService.getBabyProfile(userId, babyProfileId);
 
 		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
 	}

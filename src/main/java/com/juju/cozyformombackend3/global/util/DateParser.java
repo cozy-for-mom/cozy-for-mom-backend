@@ -17,11 +17,11 @@ public class DateParser {
 		return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 	}
 
-	public static String dateTimeToStringFormatDate(LocalDateTime localDateTime) {
-		if (null == localDateTime) {
+	public static String dateTimeToStringFormatDate(LocalDate localDate) {
+		if (null == localDate) {
 			return null;
 		}
-		return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
 
 	public static LocalDateTime stringToLocalDateTime(String datetime) {
