@@ -25,58 +25,58 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ScrapService {
-	private final ScrapRepository scrapRepository;
-	private final CozyLogRepository cozyLogRepository;
-	private final UserRepository userRepository;
+    private final ScrapRepository scrapRepository;
+    private final CozyLogRepository cozyLogRepository;
+    private final UserRepository userRepository;
 
-	@Transactional
-	public void saveScrap(Long userId, ApplyScrapRequest request) {
-		if (request.getIsScraped()) {
-			addScrap(userId, request);
-		} else {
-			deleteScrap(userId, request);
-		}
-	}
+    @Transactional
+    public void saveScrap(Long userId, ApplyScrapRequest request) {
+        if (request.getIsScraped()) {
+            addScrap(userId, request);
+        } else {
+            deleteScrap(userId, request);
+        }
+    }
 
-	private void deleteScrap(Long userId, ApplyScrapRequest request) {
-		Scrap foundScrap = scrapRepository.findByCozyLogIdAndUserId(request.getCozyLogId(), userId)
-			.orElseThrow(() -> new BusinessException(ScrapErrorCode.NOT_FOUND_NOT_EXIST));
-		scrapRepository.delete(foundScrap);
-	}
+    private void deleteScrap(Long userId, ApplyScrapRequest request) {
+        Scrap foundScrap = scrapRepository.findByCozyLogIdAndUserId(request.getCozyLogId(), userId)
+            .orElseThrow(() -> new BusinessException(ScrapErrorCode.NOT_FOUND_NOT_EXIST));
+        scrapRepository.delete(foundScrap);
+    }
 
-	private void addScrap(Long userId, ApplyScrapRequest request) {
-		notExistsCozyLog(request.getCozyLogId());
-		existsScrap(userId, request.getCozyLogId());
-		User foundUser = findUserById(userId);
-		scrapRepository.save(request.toEntity(foundUser));
-	}
+    private void addScrap(Long userId, ApplyScrapRequest request) {
+        notExistsCozyLog(request.getCozyLogId());
+        existsScrap(userId, request.getCozyLogId());
+        User foundUser = findUserById(userId);
+        scrapRepository.save(request.toScrap(foundUser));
+    }
 
-	private void existsScrap(Long userId, Long cozyLogId) {
-		if (scrapRepository.existsByCozyLogIdAndUserId(cozyLogId, userId)) {
-			throw new BusinessException(ScrapErrorCode.CONFLICT_ALREADY_EXIST);
-		}
-	}
+    private void existsScrap(Long userId, Long cozyLogId) {
+        if (scrapRepository.existsByCozyLogIdAndUserId(cozyLogId, userId)) {
+            throw new BusinessException(ScrapErrorCode.CONFLICT_ALREADY_EXIST);
+        }
+    }
 
-	private void notExistsCozyLog(Long cozyLogId) {
-		if (!cozyLogRepository.existsById(cozyLogId)) {
-			throw new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG);
-		}
-	}
+    private void notExistsCozyLog(Long cozyLogId) {
+        if (!cozyLogRepository.existsById(cozyLogId)) {
+            throw new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG);
+        }
+    }
 
-	private User findUserById(Long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
-	}
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+    }
 
-	@Transactional
-	public void deleteScrapList(Long userId, UnscrapListRequest request) {
-		scrapRepository.deleteScrapByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
-	}
+    @Transactional
+    public void deleteScrapList(Long userId, UnscrapListRequest request) {
+        scrapRepository.deleteScrapByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
+    }
 
-	public FindScrapListResponse findScrapList(Long userId, Long reportId, Long size) {
-		List<CozyLogSummary> cozyLogs = scrapRepository.findScrapListById(userId, reportId, size);
-		Long count = scrapRepository.countByUserId(userId);
+    public FindScrapListResponse findScrapList(Long userId, Long reportId, Long size) {
+        List<CozyLogSummary> cozyLogs = scrapRepository.findScrapListById(userId, reportId, size);
+        Long count = scrapRepository.countByUserId(userId);
 
-		return FindScrapListResponse.of(count, cozyLogs);
-	}
+        return FindScrapListResponse.of(count, cozyLogs);
+    }
 }

@@ -17,38 +17,41 @@ import com.juju.cozyformombackend3.domain.communitylog.scrap.service.ScrapServic
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/scrap")
 @RequiredArgsConstructor
 public class ScrapController {
-	private final ScrapService scrapService;
+    private final ScrapService scrapService;
 
-	@PostMapping()
-	public ResponseEntity<SuccessResponse> scrapSave(@LoginUserId Long userId, @RequestBody ApplyScrapRequest request) {
-		scrapService.saveScrap(userId, request);
-		URI location = URI.create("/api/v1/cozy-log/" + request.getCozyLogId());
+    @PostMapping()
+    public ResponseEntity<SuccessResponse> scrapSave(
+        @LoginUserId Long userId,
+        @RequestBody @Valid ApplyScrapRequest request) {
+        scrapService.saveScrap(userId, request);
+        URI location = URI.create("/api/v1/cozy-log/" + request.getCozyLogId());
 
-		return ResponseEntity.created(location).body(SuccessResponse.of(201, null));
-	}
+        return ResponseEntity.created(location).body(SuccessResponse.of(201, null));
+    }
 
-	@PostMapping("/unscraps")
-	public ResponseEntity<SuccessResponse> unscrapList(@LoginUserId Long userId,
-		@RequestBody UnscrapListRequest request) {
-		scrapService.deleteScrapList(userId, request);
+    @PostMapping("/unscraps")
+    public ResponseEntity<SuccessResponse> unscrapList(@LoginUserId Long userId,
+        @RequestBody UnscrapListRequest request) {
+        scrapService.deleteScrapList(userId, request);
 
-		return ResponseEntity.ok(SuccessResponse.of(200, null));
-	}
+        return ResponseEntity.ok(SuccessResponse.of(200, null));
+    }
 
-	@GetMapping
-	public ResponseEntity<SuccessResponse> getScrapList(
-		@LoginUserId Long userId,
-		@RequestParam(value = "lastId", defaultValue = "0") Long reportId,
-		@RequestParam(value = "size", defaultValue = "10") Long size) {
-		FindScrapListResponse response = scrapService.findScrapList(userId, reportId, size);
+    @GetMapping
+    public ResponseEntity<SuccessResponse> getScrapList(
+        @LoginUserId Long userId,
+        @RequestParam(value = "lastId", defaultValue = "0") Long reportId,
+        @RequestParam(value = "size", defaultValue = "10") Long size) {
+        FindScrapListResponse response = scrapService.findScrapList(userId, reportId, size);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 
 }
