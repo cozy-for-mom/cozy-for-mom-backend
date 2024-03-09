@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.global.config;
+package com.juju.cozyformombackend3.global.config.aws;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

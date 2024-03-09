@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.global.config;
+package com.juju.cozyformombackend3.global.config.aws;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
