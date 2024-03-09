@@ -5,7 +5,12 @@ import java.util.List;
 
 import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
+import com.juju.cozyformombackend3.global.util.DateParser;
+import com.juju.cozyformombackend3.global.validation.annotation.IsLocalDate;
+import com.juju.cozyformombackend3.global.validation.annotation.IsPastOrPresentDate;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,66 +20,74 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateGrowthRequest {
 
-	private Long growthDiaryId;
-	private Long babyProfileId;
-	private LocalDate date;
-	private String growthImageUrl;
-	private String title;
-	private String content;
-	private List<BabyInfoRequest> babies;
+    @Min(1)
+    private Long growthDiaryId;
+    @Min(1)
+    private Long babyProfileId;
+    @IsLocalDate
+    @IsPastOrPresentDate
+    private String date;
+    private String growthImageUrl;
 
-	public BabyInfoRequest getBabyInfo(Long growthRecordId) {
-		return babies.stream()
-			.filter(babyInfo -> babyInfo.getGrowthRecordId().equals(growthRecordId))
-			.findFirst()
-			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY));
-	}
+    @NotBlank(message = "제목을 입력해주세요.")
+    private String title;
+    private String content;
+    private List<BabyInfoRequest> babies;
 
-	public GrowthDiaryDto getGrowthDiaryDto() {
-		return GrowthDiaryDto.of(growthDiaryId, babyProfileId, date, growthImageUrl, title, content);
-	}
+    public LocalDate getRecordAt() {
+        return DateParser.stringToLocalDate(date);
+    }
 
-	@Getter
-	public static class BabyInfoRequest {
+    public BabyInfoRequest getBabyInfo(Long growthRecordId) {
+        return babies.stream()
+            .filter(babyInfo -> babyInfo.getGrowthRecordId().equals(growthRecordId))
+            .findFirst()
+            .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY));
+    }
 
-		private Long growthRecordId;
+    public GrowthDiaryDto getGrowthDiaryDto() {
+        return GrowthDiaryDto.of(growthDiaryId, babyProfileId, getRecordAt(), growthImageUrl, title, content);
+    }
 
-		private Long babyId;
+    @Getter
+    public static class BabyInfoRequest {
+        @Min(1)
+        private Long growthRecordId;
+        @Min(1)
+        private Long babyId;
+        private String babyName;
+        private GrowthInfoRequest growthInfo;
+    }
 
-		private String babyName;
+    @Getter
+    public static class GrowthInfoRequest {
 
-		private GrowthInfoRequest growthInfo;
-	}
+        private double weight;
 
-	@Getter
-	public static class GrowthInfoRequest {
+        private double headDiameter;
 
-		private double weight;
+        private double headCircum;
 
-		private double headDiameter;
+        private double abdomenCircum;
 
-		private double headCircum;
+        private double thighLength;
+    }
 
-		private double abdomenCircum;
+    @Getter
+    @AllArgsConstructor(staticName = "of")
+    // TODO: 이너클래스 공브하기
+    public static class GrowthDiaryDto {
 
-		private double thighLength;
-	}
+        private Long growthDiaryId;
 
-	@Getter
-	@AllArgsConstructor(staticName = "of")
-	// TODO: 이너클래스 공브하기
-	public static class GrowthDiaryDto {
+        private Long babyProfileId;
 
-		private Long growthDiaryId;
+        private LocalDate date;
 
-		private Long babyProfileId;
+        private String growthImageUrl;
 
-		private LocalDate date;
+        private String title;
 
-		private String growthImageUrl;
-
-		private String title;
-
-		private String content;
-	}
+        private String content;
+    }
 }
