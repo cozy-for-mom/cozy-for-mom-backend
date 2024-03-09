@@ -29,13 +29,21 @@ jobs:
           echo "MYSQL_DATABASE_PASSWORD=${{ secrets.MYSQL_DATABASE_PASSWORD }}" >> .env
           echo "MYSQL_DATABASE_URL=${{ secrets.MYSQL_DATABASE_URL }}" >> .env
           echo "MYSQL_DATABASE_USERNAME=${{ secrets.MYSQL_DATABASE_USERNAME }}" >> .env
+          echo "AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}" >> .env
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
+          echo "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
 
-      - name: Set application.yml
+      - name: Set application-dev.yml
         run: |
           sed -i "s|@MYSQL_DATABASE_NAME@|${{ secrets.MYSQL_DATABASE_NAME }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@MYSQL_DATABASE_PASSWORD@|${{ secrets.MYSQL_DATABASE_PASSWORD }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@MYSQL_DATABASE_URL@|${{ secrets.MYSQL_DATABASE_URL }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@MYSQL_DATABASE_USERNAME@|${{ secrets.MYSQL_DATABASE_USERNAME }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@AWS_S3_BUCKET@|${{ secrets.AWS_S3_BUCKET }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@AWS_REGION@|${{ secrets.AWS_REGION }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@AWS_ACCESS_KEY@|${{ secrets.AWS_ACCESS_KEY }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@AWS_SECRET_ACCESS_KEY@|${{ secrets.AWS_SECRET_ACCESS_KEY }}|g" ./src/main/resources/application-dev.yml
 
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
