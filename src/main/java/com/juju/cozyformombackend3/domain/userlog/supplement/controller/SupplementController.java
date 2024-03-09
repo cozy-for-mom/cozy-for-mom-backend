@@ -1,6 +1,7 @@
 package com.juju.cozyformombackend3.domain.userlog.supplement.controller;
 
 import java.net.URI;
+import java.time.LocalDate;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import com.juju.cozyformombackend3.domain.userlog.supplement.service.SupplementS
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -26,36 +28,35 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/v1/supplement")
 public class SupplementController {
 
-	private final SupplementService supplementService;
+    private final SupplementService supplementService;
 
-	@PostMapping
-	public ResponseEntity<SuccessResponse> registerSupplement(
-		@LoginUserId Long userId,
-		@RequestBody RegisterSupplementRequest request) {
-		RegisterSupplementResponse response = supplementService.registerSupplement(userId, request);
-		//TODO: 유의미한 userID로 변경
-		URI uri = URI.create("/api/v1/supplement/" + userId);
+    @PostMapping
+    public ResponseEntity<SuccessResponse> registerSupplement(
+        @LoginUserId Long userId,
+        @RequestBody @Valid RegisterSupplementRequest request) {
+        RegisterSupplementResponse response = supplementService.registerSupplement(userId, request);
+        URI uri = URI.create("/api/v1/supplement/intake" + LocalDate.now());
 
-		return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
-	}
+        return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
+    }
 
-	@PutMapping("/{id}")
-	public ResponseEntity<SuccessResponse> modifySupplement(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long supplementId,
-		@RequestBody UpdateSupplementRequest request) {
-		UpdateSupplementResponse response = supplementService.updateSupplement(supplementId, request);
+    @PutMapping("/{id}")
+    public ResponseEntity<SuccessResponse> modifySupplement(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long supplementId,
+        @RequestBody @Valid UpdateSupplementRequest request) {
+        UpdateSupplementResponse response = supplementService.updateSupplement(supplementId, request);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<SuccessResponse> removeSupplement(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long supplementId) {
-		supplementService.deleteSupplement(supplementId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponse> removeSupplement(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long supplementId) {
+        supplementService.deleteSupplement(supplementId);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
 }

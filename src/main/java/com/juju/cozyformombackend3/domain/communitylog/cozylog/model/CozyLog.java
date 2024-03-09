@@ -30,76 +30,78 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class CozyLog extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(name = "title", nullable = false, length = 100)
-	private String title;
+    @Column(name = "title",
+        columnDefinition = "VARCHAR(100) NOT NULL, FULLTEXT INDEX full_text_idx_title (title) WITH PARSER ngram")
+    private String title;
 
-	@Column(name = "content", nullable = false, columnDefinition = "TEXT")
-	private String content;
+    @Column(name = "content",
+        columnDefinition = "TEXT NOT NULL, FULLTEXT INDEX full_text_idx_content (content) WITH PARSER ngram")
+    private String content;
 
-	@Column(name = "mode", nullable = false, length = 10)
-	@Enumerated(EnumType.STRING)
-	private CozyLogMode mode;
+    @Column(name = "mode", nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
+    private CozyLogMode mode;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	@Column(name = "view")
-	private Long view = 0L;
+    @Column(name = "view")
+    private Long view = 0L;
 
-	@OneToMany(mappedBy = "cozyLog", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	private final List<CozyLogImage> cozyLogImageList = new ArrayList<>();
+    @OneToMany(mappedBy = "cozyLog", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private final List<CozyLogImage> cozyLogImageList = new ArrayList<>();
 
-	@OneToMany(mappedBy = "cozyLog", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	private final List<Comment> commentList = new ArrayList<>();
+    @OneToMany(mappedBy = "cozyLog", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private final List<Comment> commentList = new ArrayList<>();
 
-	@Builder
-	private CozyLog(User user, String title, String content, List<CozyLogImage> imageList, CozyLogMode mode) {
-		this.user = user;
-		this.title = title;
-		this.content = content;
-		this.mode = mode;
-		this.cozyLogImageList.addAll(imageList);
-	}
+    @Builder
+    private CozyLog(User user, String title, String content, List<CozyLogImage> imageList, CozyLogMode mode) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.mode = mode;
+        this.cozyLogImageList.addAll(imageList);
+    }
 
-	public static CozyLog of(User user, String title, String content, List<CozyLogImage> imageList, CozyLogMode mode) {
-		CozyLog newCozyLog = CozyLog.builder()
-			.user(user)
-			.title(title)
-			.content(content)
-			.imageList(imageList)
-			.mode(mode)
-			.build();
-		imageList.forEach(image -> image.updateCozyLog(newCozyLog));
+    public static CozyLog of(User user, String title, String content, List<CozyLogImage> imageList, CozyLogMode mode) {
+        CozyLog newCozyLog = CozyLog.builder()
+            .user(user)
+            .title(title)
+            .content(content)
+            .imageList(imageList)
+            .mode(mode)
+            .build();
+        imageList.forEach(image -> image.updateCozyLog(newCozyLog));
 
-		return newCozyLog;
-	}
+        return newCozyLog;
+    }
 
-	public void updateTextContent(String title, String content, CozyLogMode mode) {
-		this.title = title;
-		this.content = content;
-		this.mode = mode;
-	}
+    public void updateTextContent(String title, String content, CozyLogMode mode) {
+        this.title = title;
+        this.content = content;
+        this.mode = mode;
+    }
 
-	public void updateImageList(List<CozyLogImage> imageList) {
-		this.cozyLogImageList.clear();
-		this.cozyLogImageList.addAll(imageList);
-		imageList.forEach(image -> image.updateCozyLog(this));
-	}
+    public void updateImageList(List<CozyLogImage> imageList) {
+        this.cozyLogImageList.clear();
+        this.cozyLogImageList.addAll(imageList);
+        imageList.forEach(image -> image.updateCozyLog(this));
+    }
 
-	public Comment addComment(Comment comment) {
-		this.commentList.add(comment);
-		comment.updateCozyLog(this);
+    public Comment addComment(Comment comment) {
+        this.commentList.add(comment);
+        comment.updateCozyLog(this);
 
-		return comment;
-	}
+        return comment;
+    }
 
-	@Override
-	public void delete() {
+    @Override
+    public void delete() {
 
-	}
+    }
 }

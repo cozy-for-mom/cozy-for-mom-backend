@@ -5,10 +5,18 @@ import java.util.List;
 
 import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.Baby;
+import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
+import com.juju.cozyformombackend3.domain.babylog.growth.error.GrowthErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthDiary;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthRecord;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
+import com.juju.cozyformombackend3.global.util.DateParser;
+import com.juju.cozyformombackend3.global.validation.annotation.IsLocalDate;
+import com.juju.cozyformombackend3.global.validation.annotation.IsPastOrPresentDate;
+import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,15 +25,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SaveGrowthRequest {
 
-	private Long babyProfileId;
-	private LocalDate date;
-	private String growthImageUrl;
-	private String title;
-	private String content;
-	private List<BabyInfoRequest> babies;
+    @Min(1)
+    private Long babyProfileId;
+    @IsLocalDate
+    @IsPastOrPresentDate
+    private String date;
+    private String growthImageUrl;
+
+    @NotBlank(message = "제목을 입력해주세요.")
+    private String title;
+    private String content;
+    private List<BabyInfoRequest> babies;
+
+    public LocalDate getRecordAt() {
+        return DateParser.stringDateToLocalDate(date);
+    }
 
 	public GrowthDiary toGrowthDiary() {
-		return GrowthDiary.of(date, growthImageUrl, title, content);
+		return GrowthDiary.of(getRecordAt(), growthImageUrl, title, content);
 	}
 
 	public GrowthRecord toGrowthRecord(Baby baby) {
@@ -35,23 +52,24 @@ public class SaveGrowthRequest {
 			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY)))
 			.getGrowthInfo();
 
-		return GrowthRecord.of(baby.getId(), date, growthInfo.weight, growthInfo.headDiameter, growthInfo.headCircum,
+		return GrowthRecord.of(baby.getId(), getRecordAt(), growthInfo.weight, growthInfo.headDiameter, growthInfo.headCircum,
 			growthInfo.abdomenCircum, growthInfo.thighLength);
 	}
 
-	@Getter
-	private static class BabyInfoRequest {
-		private Long babyId;
-		private String babyName;
-		private GrowthInfoRequest growthInfo;
-	}
+    @Getter
+    private static class BabyInfoRequest {
+        @Min(1)
+        private Long babyId;
+        private String babyName;
+        private GrowthInfoRequest growthInfo;
+    }
 
-	@Getter
-	private static class GrowthInfoRequest {
-		private double weight;
-		private double headDiameter;
-		private double headCircum;
-		private double abdomenCircum;
-		private double thighLength;
-	}
+    @Getter
+    private static class GrowthInfoRequest {
+        private double weight;
+        private double headDiameter;
+        private double headCircum;
+        private double abdomenCircum;
+        private double thighLength;
+    }
 }

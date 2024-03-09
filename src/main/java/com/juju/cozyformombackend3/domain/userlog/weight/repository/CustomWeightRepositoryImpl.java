@@ -15,48 +15,48 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomWeightRepositoryImpl implements CustomWeightRepository {
 
-	private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory jpaQueryFactory;
 
-	@Override
-	public List<FindPeriodicWeight> findPeriodRecordByDate(FindPeriodRecordCondition condition) {
-		return switch (condition.getType()) {
-			case MONTHLY -> findMonthlyRecordByDate(condition.getDate(), condition.getSize());
-			case WEEKLY -> findWeeklyRecordByDate(condition.getDate(), condition.getSize());
-			default -> findDailyRecordByDate(condition.getDate(), condition.getSize());
-		};
-	}
+    @Override
+    public List<FindPeriodicWeight> findPeriodRecordByDate(FindPeriodRecordCondition condition) {
+        return switch (condition.getType()) {
+            case MONTHLY -> findMonthlyRecordByDate(condition.getDate(), condition.getSize());
+            case WEEKLY -> findWeeklyRecordByDate(condition.getDate(), condition.getSize());
+            default -> findDailyRecordByDate(condition.getDate(), condition.getSize());
+        };
+    }
 
-	private List<FindPeriodicWeight> findMonthlyRecordByDate(LocalDate endDate, Long size) {
-		return jpaQueryFactory.select(new QFindPeriodicWeight(
-				weightRecord.recordAt.stringValue(),
-				weightRecord.weight.avg()))
-			.from(weightRecord)
-			.where(weightRecord.recordAt
-				.between(endDate.minusMonths(size).withDayOfMonth(1), endDate))
-			.groupBy(weightRecord.recordAt.month())
-			.fetch();
-	}
+    private List<FindPeriodicWeight> findMonthlyRecordByDate(LocalDate endDate, Long size) {
+        return jpaQueryFactory.select(new QFindPeriodicWeight(
+                weightRecord.recordAt.max(),
+                weightRecord.weight.avg()))
+            .from(weightRecord)
+            .where(weightRecord.recordAt
+                .between(endDate.minusMonths(size).withDayOfMonth(1), endDate))
+            .groupBy(weightRecord.recordAt.month())
+            .orderBy(weightRecord.recordAt.desc())
+            .fetch();
+    }
 
-	private List<FindPeriodicWeight> findWeeklyRecordByDate(LocalDate endDate, Long size) {
+    private List<FindPeriodicWeight> findWeeklyRecordByDate(LocalDate endDate, Long size) {
+        return jpaQueryFactory.select(new QFindPeriodicWeight(
+                weightRecord.recordAt.max(),
+                weightRecord.weight.avg()))
+            .from(weightRecord)
+            .where(weightRecord.recordAt
+                .between(endDate.minusWeeks(size), endDate))
+            .groupBy(weightRecord.recordAt.week())
+            .orderBy(weightRecord.recordAt.desc())
+            .fetch();
+    }
 
-		return jpaQueryFactory.select(new QFindPeriodicWeight(
-				weightRecord.recordAt.stringValue(),
-				weightRecord.weight.avg()))
-			.from(weightRecord)
-			.where(weightRecord.recordAt
-				.between(endDate.minusWeeks(size), endDate))
-			.groupBy(weightRecord.recordAt.week())
-			.fetch();
-	}
-
-	private List<FindPeriodicWeight> findDailyRecordByDate(LocalDate endDate, Long size) {
-		return jpaQueryFactory.select(new QFindPeriodicWeight(
-				weightRecord.recordAt.stringValue(),
-				weightRecord.weight.avg()))
-			.from(weightRecord)
-			.where(weightRecord.recordAt
-				.between(endDate.minusDays(size), endDate))
-			.groupBy(weightRecord.recordAt)
-			.fetch();
-	}
+    private List<FindPeriodicWeight> findDailyRecordByDate(LocalDate endDate, Long size) {
+        return jpaQueryFactory.select(new QFindPeriodicWeight(
+                weightRecord.recordAt,
+                weightRecord.weight))
+            .from(weightRecord)
+            .where(weightRecord.recordAt.between(endDate.minusDays(size), endDate))
+            .orderBy(weightRecord.recordAt.desc())
+            .fetch();
+    }
 }

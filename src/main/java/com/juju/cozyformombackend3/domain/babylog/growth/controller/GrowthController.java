@@ -23,6 +23,7 @@ import com.juju.cozyformombackend3.domain.babylog.growth.service.GrowthService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,54 +31,54 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/v1/growth")
 public class GrowthController {
 
-	private final GrowthService growthService;
+    private final GrowthService growthService;
 
-	@PostMapping
-	public ResponseEntity<SuccessResponse> createGrowth(
-		@LoginUserId Long userId,
-		@RequestBody SaveGrowthRequest request) {
+    @PostMapping
+    public ResponseEntity<SuccessResponse> createGrowth(
+        @LoginUserId Long userId,
+        @RequestBody @Valid SaveGrowthRequest request) {
 
-		SaveGrowthResponse response = growthService.saveGrowth(userId, request);
-		URI uri = URI.create("/api/v1/growth/" + response.getGrowthDiaryId());
+        SaveGrowthResponse response = growthService.saveGrowth(userId, request);
+        URI uri = URI.create("/api/v1/growth/" + response.getGrowthDiaryId());
 
-		return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
-	}
+        return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
+    }
 
-	@PutMapping("/{id}")
-	public ResponseEntity<SuccessResponse> modifyGrowth(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long reportId,
-		@RequestBody UpdateGrowthRequest request) {
-		UpdateGrowthResponse response = growthService.updateGrowth(userId, reportId, request);
+    @PutMapping("/{id}")
+    public ResponseEntity<SuccessResponse> modifyGrowth(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long reportId,
+        @RequestBody @Valid UpdateGrowthRequest request) {
+        UpdateGrowthResponse response = growthService.updateGrowth(userId, reportId, request);
 
-		return ResponseEntity.ok(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok(SuccessResponse.of(200, response));
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<SuccessResponse> removeGrowth(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long reportId) {
-		growthService.deleteGrowth(userId, reportId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponse> removeGrowth(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long reportId) {
+        growthService.deleteGrowth(userId, reportId);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<SuccessResponse> getGrowth(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long reportId) {
-		FindGrowthResponse response = growthService.getGrowth(userId, reportId);
+    @GetMapping("/{id}")
+    public ResponseEntity<SuccessResponse> getGrowth(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long reportId) {
+        FindGrowthResponse response = growthService.getGrowth(userId, reportId);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 
-	@GetMapping("/board")
-	public ResponseEntity<SuccessResponse> getGrowthList(
-		@RequestParam(value = "lastId", defaultValue = "0") Long reportId,
-		@RequestParam(value = "size", defaultValue = "10") Long size
-	) {
-		FindGrowthListResponse response = growthService.getGrowthList(reportId, size);
+    @GetMapping("/board")
+    public ResponseEntity<SuccessResponse> getGrowthList(
+        @RequestParam(value = "lastId", defaultValue = "0") Long reportId,
+        @RequestParam(value = "size", defaultValue = "10") Long size
+    ) {
+        FindGrowthListResponse response = growthService.getGrowthList(reportId, size);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 }

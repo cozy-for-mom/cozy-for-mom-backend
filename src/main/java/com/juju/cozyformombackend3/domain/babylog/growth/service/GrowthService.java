@@ -51,7 +51,7 @@ public class GrowthService {
 		GrowthReport saveReport = GrowthReport.builder()
 			.babyProfile(foundBabyProfile)
 			.growthDiary(savedDiary)
-			.recordAt(request.getDate())
+			.recordAt(request.getRecordAt())
 			.build();
 		GrowthReport savedReport = growthReportRepository.save(saveReport);
 		foundBabyProfile.getBabyList().stream()

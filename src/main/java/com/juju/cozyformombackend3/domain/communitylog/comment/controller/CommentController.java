@@ -21,6 +21,7 @@ import com.juju.cozyformombackend3.domain.communitylog.comment.service.CommentSe
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,46 +29,46 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/cozy-log/{id}/comment")
 public class CommentController {
 
-	private final CommentService commentService;
+    private final CommentService commentService;
 
-	@PostMapping
-	public ResponseEntity<SuccessResponse> createComment(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long cozyLogId,
-		@RequestBody CreateCommentRequest request) {
-		Long createdCommentId = commentService.createComment(userId, cozyLogId, request);
-		URI location = URI.create("/api/v1/cozy-log/" + cozyLogId + "/comment/" + createdCommentId);
+    @PostMapping
+    public ResponseEntity<SuccessResponse> createComment(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long cozyLogId,
+        @RequestBody @Valid CreateCommentRequest request) {
+        Long createdCommentId = commentService.createComment(userId, cozyLogId, request);
+        URI location = URI.create("/api/v1/cozy-log/" + cozyLogId + "/comment/" + createdCommentId);
 
-		return ResponseEntity.created(location)
-			.body(SuccessResponse.of(201, CreateCommentResponse.of(createdCommentId)));
-	}
+        return ResponseEntity.created(location)
+            .body(SuccessResponse.of(201, CreateCommentResponse.of(createdCommentId)));
+    }
 
-	@PutMapping
-	public ResponseEntity<SuccessResponse> modifyComment(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long cozyLogId,
-		@RequestBody ModifyCommentRequest request) {
-		Long modifiedCommentId = commentService.updateComment(userId, request);
+    @PutMapping
+    public ResponseEntity<SuccessResponse> modifyComment(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long cozyLogId,
+        @RequestBody @Valid ModifyCommentRequest request) {
+        Long modifiedCommentId = commentService.updateComment(userId, request);
 
-		return ResponseEntity.ok(SuccessResponse.of(200, ModifyCommentResponse.of(modifiedCommentId)));
-	}
+        return ResponseEntity.ok(SuccessResponse.of(200, ModifyCommentResponse.of(modifiedCommentId)));
+    }
 
-	@DeleteMapping("/{commentId}")
-	public ResponseEntity<Void> removeComment(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long cozyLogId,
-		@PathVariable(name = "commentId") Long commentId) {
-		commentService.deleteComment(userId, commentId);
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> removeComment(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long cozyLogId,
+        @PathVariable(name = "commentId") Long commentId) {
+        commentService.deleteComment(userId, commentId);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
-	@GetMapping
-	public ResponseEntity<SuccessResponse> getCommentList(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long cozyLogId) {
-		FindCommentListResponse response = commentService.findCommentList(cozyLogId);
+    @GetMapping
+    public ResponseEntity<SuccessResponse> getCommentList(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long cozyLogId) {
+        FindCommentListResponse response = commentService.findCommentList(cozyLogId);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 }

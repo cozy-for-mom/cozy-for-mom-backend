@@ -13,7 +13,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.juju.cozyformombackend3.global.config.AWSProperties;
+import com.juju.cozyformombackend3.global.config.aws.AWSProperties;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 import com.juju.cozyformombackend3.global.image.error.ImageErrorCode;
 

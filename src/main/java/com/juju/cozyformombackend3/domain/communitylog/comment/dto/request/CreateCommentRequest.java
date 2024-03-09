@@ -7,11 +7,10 @@ import lombok.Getter;
 
 @Getter
 public class CreateCommentRequest {
+    private Long parentId;
+    private String comment;
 
-	private Long parentId;
-	private String comment;
-
-	public Comment toEntity(User writer) {
-		return Comment.of(comment, parentId, writer, null);
-	}
+    public Comment toEntity(User writer) {
+        return Comment.of(comment, parentId, writer, null);
+    }
 }

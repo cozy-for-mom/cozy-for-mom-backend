@@ -1,8 +1,7 @@
 package com.juju.cozyformombackend3.domain.communitylog.scrap.model;
 
-import java.time.LocalDateTime;
-
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.global.model.BaseEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,22 +20,25 @@ import lombok.NoArgsConstructor;
 @Table(name = "scrap")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Scrap {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class Scrap extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	private Long cozyLogId;
+    private Long cozyLogId;
 
-	private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder
+    public Scrap(User user, Long cozyLogId) {
+        this.user = user;
+        this.cozyLogId = cozyLogId;
+    }
 
-	@Builder
-	public Scrap(User user, Long cozyLogId) {
-		this.user = user;
-		this.cozyLogId = cozyLogId;
-	}
+    @Override
+    public void delete() {
+
+    }
 }

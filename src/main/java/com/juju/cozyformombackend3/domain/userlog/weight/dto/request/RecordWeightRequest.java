@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,14 +14,18 @@ import lombok.Getter;
 @Getter
 public class RecordWeightRequest {
 
-	private LocalDate date;
-	private double weight;
+    @NotNull(message = "몸무게를 기록할 날짜를 입력해주세요.")
+    @PastOrPresent(message = "현재까지의 날짜에 기록할 수 있습니다.")
+    private LocalDate date;
 
-	public WeightRecord toEntity(User user) {
-		return WeightRecord.builder()
-			.recordAt(date)
-			.user(user)
-			.weight(weight)
-			.build();
-	}
+    @NotNull(message = "몸무게를 입력해주세요.")
+    private double weight;
+
+    public WeightRecord toWeightRecord(User user) {
+        return WeightRecord.builder()
+            .recordAt(date)
+            .user(user)
+            .weight(weight)
+            .build();
+    }
 }

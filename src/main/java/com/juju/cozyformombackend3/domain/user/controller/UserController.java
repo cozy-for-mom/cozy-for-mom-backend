@@ -17,37 +17,38 @@ import com.juju.cozyformombackend3.domain.user.service.UserService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/me")
 @RequiredArgsConstructor
 public class UserController {
-	private final UserService userService;
+    private final UserService userService;
 
-	@GetMapping
-	public ResponseEntity<SuccessResponse> getMe(
-		@LoginUserId Long userId) {
-		FindMyInfoResponse response = userService.findMe(userId);
+    @GetMapping
+    public ResponseEntity<SuccessResponse> getMe(
+        @LoginUserId Long userId) {
+        FindMyInfoResponse response = userService.findMe(userId);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 
-	@PutMapping
-	public ResponseEntity<SuccessResponse> modifyMe(
-		@LoginUserId Long userId,
-		@RequestBody UpdateMyInfoRequest request) {
-		UpdateMyInfoResponse response = userService.updateMe(userId, request);
+    @PutMapping
+    public ResponseEntity<SuccessResponse> modifyMe(
+        @LoginUserId Long userId,
+        @RequestBody @Valid UpdateMyInfoRequest request) {
+        UpdateMyInfoResponse response = userService.updateMe(userId, request);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 
-	@PostMapping("/baby/recent")
-	public ResponseEntity<SuccessResponse> modifyRecentBabyProfile(
-		@LoginUserId Long userId,
-		@RequestBody UpdateRecentBabyProfileRequest request) {
-		UpdateRecentBabyProfileResponse response = userService.updateRecentBabyProfile(userId, request);
+    @PostMapping("/baby/recent")
+    public ResponseEntity<SuccessResponse> modifyRecentBabyProfile(
+        @LoginUserId Long userId,
+        @RequestBody @Valid UpdateRecentBabyProfileRequest request) {
+        UpdateRecentBabyProfileResponse response = userService.updateRecentBabyProfile(userId, request);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 }
