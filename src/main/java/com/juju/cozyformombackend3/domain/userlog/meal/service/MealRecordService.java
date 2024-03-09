@@ -26,58 +26,61 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MealRecordService {
 
-	private final MealRecordRepository mealRecordRepository;
-	private final UserRepository userRepository;
+    private final MealRecordRepository mealRecordRepository;
+    private final UserRepository userRepository;
 
-	@Transactional
-	public CreateMealRecordResponse creatdMealRecord(Long userId, CreateMealRecordRequest request) {
-		User user = findUserById(userId);
-		Long savedRecordId = user.addMealRecord(request.getDatetime(), request.getMealType(),
-			request.getMealImageUrl());
+    @Transactional
+    public CreateMealRecordResponse createdMealRecord(Long userId, CreateMealRecordRequest request) {
+        User user = findUserById(userId);
 
-		return CreateMealRecordResponse.of(savedRecordId);
-	}
+        // TODO: record At date 비교하는 거 추가하기
+        // if (mealRecordRepository.existsByUserIdAndMealTypeAndRecordAt())
 
-	@Transactional
-	public UpdateMealRecordResponse updateMealRecord(Long userId, UpdateMealRecordRequest request) {
-		User user = findUserById(userId);
-		MealRecord foundMealRecord = findMealRecordById(request.getId());
-		isMealRecordOwner(foundMealRecord.getUser(), user);
-		Long updatedRecordId = foundMealRecord.update(request.getDatetime(), request.getMealType(),
-			request.getMealImageUrl());
+        MealRecord savedRecord = mealRecordRepository.save(request.toMealRecord(user));
 
-		return UpdateMealRecordResponse.of(updatedRecordId);
-	}
+        return CreateMealRecordResponse.of(savedRecord.getId());
+    }
 
-	@Transactional
-	public void deleteMealRecord(Long userId, Long id) {
-		User user = findUserById(userId);
-		MealRecord foundMealRecord = findMealRecordById(id);
-		isMealRecordOwner(foundMealRecord.getUser(), user);
+    @Transactional
+    public UpdateMealRecordResponse updateMealRecord(Long userId, UpdateMealRecordRequest request) {
+        User user = findUserById(userId);
+        MealRecord foundMealRecord = findMealRecordById(request.getId());
+        isMealRecordOwner(foundMealRecord.getUser(), user);
+        Long updatedRecordId = foundMealRecord.update(request.getRecordAt(), request.getMealType(),
+            request.getMealImageUrl());
 
-		mealRecordRepository.delete(foundMealRecord);
-	}
+        return UpdateMealRecordResponse.of(updatedRecordId);
+    }
 
-	private MealRecord findMealRecordById(Long id) {
-		return mealRecordRepository.findById(id)
-			.orElseThrow(() -> new BusinessException(MealErrorCode.NOT_FOUND_MEAL_RECORD));
-	}
+    @Transactional
+    public void deleteMealRecord(Long userId, Long id) {
+        User user = findUserById(userId);
+        MealRecord foundMealRecord = findMealRecordById(id);
+        isMealRecordOwner(foundMealRecord.getUser(), user);
 
-	private void isMealRecordOwner(User recordOwner, User requestUser) {
-		if (recordOwner != requestUser) {
-			// throw new BusinessException("해당 식사 기록에 대한 권한이 없습니다."
-			throw new BusinessException(MealErrorCode.FORBIDDEN_NOT_YOUR_RESOURCE);
-		}
-	}
+        mealRecordRepository.delete(foundMealRecord);
+    }
 
-	public GetMealRecordResponse getMealRecord(Long userId, String date) {
-		List<DailyMealRecord> findRecordList = mealRecordRepository.searchAllByUserIdAndDate(userId, date);
+    private MealRecord findMealRecordById(Long id) {
+        return mealRecordRepository.findById(id)
+            .orElseThrow(() -> new BusinessException(MealErrorCode.NOT_FOUND_MEAL_RECORD));
+    }
 
-		return GetMealRecordResponse.of(findRecordList);
-	}
+    private void isMealRecordOwner(User recordOwner, User requestUser) {
+        if (recordOwner != requestUser) {
+            // throw new BusinessException("해당 식사 기록에 대한 권한이 없습니다."
+            throw new BusinessException(MealErrorCode.FORBIDDEN_NOT_YOUR_RESOURCE);
+        }
+    }
 
-	private User findUserById(Long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
-	}
+    public GetMealRecordResponse getMealRecord(Long userId, String date) {
+        List<DailyMealRecord> findRecordList = mealRecordRepository.searchAllByUserIdAndDate(userId, date);
+
+        return GetMealRecordResponse.of(findRecordList);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+    }
 }

@@ -1,7 +1,9 @@
 package com.juju.cozyformombackend3.domain.userlog.meal.controller;
 
 import java.net.URI;
+import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,7 @@ import com.juju.cozyformombackend3.domain.userlog.meal.service.MealRecordService
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,42 +34,42 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/v1/meal")
 public class MealRecordController {
 
-	private final MealRecordService mealRecordService;
+    private final MealRecordService mealRecordService;
 
-	@PostMapping
-	public ResponseEntity<SuccessResponse> saveMealRecord(
-		@LoginUserId Long userId,
-		@RequestBody CreateMealRecordRequest request) {
-		CreateMealRecordResponse response = mealRecordService.creatdMealRecord(userId, request);
-		URI uri = URI.create("/api/v1/meal/" + response.getId());
+    @PostMapping
+    public ResponseEntity<SuccessResponse> saveMealRecord(
+        @LoginUserId Long userId,
+        @RequestBody @Valid CreateMealRecordRequest request) {
+        CreateMealRecordResponse response = mealRecordService.createdMealRecord(userId, request);
+        URI uri = URI.create("/api/v1/meal/" + response.getId());
 
-		return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
-	}
+        return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
+    }
 
-	@PutMapping
-	public ResponseEntity<SuccessResponse> modifyMealRecord(
-		@LoginUserId Long userId,
-		@RequestBody UpdateMealRecordRequest request) {
-		UpdateMealRecordResponse response = mealRecordService.updateMealRecord(userId, request);
+    @PutMapping
+    public ResponseEntity<SuccessResponse> modifyMealRecord(
+        @LoginUserId Long userId,
+        @RequestBody @Valid UpdateMealRecordRequest request) {
+        UpdateMealRecordResponse response = mealRecordService.updateMealRecord(userId, request);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<SuccessResponse> removeMealRecord(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long id) {
-		mealRecordService.deleteMealRecord(userId, id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponse> removeMealRecord(
+        @LoginUserId Long userId,
+        @PathVariable(name = "id") Long id) {
+        mealRecordService.deleteMealRecord(userId, id);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, null));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, null));
+    }
 
-	@GetMapping
-	public ResponseEntity<SuccessResponse> getMealRecord(
-		@LoginUserId Long userId,
-		@RequestParam(name = "date") String date) {
-		GetMealRecordResponse response = mealRecordService.getMealRecord(userId, date);
+    @GetMapping
+    public ResponseEntity<SuccessResponse> getMealRecord(
+        @LoginUserId Long userId,
+        @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        GetMealRecordResponse response = mealRecordService.getMealRecord(userId, String.valueOf(date));
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 }
