@@ -25,6 +25,6 @@ public class UpdateSupplementRecordRequest {
     private String datetime;
 
     public LocalDateTime getRecordAt() {
-        return DateParser.stringToLocalDateTime(datetime);
+        return DateParser.stringDateTimeToLocalDateTime(datetime);
     }
 }

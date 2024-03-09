@@ -40,8 +40,8 @@ public class CreateBabyProfileRequest {
 
     public BabyProfile toBabyProfile(User user) {
         return BabyProfile.of(user, babies.size(),
-            stringToLocalDate(dueAt),
-            stringToLocalDate(dueAt),
+            stringDateToLocalDate(dueAt),
+            stringDateToLocalDate(dueAt),
             profileImageUrl);
     }
 

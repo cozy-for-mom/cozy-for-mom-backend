@@ -35,7 +35,7 @@ public class UpdateGrowthRequest {
     private List<BabyInfoRequest> babies;
 
     public LocalDate getRecordAt() {
-        return DateParser.stringToLocalDate(date);
+        return DateParser.stringDateToLocalDate(date);
     }
 
     public BabyInfoRequest getBabyInfo(Long growthRecordId) {

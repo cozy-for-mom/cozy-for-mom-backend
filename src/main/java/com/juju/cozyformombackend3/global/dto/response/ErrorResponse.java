@@ -22,7 +22,7 @@ public class ErrorResponse {
 
     @Builder
     public ErrorResponse(LocalDateTime timestamp, int status, String message, String path) {
-        this.timestamp = DateParser.dateTimeToStringFormatDateTime(timestamp);
+        this.timestamp = DateParser.localDateTimeToStringFormatDateTime(timestamp);
         this.status = status;
         this.message = message;
         this.path = path;

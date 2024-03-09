@@ -10,21 +10,21 @@ import lombok.Getter;
 @Getter
 public class SuccessResponse<T> {
 
-	private final String timestamp;
-	private final int status;
-	private final T data;
+    private final String timestamp;
+    private final int status;
+    private final T data;
 
-	@Builder
-	public SuccessResponse(int status, T data) {
-		this.timestamp = DateParser.dateTimeToStringFormatDateTime(LocalDateTime.now());
-		this.status = status;
-		this.data = data;
-	}
+    @Builder
+    public SuccessResponse(int status, T data) {
+        this.timestamp = DateParser.localDateTimeToStringFormatDateTime(LocalDateTime.now());
+        this.status = status;
+        this.data = data;
+    }
 
-	public static <T> SuccessResponse of(int status, T data) {
-		return SuccessResponse.builder()
-			.status(status)
-			.data(data)
-			.build();
-	}
+    public static <T> SuccessResponse of(int status, T data) {
+        return SuccessResponse.builder()
+            .status(status)
+            .data(data)
+            .build();
+    }
 }

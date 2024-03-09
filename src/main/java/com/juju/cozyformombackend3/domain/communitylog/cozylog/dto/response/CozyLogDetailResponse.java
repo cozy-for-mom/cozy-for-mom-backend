@@ -16,44 +16,44 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class CozyLogDetailResponse {
-	private final Writer writer;
-	private final String title;
-	private final String content;
-	private List<ImageInfoDto> imageList;
-	private final String mode;
-	private final String createdAt;
-	private String updatedAt;
-	private final Long scrapCount;
-	private final Long viewCount;
-	private final boolean isScraped;
+    private final Writer writer;
+    private final String title;
+    private final String content;
+    private List<ImageInfoDto> imageList;
+    private final String mode;
+    private final String createdAt;
+    private String updatedAt;
+    private final Long scrapCount;
+    private final Long viewCount;
+    private final boolean isScraped;
 
-	public static CozyLogDetailResponse of(CozyLog foundCozyLog, Long scrapCount, boolean isScraped) {
-		return CozyLogDetailResponse.builder()
-			.writer(new Writer(foundCozyLog.getUser().getId(), foundCozyLog.getUser().getNickname()))
-			.title(foundCozyLog.getTitle())
-			.content(foundCozyLog.getContent())
-			.imageList(getImageDtoList(foundCozyLog.getCozyLogImageList()))
-			.mode(String.valueOf(foundCozyLog.getMode()))
-			.createdAt(dateTimeToStringFormatDateTime(foundCozyLog.getCreatedAt()))
-			.updatedAt(dateTimeToStringFormatDateTime(foundCozyLog.getModifiedAt()))
-			.scrapCount(scrapCount)
-			.viewCount(foundCozyLog.getView())
-			.isScraped(isScraped)
-			.build();
-	}
+    public static CozyLogDetailResponse of(CozyLog foundCozyLog, Long scrapCount, boolean isScraped) {
+        return CozyLogDetailResponse.builder()
+            .writer(new Writer(foundCozyLog.getUser().getId(), foundCozyLog.getUser().getNickname()))
+            .title(foundCozyLog.getTitle())
+            .content(foundCozyLog.getContent())
+            .imageList(getImageDtoList(foundCozyLog.getCozyLogImageList()))
+            .mode(String.valueOf(foundCozyLog.getMode()))
+            .createdAt(localDateTimeToStringFormatDateTime(foundCozyLog.getCreatedAt()))
+            .updatedAt(localDateTimeToStringFormatDateTime(foundCozyLog.getModifiedAt()))
+            .scrapCount(scrapCount)
+            .viewCount(foundCozyLog.getView())
+            .isScraped(isScraped)
+            .build();
+    }
 
-	private static List<ImageInfoDto> getImageDtoList(List<CozyLogImage> imageList) {
-		return imageList.stream()
-			.map(image -> ImageInfoDto.of(image))
-			.toList();
-	}
+    private static List<ImageInfoDto> getImageDtoList(List<CozyLogImage> imageList) {
+        return imageList.stream()
+            .map(image -> ImageInfoDto.of(image))
+            .toList();
+    }
 
-	@Getter
-	@AllArgsConstructor
-	private static class Writer {
-		private Long id;
-		private String nickname;
-	}
+    @Getter
+    @AllArgsConstructor
+    private static class Writer {
+        private Long id;
+        private String nickname;
+    }
 }
 
 /**

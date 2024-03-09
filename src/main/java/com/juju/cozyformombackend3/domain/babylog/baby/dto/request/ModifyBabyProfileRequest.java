@@ -47,7 +47,7 @@ public class ModifyBabyProfileRequest {
     }
 
     public LocalDate getDueAt() {
-        return stringToLocalDate(this.dueAt);
+        return stringDateToLocalDate(this.dueAt);
     }
 
     public BabyDto getBaby(Long babyId) {

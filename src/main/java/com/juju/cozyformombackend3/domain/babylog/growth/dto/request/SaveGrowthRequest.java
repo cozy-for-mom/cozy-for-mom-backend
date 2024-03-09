@@ -36,7 +36,7 @@ public class SaveGrowthRequest {
     private List<BabyInfoRequest> babies;
 
     public LocalDate getRecordAt() {
-        return DateParser.stringToLocalDate(date);
+        return DateParser.stringDateToLocalDate(date);
     }
 
     public GrowthDiary toGrowthDiary(BabyProfile babyProfile) {

@@ -34,7 +34,7 @@ public class UpdateMealRecordRequest {
     private String mealImageUrl;
 
     public LocalDateTime getRecordAt() {
-        return DateParser.stringToLocalDateTime(datetime);
+        return DateParser.stringDateTimeToLocalDateTime(datetime);
     }
 
     public MealType getMealType() {
