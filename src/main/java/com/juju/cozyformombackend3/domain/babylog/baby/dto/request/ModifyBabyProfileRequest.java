@@ -11,7 +11,6 @@ import com.juju.cozyformombackend3.domain.babylog.baby.model.Gender;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 import com.juju.cozyformombackend3.global.validation.annotation.IsGenderType;
 import com.juju.cozyformombackend3.global.validation.annotation.IsLocalDate;
-import com.juju.cozyformombackend3.global.validation.annotation.IsPastOrPresentDate;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class ModifyBabyProfileRequest {
 
     @IsLocalDate
-    @IsPastOrPresentDate
+    //TODO 미래 날짜
     private String dueAt;
     private String profileImageUrl;
     private List<BabyDto> babies;
