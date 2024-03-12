@@ -6,12 +6,12 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #    url: ${MYSQL_DATABASE_URL}
-    #    username: ${MYSQL_DATABASE_USERNAME}
-    #    password: ${MYSQL_DATABASE_PASSWORD}
-    url: ${LOCAL_URL}
-    username: ${LOCAL_USERNAME}
-    password: ${LOCAL_PASSWORD}
+    url: ${MYSQL_DATABASE_URL}
+    username: ${MYSQL_DATABASE_USERNAME}
+    password: ${MYSQL_DATABASE_PASSWORD}
+  #    url: ${LOCAL_URL}
+  #    username: ${LOCAL_USERNAME}
+  #    password: ${LOCAL_PASSWORD}
 
   jpa:
     hibernate:

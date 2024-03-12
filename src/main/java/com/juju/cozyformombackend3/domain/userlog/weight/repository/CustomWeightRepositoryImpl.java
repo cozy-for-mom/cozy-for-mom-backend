@@ -34,7 +34,7 @@ public class CustomWeightRepositoryImpl implements CustomWeightRepository {
             .where(weightRecord.recordAt
                 .between(endDate.minusMonths(size).withDayOfMonth(1), endDate))
             .groupBy(weightRecord.recordAt.month())
-            .orderBy(weightRecord.recordAt.desc())
+            .orderBy(weightRecord.recordAt.month().desc())
             .fetch();
     }
 
@@ -46,7 +46,7 @@ public class CustomWeightRepositoryImpl implements CustomWeightRepository {
             .where(weightRecord.recordAt
                 .between(endDate.minusWeeks(size), endDate))
             .groupBy(weightRecord.recordAt.week())
-            .orderBy(weightRecord.recordAt.desc())
+            .orderBy(weightRecord.recordAt.week().desc())
             .fetch();
     }
 

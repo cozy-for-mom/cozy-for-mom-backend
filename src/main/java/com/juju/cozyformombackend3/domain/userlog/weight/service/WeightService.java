@@ -63,11 +63,16 @@ public class WeightService {
 
     public FindWeightListResponse findWeight(FindPeriodRecordCondition condition) {
         User user = findUserById(condition.getUserId());
-        WeightRecord weightRecord = weightRepository.findByUserAndRecordAt(user, condition.getDate())
+        // TODO 쿼리 합치기
+        WeightRecord lastWeightRecord = weightRepository.findFirstByUserIdOrderByRecordAtDesc(condition.getUserId());
+
+        WeightRecord weightRecord = weightRepository.findByUserAndRecordAt(user, LocalDate.now())
             .orElse(WeightRecord.builder().user(user).weight(0d).recordAt(condition.getDate()).build());
+        
         List<FindPeriodicWeight> findPeriodicWeights = weightRepository.findPeriodRecordByDate(condition);
 
-        return FindWeightListResponse.of(condition.getType(), weightRecord.getWeight(), findPeriodicWeights);
+        return FindWeightListResponse.of(condition.getType(), weightRecord.getWeight(), lastWeightRecord.getRecordAt(),
+            findPeriodicWeights);
     }
 
     private User findUserById(Long userId) {
