@@ -13,4 +13,6 @@ public interface WeightRepository extends JpaRepository<WeightRecord, Long>, Cus
     Optional<WeightRecord> findByUserAndRecordAt(User user, LocalDate date);
 
     boolean existsByUserIdAndRecordAt(Long id, LocalDate date);
+
+    WeightRecord findFirstByUserIdOrderByRecordAtDesc(Long userId);
 }
