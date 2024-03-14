@@ -8,6 +8,7 @@ import com.juju.cozyformombackend3.domain.babylog.baby.model.Baby;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.Gender;
 import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.global.validation.annotation.IsFuture;
 import com.juju.cozyformombackend3.global.validation.annotation.IsGenderType;
 import com.juju.cozyformombackend3.global.validation.annotation.IsLocalDate;
 
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class CreateBabyProfileRequest {
 
     @IsLocalDate
+    @IsFuture
     //TODO 미래 날짜
     private String dueAt;
     private String profileImageUrl;

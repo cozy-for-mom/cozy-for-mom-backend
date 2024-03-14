@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.ApplyScrapRequest;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.UnscrapListRequest;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.response.FindScrapListResponse;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.response.ScrapResponse;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.service.ScrapService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -30,18 +31,18 @@ public class ScrapController {
     public ResponseEntity<SuccessResponse> scrapSave(
         @LoginUserId Long userId,
         @RequestBody @Valid ApplyScrapRequest request) {
-        scrapService.saveScrap(userId, request);
+        ScrapResponse response = scrapService.saveScrap(userId, request);
         URI location = URI.create("/api/v1/cozy-log/" + request.getCozyLogId());
 
-        return ResponseEntity.created(location).body(SuccessResponse.of(201, null));
+        return ResponseEntity.created(location).body(SuccessResponse.of(201, response));
     }
 
     @PostMapping("/unscraps")
-    public ResponseEntity<SuccessResponse> unscrapList(@LoginUserId Long userId,
+    public ResponseEntity<Void> unscrapList(@LoginUserId Long userId,
         @RequestBody UnscrapListRequest request) {
         scrapService.deleteScrapList(userId, request);
 
-        return ResponseEntity.ok(SuccessResponse.of(200, null));
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping

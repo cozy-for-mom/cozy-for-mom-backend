@@ -36,11 +36,11 @@ public class CommentController {
         @LoginUserId Long userId,
         @PathVariable(name = "id") Long cozyLogId,
         @RequestBody @Valid CreateCommentRequest request) {
-        Long createdCommentId = commentService.createComment(userId, cozyLogId, request);
-        URI location = URI.create("/api/v1/cozy-log/" + cozyLogId + "/comment/" + createdCommentId);
+        CreateCommentResponse response = commentService.createComment(userId, cozyLogId, request);
+        URI location = URI.create("/api/v1/cozy-log/" + cozyLogId + "/comment/" + response.getCommentId());
 
         return ResponseEntity.created(location)
-            .body(SuccessResponse.of(201, CreateCommentResponse.of(createdCommentId)));
+            .body(SuccessResponse.of(201, response));
     }
 
     @PutMapping

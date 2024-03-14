@@ -18,9 +18,6 @@ public class PastOrPresentValidatorForString implements ConstraintValidator<IsPa
             return false;
         }
 
-        if (datetime.isAfter(LocalDateTime.now())) {
-            return false;
-        }
-        return true;
+        return !datetime.isAfter(LocalDateTime.now());
     }
 }

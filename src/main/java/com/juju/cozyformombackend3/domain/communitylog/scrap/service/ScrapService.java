@@ -11,6 +11,7 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.repository.CozyLo
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.ApplyScrapRequest;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.UnscrapListRequest;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.response.FindScrapListResponse;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.response.ScrapResponse;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.error.ScrapErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.model.Scrap;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.repository.ScrapRepository;
@@ -30,25 +31,27 @@ public class ScrapService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void saveScrap(Long userId, ApplyScrapRequest request) {
+    public ScrapResponse saveScrap(Long userId, ApplyScrapRequest request) {
         if (request.getIsScraped()) {
-            addScrap(userId, request);
+            return addScrap(userId, request);
         } else {
-            deleteScrap(userId, request);
+            return deleteScrap(userId, request);
         }
     }
 
-    private void deleteScrap(Long userId, ApplyScrapRequest request) {
+    private ScrapResponse deleteScrap(Long userId, ApplyScrapRequest request) {
         Scrap foundScrap = scrapRepository.findByCozyLogIdAndUserId(request.getCozyLogId(), userId)
             .orElseThrow(() -> new BusinessException(ScrapErrorCode.NOT_FOUND_NOT_EXIST));
         scrapRepository.delete(foundScrap);
+        return ScrapResponse.of(request.getCozyLogId());
     }
 
-    private void addScrap(Long userId, ApplyScrapRequest request) {
+    private ScrapResponse addScrap(Long userId, ApplyScrapRequest request) {
         notExistsCozyLog(request.getCozyLogId());
         existsScrap(userId, request.getCozyLogId());
         User foundUser = findUserById(userId);
         scrapRepository.save(request.toScrap(foundUser));
+        return ScrapResponse.of(request.getCozyLogId());
     }
 
     private void existsScrap(Long userId, Long cozyLogId) {

@@ -15,6 +15,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.juju.cozyformombackend3.global.config.aws.AWSProperties;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
+import com.juju.cozyformombackend3.global.image.dto.response.UploadImageResponse;
 import com.juju.cozyformombackend3.global.image.error.ImageErrorCode;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class S3ImageServiceImpl implements ImageService {
     private final AWSProperties awsProperties;
 
     @Override
-    public String upload(Long userId, MultipartFile image) {
+    public UploadImageResponse upload(Long userId, MultipartFile image) {
         Optional<String> imageContentType = Optional.ofNullable(image.getContentType());
         if (imageContentType.isEmpty() || !imageContentType.get().contains("image")) {
             // TODO: file error로 고치기
@@ -59,7 +60,7 @@ public class S3ImageServiceImpl implements ImageService {
             //TODO: http error code 찾기
             throw new BusinessException(ImageErrorCode.CONFLICT_FAIL_TO_UPLOAD_IMAGE);
         }
-        return amazonS3.getUrl(awsProperties.getS3Bucket(), fileName).toString();
+        return UploadImageResponse.of(amazonS3.getUrl(awsProperties.getS3Bucket(), fileName).toString());
     }
 
     @Override
