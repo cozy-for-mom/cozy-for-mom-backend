@@ -7,6 +7,7 @@ import java.util.List;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.ImageInfoDto;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLog;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogImage;
+import com.juju.cozyformombackend3.domain.user.model.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class CozyLogDetailResponse {
 
     public static CozyLogDetailResponse of(CozyLog foundCozyLog, Long scrapCount, boolean isScraped) {
         return CozyLogDetailResponse.builder()
-            .writer(new Writer(foundCozyLog.getUser().getId(), foundCozyLog.getUser().getNickname()))
+            .writer(new Writer(foundCozyLog.getUser()))
             .title(foundCozyLog.getTitle())
             .content(foundCozyLog.getContent())
             .imageList(getImageDtoList(foundCozyLog.getCozyLogImageList()))
@@ -53,25 +54,12 @@ public class CozyLogDetailResponse {
     private static class Writer {
         private Long id;
         private String nickname;
+        private String profileImageUrl;
+
+        public Writer(User user) {
+            this.id = user.getId();
+            this.nickname = user.getNickname();
+            this.profileImageUrl = user.getProfileImageUrl();
+        }
     }
 }
-
-/**
- * 				"writer": {
- * 					"id": 1,
- * 					"nickname": "쥬쥬"
- *                                }
- * 		    "title": "오늘은 태동을 느낀 날",
- * 				"content": "오늘은 미룽이가 ㅎㅎ 발차기질을 했다. 귀여워귀여워 귀여워귀여워 귀여워귀여워 귀여워귀여워 귀여워귀여워",
- * 				"imageList": [
- *              {"imageId": 1, "imageUrl": "imageurlsdfhksjdfhskjdhfksjh1", "description": "미룽이 초음파"},
- *              {"imageId": 2, "imageUrl": "imageurlsdfhksjdfhskjdhfksjh2", "description": "오늘 먹은 식단"},
- *              {"imageId": 3, "imageUrl": "imageurlsdfhksjdfhskjdhfksjh3", "description": "행복한 태교 시간"}
- * 		    ],
- * 				"mode": "PUBLIC",
- * 				"createdAt": "2023-10-28 11:11:11",
- * 				"updatedAt": "2023-10-28 11:31:11",
- * 				"crapCount": 10,
- * 				"viewCount": 231,
- * 				"isScraped": true
- */
