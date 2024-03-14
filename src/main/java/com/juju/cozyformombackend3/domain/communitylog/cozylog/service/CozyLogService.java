@@ -30,81 +30,80 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CozyLogService {
 
-	private final CozyLogRepository cozyLogRepository;
-	private final ScrapRepository scrapRepository;
-	private final UserRepository userRepository;
+    private final CozyLogRepository cozyLogRepository;
+    private final ScrapRepository scrapRepository;
+    private final UserRepository userRepository;
 
-	@Transactional
-	public Long saveCozyLog(Long userId, CreateCozyLogRequest request) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
-		return cozyLogRepository.save(request.toEntity(user)).getId();
-	}
+    @Transactional
+    public Long saveCozyLog(Long userId, CreateCozyLogRequest request) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+        return cozyLogRepository.save(request.toEntity(user)).getId();
+    }
 
-	@Transactional
-	public Long updateCozyLog(Long userId, ModifyCozyLogRequest request) {
-		CozyLog foundCozyLog = findCozyLogById(request.getId());
+    @Transactional
+    public Long updateCozyLog(Long userId, ModifyCozyLogRequest request) {
+        CozyLog foundCozyLog = findCozyLogById(request.getId());
 
-		foundCozyLog.updateTextContent(request.getTitle(), request.getContent(), request.getMode());
-		foundCozyLog.updateImageList(request.getImageList());
+        foundCozyLog.updateTextContent(request.getTitle(), request.getContent(), request.getMode());
+        foundCozyLog.updateImageList(request.getImageList());
 
-		return foundCozyLog.getId();
-	}
+        return foundCozyLog.getId();
+    }
 
-	@Transactional
-	public Long deleteCozyLog(Long userId, Long removeCozyLogId) {
-		cozyLogRepository.deleteById(removeCozyLogId);
+    @Transactional
+    public Long deleteCozyLog(Long userId, Long removeCozyLogId) {
+        cozyLogRepository.deleteById(removeCozyLogId);
 
-		return removeCozyLogId;
-	}
+        return removeCozyLogId;
+    }
 
-	public CozyLogDetailResponse findCozyLogDetail(Long userId, Long cozyLogId) {
-		CozyLog foundCozyLog = findCozyLogById(cozyLogId);
-		checkAccessibleCozyLog(userId, foundCozyLog);
-		Long scrapCount = scrapRepository.countByCozyLogId(cozyLogId);
-		boolean isScraped = isScrapedCozyLog(userId, cozyLogId);
+    public CozyLogDetailResponse findCozyLogDetail(Long userId, Long cozyLogId) {
+        CozyLog foundCozyLog = findCozyLogById(cozyLogId);
+        checkAccessibleCozyLog(userId, foundCozyLog);
+        Long scrapCount = scrapRepository.countByCozyLogId(cozyLogId);
+        boolean isScraped = isScrapedCozyLog(userId, cozyLogId);
 
-		return CozyLogDetailResponse.of(foundCozyLog, scrapCount, isScraped);
+        return CozyLogDetailResponse.of(foundCozyLog, scrapCount, isScraped);
 
-	}
+    }
 
-	private void checkAccessibleCozyLog(Long userId, CozyLog foundCozyLog) {
-		// 코지로그 공개 모드 확인
-		if (CozyLogMode.PRIVATE == foundCozyLog.getMode()) {
-			isMyCozyLog(userId, foundCozyLog.getUser());
-		}
-	}
+    private void checkAccessibleCozyLog(Long userId, CozyLog foundCozyLog) {
+        // 코지로그 공개 모드 확인
+        if (CozyLogMode.PRIVATE == foundCozyLog.getMode()) {
+            isMyCozyLog(userId, foundCozyLog.getUser());
+        }
+    }
 
-	private void isMyCozyLog(Long userId, User user) {
-		if (userId != user.getId()) {
-			throw new BusinessException(CozyLogErrorCode.FORBIDDEN_INACCESSIBLE);
-		}
-	}
+    private void isMyCozyLog(Long userId, User user) {
+        if (userId != user.getId()) {
+            throw new BusinessException(CozyLogErrorCode.FORBIDDEN_INACCESSIBLE);
+        }
+    }
 
-	private boolean isScrapedCozyLog(Long userId, Long cozyLogId) {
-		return scrapRepository.existsByCozyLogIdAndUserId(cozyLogId, userId);
-	}
+    private boolean isScrapedCozyLog(Long userId, Long cozyLogId) {
+        return scrapRepository.existsByCozyLogIdAndUserId(cozyLogId, userId);
+    }
 
-	private CozyLog findCozyLogById(Long cozyLogId) {
-		return cozyLogRepository.findById(cozyLogId)
-			.orElseThrow(() -> new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG));
-	}
+    private CozyLog findCozyLogById(Long cozyLogId) {
+        return cozyLogRepository.findById(cozyLogId)
+            .orElseThrow(() -> new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG));
+    }
 
-	public GetCozyLogListResponse findCozyLogList(Long reportId, Long size, CozyLogSort sort) {
-		List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListOrderBySort(sort, reportId, size);
+    public GetCozyLogListResponse findCozyLogList(Long reportId, Long size, CozyLogSort sort) {
+        List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListOrderBySort(sort, reportId, size);
 
-		return GetCozyLogListResponse.of(cozyLogs);
-	}
+        return GetCozyLogListResponse.of(cozyLogs);
+    }
 
-	public FindMyCozyLogListResponse findMyCozyLog(Long userId, Long reportId, Long size) {
-		List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListByWriterId(userId, reportId, size);
-		Long count = cozyLogRepository.countByUserId(userId);
+    public FindMyCozyLogListResponse findMyCozyLog(Long userId, Long reportId, Long size) {
+        List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListByWriterId(userId, reportId, size);
+        Long count = cozyLogRepository.countByUserId(userId);
+        return FindMyCozyLogListResponse.of(count, cozyLogs);
+    }
 
-		return FindMyCozyLogListResponse.of(count, cozyLogs);
-	}
-
-	@Transactional
-	public void deleteCozyLogList(Long userId, DeleteMyCozyLogListRequest request) {
-		cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
-	}
+    @Transactional
+    public void deleteCozyLogList(Long userId, DeleteMyCozyLogListRequest request) {
+        cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
+    }
 }

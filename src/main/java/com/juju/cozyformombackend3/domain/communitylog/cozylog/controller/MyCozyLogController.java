@@ -20,24 +20,24 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/me/cozy-log")
 @RequiredArgsConstructor
 public class MyCozyLogController {
-	private final CozyLogService cozyLogService;
+    private final CozyLogService cozyLogService;
 
-	@GetMapping
-	public ResponseEntity<SuccessResponse> getMyCozyLogList(
-		@LoginUserId Long userId,
-		@RequestParam(value = "lastId") Long reportId,
-		@RequestParam(value = "size", defaultValue = "10") Long size) {
-		FindMyCozyLogListResponse response = cozyLogService.findMyCozyLog(userId, reportId, size);
+    @GetMapping
+    public ResponseEntity<SuccessResponse> getMyCozyLogList(
+        @LoginUserId Long userId,
+        @RequestParam(value = "lastId", required = false) Long reportId,
+        @RequestParam(value = "size", defaultValue = "10") Long size) {
+        FindMyCozyLogListResponse response = cozyLogService.findMyCozyLog(userId, reportId, size);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 
-	@PostMapping
-	public ResponseEntity<SuccessResponse> removeMyCozyLogList(
-		@LoginUserId Long userId,
-		@RequestBody DeleteMyCozyLogListRequest request) {
-		cozyLogService.deleteCozyLogList(userId, request);
+    @PostMapping
+    public ResponseEntity<SuccessResponse> removeMyCozyLogList(
+        @LoginUserId Long userId,
+        @RequestBody DeleteMyCozyLogListRequest request) {
+        cozyLogService.deleteCozyLogList(userId, request);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, null));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, null));
+    }
 }
