@@ -48,7 +48,7 @@ public class BloodSugarController {
         return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<SuccessResponse> modifyBloodSugarRecord(
         @LoginUserId Long userId,
         @PathVariable(name = "id") Long id,
@@ -65,7 +65,7 @@ public class BloodSugarController {
         @PathVariable(name = "id") Long id) {
         bloodSugarService.deleteBloodSugarRecord(id, userId);
 
-        return ResponseEntity.ok().body(SuccessResponse.of(200, null));
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping()
