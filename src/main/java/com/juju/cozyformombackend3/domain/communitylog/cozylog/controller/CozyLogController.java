@@ -20,6 +20,7 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.Cozy
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CreateCozyLogResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.GetCozyLogListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.ModifyCozyLogResponse;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.SearchCozyLogResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -30,54 +31,68 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/cozy-log")
 @RequiredArgsConstructor
 public class CozyLogController {
-	private final CozyLogService cozyLogService;
+    private final CozyLogService cozyLogService;
 
-	@PostMapping
-	public ResponseEntity<SuccessResponse> createCozyLog(
-		@LoginUserId Long userId,
-		@RequestBody CreateCozyLogRequest request) {
-		Long createdCozyLogId = cozyLogService.saveCozyLog(userId, request);
-		URI location = URI.create("/api/v1/cozy-log/" + createdCozyLogId);
+    @PostMapping
+    public ResponseEntity<SuccessResponse> createCozyLog(
+        @LoginUserId Long userId,
+        @RequestBody CreateCozyLogRequest request) {
+        Long createdCozyLogId = cozyLogService.saveCozyLog(userId, request);
+        URI location = URI.create("/api/v1/cozy-log/" + createdCozyLogId);
 
-		return ResponseEntity.created(location)
-			.body(SuccessResponse.of(201, CreateCozyLogResponse.of(createdCozyLogId)));
-	}
+        return ResponseEntity.created(location)
+            .body(SuccessResponse.of(201, CreateCozyLogResponse.of(createdCozyLogId)));
+    }
 
-	@PutMapping
-	public ResponseEntity<SuccessResponse> modifyCozyLog(
-		@LoginUserId Long userId,
-		@RequestBody ModifyCozyLogRequest request) {
-		Long modifiedCozyLogId = cozyLogService.updateCozyLog(userId, request);
+    @PutMapping
+    public ResponseEntity<SuccessResponse> modifyCozyLog(
+        @LoginUserId Long userId,
+        @RequestBody ModifyCozyLogRequest request) {
+        Long modifiedCozyLogId = cozyLogService.updateCozyLog(userId, request);
 
-		return ResponseEntity.ok(SuccessResponse.of(200, ModifyCozyLogResponse.of(modifiedCozyLogId)));
-	}
+        return ResponseEntity.ok(SuccessResponse.of(200, ModifyCozyLogResponse.of(modifiedCozyLogId)));
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> removeCozyLog(
-		@LoginUserId Long userId,
-		@PathVariable("id") Long removeCozyLogId) {
-		cozyLogService.deleteCozyLog(userId, removeCozyLogId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removeCozyLog(
+        @LoginUserId Long userId,
+        @PathVariable("id") Long removeCozyLogId) {
+        cozyLogService.deleteCozyLog(userId, removeCozyLogId);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<SuccessResponse> cozyLogDetail(
-		@LoginUserId Long userId,
-		@PathVariable("id") Long cozyLogId) {
-		CozyLogDetailResponse response = cozyLogService.findCozyLogDetail(userId, cozyLogId);
+    @GetMapping("/{id}")
+    public ResponseEntity<SuccessResponse> cozyLogDetail(
+        @LoginUserId Long userId,
+        @PathVariable("id") Long cozyLogId) {
+        CozyLogDetailResponse response = cozyLogService.findCozyLogDetail(userId, cozyLogId);
 
-		return ResponseEntity.ok(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok(SuccessResponse.of(200, response));
+    }
 
-	@GetMapping("/list")
-	public ResponseEntity<SuccessResponse> cozyLogList(
-		@RequestParam(value = "lastId", defaultValue = "0") Long reportId,
-		@RequestParam(value = "size", defaultValue = "10") Long size,
-		@RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
-	) {
-		GetCozyLogListResponse response = cozyLogService.findCozyLogList(reportId, size, sort);
+    @GetMapping("/list")
+    public ResponseEntity<SuccessResponse> cozyLogList(
+        @RequestParam(value = "lastId", defaultValue = "0") Long reportId,
+        @RequestParam(value = "size", defaultValue = "10") Long size,
+        @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
+    ) {
+        GetCozyLogListResponse response = cozyLogService.findCozyLogList(reportId, size, sort);
 
-		return ResponseEntity.ok(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok(SuccessResponse.of(200, response));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<SuccessResponse> searchCozyLog(
+        @LoginUserId Long userId,
+        @RequestParam(value = "lastId", defaultValue = "0") Long lastLogId,
+        @RequestParam(value = "size", defaultValue = "10") Long size,
+        @RequestParam(value = "keyword", defaultValue = "") String keyword,
+        @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
+    ) {
+        SearchCozyLogResponse response = cozyLogService.searchCozyLog(userId,
+            CozyLogSearchCondition.of(lastLogId, size, keyword, sort));
+
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 }

@@ -2,7 +2,7 @@ name: Java CD with Gradle and Docker
 
 on:
   push:
-    branches: [ "main", "develop", "chore/cd-test" ]
+    branches: [ "main", "develop", "feature/#119-search" ]
 
 jobs:
   deploy:

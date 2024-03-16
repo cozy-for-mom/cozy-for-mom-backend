@@ -6,17 +6,18 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum CozyLogSort {
-	LATELY("lately"),
-	HOT("hot");
+    LATELY("lately"),
+    COMMENT("comment"),
+    HOT("hot");
 
-	private final String sortKeyword;
+    private final String sortKeyword;
 
-	public static CozyLogSort of(String sortKeyword) {
-		if (sortKeyword.isBlank())
-			return null;
-		return Arrays.stream(values())
-			.filter(keyword -> keyword.sortKeyword.equals(sortKeyword))
-			.findFirst()
-			.orElseThrow();
-	}
+    public static CozyLogSort of(String sortKeyword) {
+        if (sortKeyword.isBlank())
+            return LATELY;
+        return Arrays.stream(values())
+            .filter(keyword -> keyword.sortKeyword.equals(sortKeyword))
+            .findFirst()
+            .orElse(LATELY);
+    }
 }
