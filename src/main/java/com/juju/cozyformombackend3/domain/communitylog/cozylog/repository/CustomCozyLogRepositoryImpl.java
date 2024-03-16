@@ -4,6 +4,7 @@ import static com.juju.cozyformombackend3.domain.communitylog.comment.model.QCom
 import static com.juju.cozyformombackend3.domain.communitylog.cozylog.model.QCozyLog.*;
 import static com.juju.cozyformombackend3.domain.communitylog.cozylog.model.QCozyLogImage.*;
 import static com.juju.cozyformombackend3.domain.communitylog.scrap.model.QScrap.*;
+import static com.querydsl.core.types.dsl.Expressions.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,14 +17,15 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogMode
 import com.juju.cozyformombackend3.global.dto.CustomSlice;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
     private final JPAQueryFactory jpaQueryFactory;
@@ -130,22 +132,29 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
             .select(cozyLog.count())
             .from(cozyLog)
             .where(allowPrivateModeByUserId(userId)
-                .and(searchByKeyword(condition.getKeyword()))
-                .and(ltReportId(condition.getLastLogId())))
+                .and(searchByKeyword(condition.getKeyword())))
             .fetchOne();
 
         return CustomSlice.of(totalCount, data);
     }
 
-    private Predicate searchByKeyword(String keyword) {
-        return null;
+    private BooleanExpression searchByKeyword(String keyword) {
+        if (Objects.isNull(keyword) || keyword.length() < 2) {
+            return null;
+        }
+        final String formattedSearchWord = "\"+" + keyword + "*\"";
+
+        return (numberTemplate(Double.class, "function('match_against', {0}, {1})",
+            cozyLog.title, formattedSearchWord)
+            .gt(0))
+            .or(numberTemplate(Double.class, "function('match_against', {0}, {1})",
+                cozyLog.content, formattedSearchWord)
+                .gt(0)); //MATCH_THRESHOLD
     }
 
     private BooleanExpression allowPrivateModeByUserId(Long userId) {
-        if (CozyLogMode.PRIVATE.equals(cozyLog.mode)) {
-            return cozyLog.user.id.eq(userId);
-        }
-        return cozyLog.mode.eq(CozyLogMode.PUBLIC);
+        return cozyLog.mode.eq(CozyLogMode.PUBLIC)
+            .or(cozyLog.mode.eq(CozyLogMode.PRIVATE).and(cozyLog.user.id.eq(userId)));
     }
 
     private BooleanExpression ltReportId(Long reportId) {
