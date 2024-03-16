@@ -4,14 +4,17 @@ import static com.juju.cozyformombackend3.domain.communitylog.comment.model.QCom
 import static com.juju.cozyformombackend3.domain.communitylog.cozylog.model.QCozyLog.*;
 import static com.juju.cozyformombackend3.domain.communitylog.cozylog.model.QCozyLogImage.*;
 import static com.juju.cozyformombackend3.domain.communitylog.scrap.model.QScrap.*;
+import static com.querydsl.core.types.dsl.Expressions.*;
 
 import java.util.List;
 import java.util.Objects;
 
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.CozyLogSearchCondition;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.QCozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogMode;
+import com.juju.cozyformombackend3.global.dto.CustomSlice;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.SubQueryExpression;
@@ -20,15 +23,15 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public List<CozyLogSummary> findCozyLogListOrderBySort(CozyLogSort sort, Long reportId, Long size) {
-        OrderSpecifier orderSpecifier = createOrderSpecifier(sort);
-
         SubQueryExpression<Long> firstImageSubQuery = JPAExpressions
             .select(cozyLogImage.id.min())
             .from(cozyLogImage)
@@ -49,7 +52,7 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
             .where(isPublicCozyLog().and(ltReportId(reportId)))
             .groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
                 cozyLogImage.imageUrl)
-            .orderBy(orderSpecifier, cozyLog.id.desc())
+            .orderBy(createOrderSpecifier(sort), cozyLog.id.desc())
             .limit(size)
             .fetch();
     }
@@ -98,6 +101,62 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
             .execute();
     }
 
+    @Override
+    public CustomSlice<CozyLogSummary> searchCozyLogByCondition(Long userId, CozyLogSearchCondition condition) {
+        final SubQueryExpression<Long> firstImageSubQuery = JPAExpressions
+            .select(cozyLogImage.id.min())
+            .from(cozyLogImage)
+            .where(cozyLogImage.cozyLog.id.eq(cozyLog.id));
+
+        final List<CozyLogSummary> data = jpaQueryFactory
+            .select(new QCozyLogSummary(
+                cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
+                cozyLog.createdAt, cozyLog.mode,
+                comment.id.count(), scrap.id.count(),
+                cozyLogImage.imageUrl.coalesce(""), cozyLogImage.id.count()
+            ))
+            .from(cozyLog)
+            .leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
+            .leftJoin(scrap).on(scrap.cozyLogId.eq(cozyLog.id))
+            .leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
+            .where(allowPrivateModeByUserId(userId)
+                .and(searchByKeyword(condition.getKeyword()))
+                .and(ltReportId(condition.getLastLogId())))
+            .groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
+                cozyLogImage.imageUrl)
+            .orderBy(createOrderSpecifier(condition.getSort()), cozyLog.id.desc())
+            .limit(condition.getSize())
+            .fetch();
+
+        final Long totalCount = jpaQueryFactory
+            .select(cozyLog.count())
+            .from(cozyLog)
+            .where(allowPrivateModeByUserId(userId)
+                .and(searchByKeyword(condition.getKeyword())))
+            .fetchOne();
+
+        return CustomSlice.of(totalCount, data);
+    }
+
+    private BooleanExpression searchByKeyword(String keyword) {
+        if (Objects.isNull(keyword) || keyword.length() < 2) {
+            return null;
+        }
+        final String formattedSearchWord = "\"+" + keyword + "*\"";
+
+        return (numberTemplate(Double.class, "function('match_against', {0}, {1})",
+            cozyLog.title, formattedSearchWord)
+            .gt(0))
+            .or(numberTemplate(Double.class, "function('match_against', {0}, {1})",
+                cozyLog.content, formattedSearchWord)
+                .gt(0)); //MATCH_THRESHOLD
+    }
+
+    private BooleanExpression allowPrivateModeByUserId(Long userId) {
+        return cozyLog.mode.eq(CozyLogMode.PUBLIC)
+            .or(cozyLog.mode.eq(CozyLogMode.PRIVATE).and(cozyLog.user.id.eq(userId)));
+    }
+
     private BooleanExpression ltReportId(Long reportId) {
         if (Objects.isNull(reportId) || reportId == 0) {
             return null;
@@ -109,6 +168,7 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
         return switch (sort) {
             // TODO: hot 기준 스크랩이랑 댓글 넣어서 수정하기
             case HOT -> new OrderSpecifier<>(Order.DESC, cozyLog.view);
+            case COMMENT -> new OrderSpecifier<>(Order.DESC, cozyLog.commentList.size());
             default -> new OrderSpecifier<>(Order.DESC, cozyLog.createdAt);
         };
     }

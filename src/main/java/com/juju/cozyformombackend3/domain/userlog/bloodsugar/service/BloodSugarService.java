@@ -61,6 +61,7 @@ public class BloodSugarService {
         return ModifyBloodSugarRecordResponse.of(modifiedRecord.getId());
     }
 
+    @Transactional
     public void deleteBloodSugarRecord(Long recordId, Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
