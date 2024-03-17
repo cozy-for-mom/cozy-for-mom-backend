@@ -38,7 +38,8 @@ spring:
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             scope:
-              - profile
+              - profile_nickname
+              - profile_image
               - account_email
 
 server:
@@ -60,6 +61,8 @@ cloud:
 jwt:
   issuer: juju
   secret-key: secret-juju-for-cozy-for-mom
+  user-expiration-time: 604800000 #1000 * 60 * 60 * 24 * 7; // 7일
+  guest-expiration-time: 10000
 
 springdoc:
   swagger-ui:
