@@ -2,6 +2,7 @@ package com.juju.cozyformombackend3.domain.userlog.weight.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,8 +66,10 @@ public class WeightService {
         // TODO 쿼리 합치기
         final WeightRecord lastWeightRecord = weightRepository.findFirstByUserIdOrderByRecordAtDesc(
             condition.getUserId());
-        final Double todayWeight = lastWeightRecord.getRecordAt().equals(condition.getDate()) ?
-            lastWeightRecord.getWeight() : 0.0D;
+        final WeightRecord conditionWeightRecord = weightRepository
+            .findByUserIdAndRecordAt(condition.getUserId(), condition.getDate());
+        final Double todayWeight = Objects.nonNull(conditionWeightRecord) ?
+            conditionWeightRecord.getWeight() : 0.0D;
         final List<FindPeriodicWeight> findPeriodicWeights = weightRepository.findPeriodRecordByDate(condition);
 
         return FindWeightListResponse.of(condition.getType(), todayWeight, lastWeightRecord.getRecordAt(),
