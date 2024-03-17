@@ -18,12 +18,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-        #        dialect: org.hibernate.dialect.MySQLDialect
-        dialect:
-        use_sql_comments: true
-    open-in-view: false
+#        dialect: org.hibernate.dialect.MySQLDialect
 
 cloud:
   aws:
@@ -100,3 +95,12 @@ springdoc:
   # 해당 패턴에 매칭되는 controller만 swagger-ui에 노출한다.
   paths-to-match:
     - /api/**
+
+logging:
+  level:
+    root: info
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
