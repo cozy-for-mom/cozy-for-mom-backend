@@ -40,8 +40,7 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
                 cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
                 cozyLog.createdAt, cozyLog.mode,
                 comment.id.count(), scrap.id.count(),
-                cozyLogImage.imageUrl.coalesce(""), cozyLogImage.id.count()
-            ))
+                cozyLogImage.imageUrl.coalesce(""), cozyLog.cozyLogImageList.size()))
             .from(cozyLog)
             .leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
             .leftJoin(scrap).on(scrap.cozyLogId.eq(cozyLog.id))
