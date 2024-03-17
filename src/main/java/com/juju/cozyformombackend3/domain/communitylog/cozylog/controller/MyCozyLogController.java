@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.DeleteMyCozyLogListRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.FindMyCozyLogListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogService;
@@ -26,8 +27,16 @@ public class MyCozyLogController {
     public ResponseEntity<SuccessResponse> getMyCozyLogList(
         @LoginUserId Long userId,
         @RequestParam(value = "lastId", required = false) Long reportId,
-        @RequestParam(value = "size", defaultValue = "10") Long size) {
-        FindMyCozyLogListResponse response = cozyLogService.findMyCozyLog(userId, reportId, size);
+        @RequestParam(value = "size", defaultValue = "10") Long size,
+        @RequestParam(value = "sort", defaultValue = "") CozyLogSort sort) {
+        FindMyCozyLogListResponse response = cozyLogService.findMyCozyLog(
+            CozyLogCondition.builder()
+                .userId(userId)
+                .lastLogId(reportId)
+                .size(size)
+                .writerId(userId)
+                .sort(sort)
+                .build());
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
