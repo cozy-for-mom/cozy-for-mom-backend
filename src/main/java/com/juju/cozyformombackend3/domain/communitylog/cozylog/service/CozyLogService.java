@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.CozyLogCondition;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.CozyLogSearchCondition;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.DeleteMyCozyLogListRequest;
@@ -23,7 +22,6 @@ import com.juju.cozyformombackend3.domain.communitylog.scrap.repository.ScrapRep
 import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
-import com.juju.cozyformombackend3.global.dto.CustomSlice;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
@@ -94,18 +92,13 @@ public class CozyLogService {
     }
 
     public GetCozyLogListResponse findCozyLogList(final CozyLogCondition condition) {
-        List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListByCondition(condition);
+        List<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogListByCondition(condition);
 
         return GetCozyLogListResponse.of(cozyLogs);
     }
 
-    // public FindMyCozyLogListResponse findMyCozyLog(Long userId, Long reportId, Long size) {
-    //     List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListByWriterId(userId, reportId, size);
-    //     Long count = cozyLogRepository.countByUserId(userId);
-    //     return FindMyCozyLogListResponse.of(count, cozyLogs);
-    // }
     public FindMyCozyLogListResponse findMyCozyLog(final CozyLogCondition condition) {
-        List<CozyLogSummary> cozyLogs = cozyLogRepository.findCozyLogListByCondition(condition);
+        List<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogListByCondition(condition);
 
         Long count = cozyLogRepository.countByUserId(condition.getWriterId());
         return FindMyCozyLogListResponse.of(count, cozyLogs);
@@ -115,10 +108,11 @@ public class CozyLogService {
     public void deleteCozyLogList(Long userId, DeleteMyCozyLogListRequest request) {
         cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
     }
+    
+    public SearchCozyLogResponse searchCozyLog(final CozyLogCondition condition) {
+        List<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogListByCondition(condition);
+        Long totalCount = cozyLogRepository.countByCondition(condition);
 
-    public SearchCozyLogResponse searchCozyLog(Long userId, CozyLogSearchCondition condition) {
-        CustomSlice<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogByCondition(userId, condition);
-
-        return SearchCozyLogResponse.of(cozyLogs);
+        return SearchCozyLogResponse.of(totalCount, cozyLogs);
     }
 }

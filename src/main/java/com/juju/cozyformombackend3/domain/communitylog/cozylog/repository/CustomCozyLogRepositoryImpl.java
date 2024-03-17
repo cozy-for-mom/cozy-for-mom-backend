@@ -10,12 +10,10 @@ import java.util.List;
 import java.util.Objects;
 
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.CozyLogCondition;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.CozyLogSearchCondition;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.QCozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogMode;
-import com.juju.cozyformombackend3.global.dto.CustomSlice;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.SubQueryExpression;
@@ -32,7 +30,7 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<CozyLogSummary> findCozyLogListByCondition(CozyLogCondition condition) {
+    public List<CozyLogSummary> searchCozyLogListByCondition(CozyLogCondition condition) {
         SubQueryExpression<Long> firstImageSubQuery = JPAExpressions
             .select(cozyLogImage.id.min())
             .from(cozyLogImage)
@@ -79,40 +77,13 @@ public class CustomCozyLogRepositoryImpl implements CustomCozyLogRepository {
     }
 
     @Override
-    public CustomSlice<CozyLogSummary> searchCozyLogByCondition(Long userId, CozyLogSearchCondition condition) {
-        final SubQueryExpression<Long> firstImageSubQuery = JPAExpressions
-            .select(cozyLogImage.id.min())
-            .from(cozyLogImage)
-            .where(cozyLogImage.cozyLog.id.eq(cozyLog.id));
-
-        final List<CozyLogSummary> data = jpaQueryFactory
-            .select(new QCozyLogSummary(
-                cozyLog.id, cozyLog.title, cozyLog.content.substring(0, 40),
-                cozyLog.createdAt, cozyLog.mode,
-                comment.id.count(), scrap.id.count(),
-                cozyLogImage.imageUrl.coalesce(""), cozyLogImage.id.count()
-            ))
+    public Long countByCondition(CozyLogCondition condition) {
+        return jpaQueryFactory.select(cozyLog.count())
             .from(cozyLog)
-            .leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
-            .leftJoin(scrap).on(scrap.cozyLogId.eq(cozyLog.id))
-            .leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
-            .where(allowPrivateModeByUserId(userId)
-                .and(searchByKeyword(condition.getKeyword()))
-                .and(ltReportId(condition.getLastLogId())))
-            .groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
-                cozyLogImage.imageUrl)
-            .orderBy(createOrderSpecifier(condition.getSort()), cozyLog.id.desc())
-            .limit(condition.getSize())
-            .fetch();
-
-        final Long totalCount = jpaQueryFactory
-            .select(cozyLog.count())
-            .from(cozyLog)
-            .where(allowPrivateModeByUserId(userId)
+            .where(allowPrivateModeByUserId(condition.getUserId())
+                .and(filterLogByWriterId(condition.getWriterId()))
                 .and(searchByKeyword(condition.getKeyword())))
             .fetchOne();
-
-        return CustomSlice.of(totalCount, data);
     }
 
     private BooleanExpression filterLogByWriterId(Long writerId) {

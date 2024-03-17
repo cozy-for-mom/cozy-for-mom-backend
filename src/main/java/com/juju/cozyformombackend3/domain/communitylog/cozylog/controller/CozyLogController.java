@@ -92,8 +92,14 @@ public class CozyLogController {
         @RequestParam(value = "keyword", defaultValue = "") String keyword,
         @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
     ) {
-        SearchCozyLogResponse response = cozyLogService.searchCozyLog(userId,
-            CozyLogSearchCondition.of(lastLogId, size, keyword, sort));
+        SearchCozyLogResponse response = cozyLogService.searchCozyLog(
+            CozyLogCondition.builder()
+                .userId(userId)
+                .lastLogId(lastLogId)
+                .size(size)
+                .keyword(keyword)
+                .sort(sort)
+                .build());
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
