@@ -73,11 +73,13 @@ public class CozyLogController {
 
     @GetMapping("/list")
     public ResponseEntity<SuccessResponse> cozyLogList(
+        @LoginUserId Long userId,
         @RequestParam(value = "lastId", defaultValue = "0") Long reportId,
         @RequestParam(value = "size", defaultValue = "10") Long size,
         @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
     ) {
-        GetCozyLogListResponse response = cozyLogService.findCozyLogList(reportId, size, sort);
+        GetCozyLogListResponse response = cozyLogService.findCozyLogList(
+            CozyLogCondition.builder().userId(userId).lastLogId(reportId).size(size).sort(sort).build());
 
         return ResponseEntity.ok(SuccessResponse.of(200, response));
     }
@@ -90,8 +92,14 @@ public class CozyLogController {
         @RequestParam(value = "keyword", defaultValue = "") String keyword,
         @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
     ) {
-        SearchCozyLogResponse response = cozyLogService.searchCozyLog(userId,
-            CozyLogSearchCondition.of(lastLogId, size, keyword, sort));
+        SearchCozyLogResponse response = cozyLogService.searchCozyLog(
+            CozyLogCondition.builder()
+                .userId(userId)
+                .lastLogId(lastLogId)
+                .size(size)
+                .keyword(keyword)
+                .sort(sort)
+                .build());
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }

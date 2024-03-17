@@ -18,11 +18,11 @@ public class CozyLogSummary {
     private final Long commentCount;
     private final Long scrapCount;
     private final String imageUrl;
-    private final Long imageCount;
+    private final Integer imageCount;
 
     @QueryProjection
     public CozyLogSummary(Long id, String title, String summary, LocalDateTime datetime, CozyLogMode mode,
-        Long commentCount, Long scrapCount, String imageUrl, Long imageCount) {
+        Long commentCount, Long scrapCount, String imageUrl, Integer imageCount) {
         this.id = id;
         this.title = title;
         this.summary = summary;

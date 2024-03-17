@@ -2,6 +2,7 @@ package com.juju.cozyformombackend3.domain.userlog.weight.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,17 +62,17 @@ public class WeightService {
         weightRepository.delete(weightRecord);
     }
 
-    public FindWeightListResponse findWeight(FindPeriodRecordCondition condition) {
-        User user = findUserById(condition.getUserId());
+    public FindWeightListResponse findWeight(final FindPeriodRecordCondition condition) {
         // TODO 쿼리 합치기
-        WeightRecord lastWeightRecord = weightRepository.findFirstByUserIdOrderByRecordAtDesc(condition.getUserId());
+        final WeightRecord lastWeightRecord = weightRepository.findFirstByUserIdOrderByRecordAtDesc(
+            condition.getUserId());
+        final WeightRecord conditionWeightRecord = weightRepository
+            .findByUserIdAndRecordAt(condition.getUserId(), condition.getDate());
+        final Double todayWeight = Objects.nonNull(conditionWeightRecord) ?
+            conditionWeightRecord.getWeight() : 0.0D;
+        final List<FindPeriodicWeight> findPeriodicWeights = weightRepository.findPeriodRecordByDate(condition);
 
-        WeightRecord weightRecord = weightRepository.findByUserAndRecordAt(user, LocalDate.now())
-            .orElse(WeightRecord.builder().user(user).weight(0d).recordAt(condition.getDate()).build());
-        
-        List<FindPeriodicWeight> findPeriodicWeights = weightRepository.findPeriodRecordByDate(condition);
-
-        return FindWeightListResponse.of(condition.getType(), weightRecord.getWeight(), lastWeightRecord.getRecordAt(),
+        return FindWeightListResponse.of(condition.getType(), todayWeight, lastWeightRecord.getRecordAt(),
             findPeriodicWeights);
     }
 

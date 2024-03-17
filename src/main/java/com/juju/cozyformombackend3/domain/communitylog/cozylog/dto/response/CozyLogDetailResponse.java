@@ -18,6 +18,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CozyLogDetailResponse {
     private final Writer writer;
+    private final Long id;
     private final String title;
     private final String content;
     private List<ImageInfoDto> imageList;
@@ -30,6 +31,7 @@ public class CozyLogDetailResponse {
 
     public static CozyLogDetailResponse of(CozyLog foundCozyLog, Long scrapCount, boolean isScraped) {
         return CozyLogDetailResponse.builder()
+            .id(foundCozyLog.getId())
             .writer(new Writer(foundCozyLog.getUser()))
             .title(foundCozyLog.getTitle())
             .content(foundCozyLog.getContent())
@@ -61,5 +63,9 @@ public class CozyLogDetailResponse {
             this.nickname = user.getNickname();
             this.profileImageUrl = user.getProfileImageUrl();
         }
+    }
+
+    public boolean getIsScraped() {
+        return isScraped;
     }
 }
