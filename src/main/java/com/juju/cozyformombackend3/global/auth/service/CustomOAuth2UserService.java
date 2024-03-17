@@ -13,6 +13,7 @@ import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
 import com.juju.cozyformombackend3.global.auth.service.registration.OAuth2RegistrationComposite;
+import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final OAuth2RegistrationComposite oauth2ProviderComposite;
     private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -36,9 +38,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         final User findUser = userRepository.findByEmail(userInfo.getEmail());
         if (Objects.isNull(findUser)) {
+            tokenProvider.generateGuestToken(userInfo);
             // 권한이 guest 인 토큰을 발급하여 회원가입 하도록 함.
         }
         if (Objects.nonNull(findUser)) {
+            tokenProvider.generateUserToken(findUser);
             // 권한  멤버, 유저의 id등의 정보를 담아서 토큰 발급
         }
 
