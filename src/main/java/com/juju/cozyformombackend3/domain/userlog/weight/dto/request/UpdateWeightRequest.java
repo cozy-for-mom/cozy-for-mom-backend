@@ -8,9 +8,11 @@ import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateWeightRequest {
 
     @NotNull(message = "몸무게를 입력해주세요.")
