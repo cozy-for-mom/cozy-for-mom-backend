@@ -42,14 +42,13 @@ public class MealRecordService {
     }
 
     @Transactional
-    public UpdateMealRecordResponse updateMealRecord(Long userId, UpdateMealRecordRequest request) {
+    public UpdateMealRecordResponse updateMealRecord(Long userId, Long recordId, UpdateMealRecordRequest request) {
         User user = findUserById(userId);
-        MealRecord foundMealRecord = findMealRecordById(request.getId());
+        MealRecord foundMealRecord = findMealRecordById(recordId);
         isMealRecordOwner(foundMealRecord.getUser(), user);
-        Long updatedRecordId = foundMealRecord.update(request.getRecordAt(), request.getMealType(),
-            request.getMealImageUrl());
+        foundMealRecord.update(request.getRecordAt(), request.getMealType(), request.getMealImageUrl());
 
-        return UpdateMealRecordResponse.of(updatedRecordId);
+        return UpdateMealRecordResponse.of(foundMealRecord.getId());
     }
 
     @Transactional
