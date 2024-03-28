@@ -46,11 +46,12 @@ public class MealRecordController {
         return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<SuccessResponse> modifyMealRecord(
         @LoginUserId Long userId,
+        @PathVariable(name = "id") Long recordId,
         @RequestBody @Valid UpdateMealRecordRequest request) {
-        UpdateMealRecordResponse response = mealRecordService.updateMealRecord(userId, request);
+        UpdateMealRecordResponse response = mealRecordService.updateMealRecord(userId, recordId, request);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
@@ -61,7 +62,7 @@ public class MealRecordController {
         @PathVariable(name = "id") Long id) {
         mealRecordService.deleteMealRecord(userId, id);
 
-        return ResponseEntity.ok().body(SuccessResponse.of(200, null));
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping

@@ -8,7 +8,6 @@ import com.juju.cozyformombackend3.global.validation.annotation.IsLocalDateTime;
 import com.juju.cozyformombackend3.global.validation.annotation.IsMealRecordType;
 import com.juju.cozyformombackend3.global.validation.annotation.IsPastOrPresent;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,10 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateMealRecordRequest {
 
-    @NotNull(message = "id 값을 입력해주세요.")
-    @Min(1)
-    private Long id;
-
     @NotNull
     @IsLocalDateTime
     @IsPastOrPresent
@@ -29,7 +24,7 @@ public class UpdateMealRecordRequest {
 
     @NotNull
     @IsMealRecordType
-    private String type;
+    private String mealType;
 
     private String mealImageUrl;
 
@@ -38,6 +33,6 @@ public class UpdateMealRecordRequest {
     }
 
     public MealType getMealType() {
-        return MealType.ofType(this.type);
+        return MealType.ofType(this.mealType);
     }
 }

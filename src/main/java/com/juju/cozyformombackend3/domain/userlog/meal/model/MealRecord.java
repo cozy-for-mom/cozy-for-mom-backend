@@ -26,51 +26,49 @@ import lombok.NoArgsConstructor;
 @Entity
 public class MealRecord extends BaseEntity {
 
-	@Column(name = "id", nullable = false)
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Column(name = "id", nullable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	@Column(name = "meal_type", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private MealType mealType;
+    @Column(name = "meal_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MealType mealType;
 
-	@Column(name = "image_url", nullable = false)
-	private String imageUrl;
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
 
-	@Column(name = "record_at", nullable = false)
-	private LocalDateTime recordAt;
+    @Column(name = "record_at", nullable = false)
+    private LocalDateTime recordAt;
 
-	@Builder
-	private MealRecord(User user, MealType mealType, String imageUrl, LocalDateTime recordAt) {
-		this.user = user;
-		this.mealType = mealType;
-		this.imageUrl = imageUrl;
-		this.recordAt = recordAt;
-	}
+    @Builder
+    private MealRecord(User user, MealType mealType, String imageUrl, LocalDateTime recordAt) {
+        this.user = user;
+        this.mealType = mealType;
+        this.imageUrl = imageUrl;
+        this.recordAt = recordAt;
+    }
 
-	public static MealRecord of(User user, MealType mealType, String imageUrl, LocalDateTime recordAt) {
-		return MealRecord.builder()
-			.user(user)
-			.mealType(mealType)
-			.imageUrl(imageUrl)
-			.recordAt(recordAt)
-			.build();
-	}
+    public static MealRecord of(User user, MealType mealType, String imageUrl, LocalDateTime recordAt) {
+        return MealRecord.builder()
+            .user(user)
+            .mealType(mealType)
+            .imageUrl(imageUrl)
+            .recordAt(recordAt)
+            .build();
+    }
 
-	@Override
-	public void delete() {
-	}
+    @Override
+    public void delete() {
+    }
 
-	public Long update(LocalDateTime datetime, MealType mealType, String imageUrl) {
-		this.recordAt = datetime;
-		this.mealType = mealType;
-		this.imageUrl = imageUrl;
-
-		return this.id;
-	}
+    public void update(LocalDateTime datetime, MealType mealType, String imageUrl) {
+        this.recordAt = datetime;
+        this.mealType = mealType;
+        this.imageUrl = imageUrl;
+    }
 }
