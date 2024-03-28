@@ -61,7 +61,7 @@ public class MealRecordController {
         @PathVariable(name = "id") Long id) {
         mealRecordService.deleteMealRecord(userId, id);
 
-        return ResponseEntity.ok().body(SuccessResponse.of(200, null));
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
