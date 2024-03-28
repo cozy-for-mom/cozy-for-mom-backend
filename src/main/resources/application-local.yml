@@ -62,7 +62,7 @@ jwt:
   issuer: juju
   secret-key: secret-juju-for-cozy-for-mom
   user-expiration-time: 604800000 #1000 * 60 * 60 * 24 * 7; // 7일
-  guest-expiration-time: 10000
+  guest-expiration-time: 600000
 
 springdoc:
   swagger-ui:
