@@ -22,15 +22,9 @@ import com.juju.cozyformombackend3.domain.userlog.weight.service.WeightService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.request.FindPeriodRecordCondition;
 import com.juju.cozyformombackend3.global.dto.request.RecordPeriod;
-import com.juju.cozyformombackend3.global.dto.response.ErrorResponse;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,11 +37,11 @@ public class WeightController {
 
     private final WeightService weightService;
 
-    @Operation(description = "몸무게 등록",
-        responses = {
-            @ApiResponse(responseCode = "201", description = "몸무게 등록 성공", content = @Content(schema = @Schema(implementation = RecordWeightResponse.class))),
-            @ApiResponse(responseCode = "409", description = "이미 존재하는 날짜에 몸무게 재등록", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
-    )
+    // @Operation(description = "몸무게 등록",
+    //     responses = {
+    //         @ApiResponse(responseCode = "201", description = "몸무게 등록 성공", content = @Content(schema = @Schema(implementation = RecordWeightResponse.class))),
+    //         @ApiResponse(responseCode = "409", description = "이미 존재하는 날짜에 몸무게 재등록", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
+    // )
     @PostMapping()
     public ResponseEntity<SuccessResponse> recordWeight(
         @Parameter(hidden = true) @LoginUserId Long userId,
@@ -57,14 +51,13 @@ public class WeightController {
         return ResponseEntity.ok(SuccessResponse.of(201, response));
     }
 
-    @Operation(description = "몸무게 수정",
-        responses = {
-            @ApiResponse(responseCode = "201", description = "몸무게 등록 성공", content = @Content(schema = @Schema(implementation = RecordWeightResponse.class))),
-            @ApiResponse(responseCode = "409", description = "이미 존재하는 날짜에 몸무게 재등록", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    // @Operation(description = "몸무게 수정",
+    //     responses = {
+    //         @ApiResponse(responseCode = "201", description = "몸무게 등록 성공", content = @Content(schema = @Schema(implementation = RecordWeightResponse.class))),
+    //         @ApiResponse(responseCode = "409", description = "이미 존재하는 날짜에 몸무게 재등록", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @PutMapping()
     public ResponseEntity<SuccessResponse> updateWeight(
         @Parameter(hidden = true) @LoginUserId Long userId,
-        @Parameter(name = "date", in = ParameterIn.PATH, description = "조회 날짜", example = "2024-03-17")
         @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
         @RequestBody @Valid UpdateWeightRequest request) {
         UpdateWeightResponse response = weightService.updateWeight(userId, date, request);
@@ -72,23 +65,23 @@ public class WeightController {
         return ResponseEntity.ok(SuccessResponse.of(200, response));
     }
 
-    @Operation(description = "몸무게 삭제",
-        responses = {
-            @ApiResponse(responseCode = "201", description = "몸무게 등록 성공", content = @Content(schema = @Schema(implementation = RecordWeightResponse.class))),
-            @ApiResponse(responseCode = "409", description = "이미 존재하는 날짜에 몸무게 재등록", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    // @Operation(description = "몸무게 삭제",
+    //     responses = {
+    //         @ApiResponse(responseCode = "201", description = "몸무게 등록 성공", content = @Content(schema = @Schema(implementation = RecordWeightResponse.class))),
+    //         @ApiResponse(responseCode = "409", description = "이미 존재하는 날짜에 몸무게 재등록", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @DeleteMapping()
     public ResponseEntity<SuccessResponse> deleteWeight(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         weightService.deleteWeight(userId, date);
 
-        return ResponseEntity.ok(SuccessResponse.of(204, null));
+        return ResponseEntity.noContent().build();
     }
 
-    @Operation(description = "몸무게 기간별 조회",
-        responses = {
-            @ApiResponse(responseCode = "201", description = "몸무게 등록 성공", content = @Content(schema = @Schema(implementation = RecordWeightResponse.class))),
-            @ApiResponse(responseCode = "409", description = "이미 존재하는 날짜에 몸무게 재등록", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    // @Operation(description = "몸무게 기간별 조회",
+    //     responses = {
+    //         @ApiResponse(responseCode = "201", description = "몸무게 등록 성공", content = @Content(schema = @Schema(implementation = RecordWeightResponse.class))),
+    //         @ApiResponse(responseCode = "409", description = "이미 존재하는 날짜에 몸무게 재등록", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @GetMapping()
     public ResponseEntity<SuccessResponse> getWeight(
         @Parameter(hidden = true) @LoginUserId Long userId,
