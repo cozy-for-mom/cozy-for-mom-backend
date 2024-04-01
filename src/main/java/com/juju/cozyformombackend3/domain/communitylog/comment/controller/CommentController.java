@@ -21,6 +21,7 @@ import com.juju.cozyformombackend3.domain.communitylog.comment.service.CommentSe
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +34,7 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse> createComment(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long cozyLogId,
         @RequestBody @Valid CreateCommentRequest request) {
         CreateCommentResponse response = commentService.createComment(userId, cozyLogId, request);
@@ -45,7 +46,7 @@ public class CommentController {
 
     @PutMapping
     public ResponseEntity<SuccessResponse> modifyComment(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long cozyLogId,
         @RequestBody @Valid ModifyCommentRequest request) {
         Long modifiedCommentId = commentService.updateComment(userId, request);
@@ -55,7 +56,7 @@ public class CommentController {
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> removeComment(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long cozyLogId,
         @PathVariable(name = "commentId") Long commentId) {
         commentService.deleteComment(userId, commentId);
@@ -65,7 +66,7 @@ public class CommentController {
 
     @GetMapping
     public ResponseEntity<SuccessResponse> getCommentList(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long cozyLogId) {
         FindCommentListResponse response = commentService.findCommentList(cozyLogId);
 

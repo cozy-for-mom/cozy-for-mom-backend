@@ -20,6 +20,7 @@ import com.juju.cozyformombackend3.domain.userlog.supplement.service.SupplementS
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +33,7 @@ public class SupplementController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse> registerSupplement(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid RegisterSupplementRequest request) {
         RegisterSupplementResponse response = supplementService.registerSupplement(userId, request);
         URI uri = URI.create("/api/v1/supplement/intake" + LocalDate.now());
@@ -42,7 +43,7 @@ public class SupplementController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SuccessResponse> modifySupplement(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long supplementId,
         @RequestBody @Valid UpdateSupplementRequest request) {
         UpdateSupplementResponse response = supplementService.updateSupplement(supplementId, request);
@@ -52,7 +53,7 @@ public class SupplementController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<SuccessResponse> removeSupplement(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long supplementId) {
         supplementService.deleteSupplement(supplementId);
 

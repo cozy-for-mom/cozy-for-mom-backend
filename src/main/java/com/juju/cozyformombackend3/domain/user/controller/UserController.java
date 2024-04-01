@@ -17,6 +17,7 @@ import com.juju.cozyformombackend3.domain.user.service.UserService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +29,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<SuccessResponse> getMe(
-        @LoginUserId Long userId) {
+        @Parameter(hidden = true) @LoginUserId Long userId) {
         FindMyInfoResponse response = userService.findMe(userId);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
@@ -36,7 +37,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<SuccessResponse> modifyMe(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid UpdateMyInfoRequest request) {
         UpdateMyInfoResponse response = userService.updateMe(userId, request);
 
@@ -45,7 +46,7 @@ public class UserController {
 
     @PostMapping("/baby/recent")
     public ResponseEntity<SuccessResponse> modifyRecentBabyProfile(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid UpdateRecentBabyProfileRequest request) {
         UpdateRecentBabyProfileResponse response = userService.updateRecentBabyProfile(userId, request);
 

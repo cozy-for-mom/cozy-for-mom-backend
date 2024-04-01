@@ -23,6 +23,7 @@ import com.juju.cozyformombackend3.domain.babylog.growth.service.GrowthService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +36,7 @@ public class GrowthController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse> createGrowth(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid SaveGrowthRequest request) {
 
         SaveGrowthResponse response = growthService.saveGrowth(userId, request);
@@ -46,7 +47,7 @@ public class GrowthController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SuccessResponse> modifyGrowth(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long reportId,
         @RequestBody @Valid UpdateGrowthRequest request) {
         UpdateGrowthResponse response = growthService.updateGrowth(userId, reportId, request);
@@ -56,7 +57,7 @@ public class GrowthController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<SuccessResponse> removeGrowth(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long reportId) {
         growthService.deleteGrowth(userId, reportId);
 
@@ -65,7 +66,7 @@ public class GrowthController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SuccessResponse> getGrowth(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long reportId) {
         FindGrowthResponse response = growthService.getGrowth(userId, reportId);
 

@@ -20,6 +20,7 @@ import com.juju.cozyformombackend3.domain.babylog.baby.service.BabyService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +32,7 @@ public class BabyController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse> createBabyProfile(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid CreateBabyProfileRequest request) {
         CreateBabyProfileResponse response = babyService.saveBabyProfile(userId, request);
         final URI uri = URI.create("/api/v1/baby/" + response.getBabyProfileId());
@@ -41,7 +42,7 @@ public class BabyController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SuccessResponse> modifyBabyProfile(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long babyProfileId,
         @RequestBody @Valid ModifyBabyProfileRequest request) {
         ModifyBabyProfileResponse response = babyService.updateBabyProfile(userId, babyProfileId, request);
@@ -49,12 +50,12 @@ public class BabyController {
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<SuccessResponse> removeBabyProfile(
-		@LoginUserId Long userId,
-		@PathVariable(name = "id") Long babyProfileId) {
-		RemoveBabyProfileResponse response = babyService.deleteBabyProfile(userId, babyProfileId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponse> removeBabyProfile(
+        @Parameter(hidden = true) @LoginUserId Long userId,
+        @PathVariable(name = "id") Long babyProfileId) {
+        RemoveBabyProfileResponse response = babyService.deleteBabyProfile(userId, babyProfileId);
 
-		return ResponseEntity.ok().body(SuccessResponse.of(200, response));
-	}
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 }

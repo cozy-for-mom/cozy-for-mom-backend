@@ -15,6 +15,7 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogSe
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,7 +26,7 @@ public class MyCozyLogController {
 
     @GetMapping
     public ResponseEntity<SuccessResponse> getMyCozyLogList(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(value = "lastId", required = false) Long reportId,
         @RequestParam(value = "size", defaultValue = "10") Long size,
         @RequestParam(value = "sort", defaultValue = "") CozyLogSort sort) {
@@ -43,7 +44,7 @@ public class MyCozyLogController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse> removeMyCozyLogList(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody DeleteMyCozyLogListRequest request) {
         cozyLogService.deleteCozyLogList(userId, request);
 
