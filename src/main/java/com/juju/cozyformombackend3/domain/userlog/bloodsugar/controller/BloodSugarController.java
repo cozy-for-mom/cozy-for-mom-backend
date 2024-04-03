@@ -27,6 +27,7 @@ import com.juju.cozyformombackend3.global.dto.request.FindPeriodRecordCondition;
 import com.juju.cozyformombackend3.global.dto.request.RecordPeriod;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -39,7 +40,7 @@ public class BloodSugarController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse> saveBloodSugarRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid SaveBloodSugarRecordRequest request) {
 
         SaveBloodSugarRecordResponse response = bloodSugarService.saveBloodSugarRecord(request, userId);
@@ -50,7 +51,7 @@ public class BloodSugarController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SuccessResponse> modifyBloodSugarRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long id,
         @RequestBody @Valid ModifyBloodSugarRecordRequest request) {
 
@@ -61,7 +62,7 @@ public class BloodSugarController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<SuccessResponse> removeBloodSugarRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long id) {
         bloodSugarService.deleteBloodSugarRecord(id, userId);
 
@@ -70,7 +71,7 @@ public class BloodSugarController {
 
     @GetMapping()
     public ResponseEntity<SuccessResponse> searchDailyBloodSugarRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         // TODO: 2021-10-04 date validation
         FindDailyBloodSugarListResponse response = bloodSugarService.findDailyBloodSugarRecord(userId, date);
@@ -80,7 +81,7 @@ public class BloodSugarController {
 
     @GetMapping("/period")
     public ResponseEntity<SuccessResponse> searchBloodSugarRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
         @RequestParam(name = "type", defaultValue = "daily") RecordPeriod type,
         @RequestParam(name = "size", defaultValue = "10") Long size) {

@@ -18,6 +18,7 @@ import com.juju.cozyformombackend3.domain.communitylog.scrap.service.ScrapServic
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +30,7 @@ public class ScrapController {
 
     @PostMapping()
     public ResponseEntity<SuccessResponse> scrapSave(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid ApplyScrapRequest request) {
         ScrapResponse response = scrapService.saveScrap(userId, request);
         URI location = URI.create("/api/v1/cozy-log/" + request.getCozyLogId());
@@ -38,7 +39,8 @@ public class ScrapController {
     }
 
     @PostMapping("/unscraps")
-    public ResponseEntity<Void> unscrapList(@LoginUserId Long userId,
+    public ResponseEntity<Void> unscrapList(
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody UnscrapListRequest request) {
         scrapService.deleteScrapList(userId, request);
 
@@ -47,7 +49,7 @@ public class ScrapController {
 
     @GetMapping
     public ResponseEntity<SuccessResponse> getScrapList(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(value = "lastId", defaultValue = "0") Long reportId,
         @RequestParam(value = "size", defaultValue = "10") Long size) {
         FindScrapListResponse response = scrapService.findScrapList(userId, reportId, size);

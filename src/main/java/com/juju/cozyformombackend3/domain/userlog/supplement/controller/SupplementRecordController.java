@@ -23,6 +23,7 @@ import com.juju.cozyformombackend3.domain.userlog.supplement.service.SupplementR
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +36,7 @@ public class SupplementRecordController {
 
     @PostMapping("")
     public ResponseEntity<SuccessResponse> createSupplementRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid SaveSupplementRecordRequest request) {
         SaveSupplementRecordResponse response = supplementRecordService.saveSupplementRecord(userId, request);
         URI uri = URI.create("/api/v1/supplement/intake" + LocalDate.now());
@@ -45,7 +46,7 @@ public class SupplementRecordController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SuccessResponse> modifySupplementRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long recordId,
         @RequestBody @Valid UpdateSupplementRecordRequest request) {
         UpdateSupplementRecordResponse response = supplementRecordService
@@ -56,7 +57,7 @@ public class SupplementRecordController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<SuccessResponse> deleteSupplementRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long recordId) {
         supplementRecordService.deleteSupplementRecord(userId, recordId);
 
@@ -65,7 +66,7 @@ public class SupplementRecordController {
 
     @GetMapping
     public ResponseEntity<SuccessResponse> getSupplementRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(name = "date") String date) {
         GetDailySupplementResponse response = supplementRecordService.getSupplementRecord(userId, date);
 

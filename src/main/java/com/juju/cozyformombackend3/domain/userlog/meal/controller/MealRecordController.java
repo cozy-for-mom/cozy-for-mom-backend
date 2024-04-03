@@ -24,6 +24,7 @@ import com.juju.cozyformombackend3.domain.userlog.meal.service.MealRecordService
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class MealRecordController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse> saveMealRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid CreateMealRecordRequest request) {
         CreateMealRecordResponse response = mealRecordService.createdMealRecord(userId, request);
         URI uri = URI.create("/api/v1/meal/" + response.getId());
@@ -48,7 +49,7 @@ public class MealRecordController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SuccessResponse> modifyMealRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long recordId,
         @RequestBody @Valid UpdateMealRecordRequest request) {
         UpdateMealRecordResponse response = mealRecordService.updateMealRecord(userId, recordId, request);
@@ -58,7 +59,7 @@ public class MealRecordController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<SuccessResponse> removeMealRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long id) {
         mealRecordService.deleteMealRecord(userId, id);
 
@@ -67,7 +68,7 @@ public class MealRecordController {
 
     @GetMapping
     public ResponseEntity<SuccessResponse> getMealRecord(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         GetMealRecordResponse response = mealRecordService.getMealRecord(userId, String.valueOf(date));
 

@@ -25,6 +25,7 @@ import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogSe
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,7 +36,7 @@ public class CozyLogController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse> createCozyLog(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody CreateCozyLogRequest request) {
         Long createdCozyLogId = cozyLogService.saveCozyLog(userId, request);
         URI location = URI.create("/api/v1/cozy-log/" + createdCozyLogId);
@@ -46,7 +47,7 @@ public class CozyLogController {
 
     @PutMapping
     public ResponseEntity<SuccessResponse> modifyCozyLog(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody ModifyCozyLogRequest request) {
         Long modifiedCozyLogId = cozyLogService.updateCozyLog(userId, request);
 
@@ -55,7 +56,7 @@ public class CozyLogController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeCozyLog(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable("id") Long removeCozyLogId) {
         cozyLogService.deleteCozyLog(userId, removeCozyLogId);
 
@@ -64,7 +65,7 @@ public class CozyLogController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SuccessResponse> cozyLogDetail(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable("id") Long cozyLogId) {
         CozyLogDetailResponse response = cozyLogService.findCozyLogDetail(userId, cozyLogId);
 
@@ -73,7 +74,7 @@ public class CozyLogController {
 
     @GetMapping("/list")
     public ResponseEntity<SuccessResponse> cozyLogList(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(value = "lastId", defaultValue = "0") Long reportId,
         @RequestParam(value = "size", defaultValue = "10") Long size,
         @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
@@ -86,7 +87,7 @@ public class CozyLogController {
 
     @GetMapping("/search")
     public ResponseEntity<SuccessResponse> searchCozyLog(
-        @LoginUserId Long userId,
+        @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(value = "lastId", defaultValue = "0") Long lastLogId,
         @RequestParam(value = "size", defaultValue = "10") Long size,
         @RequestParam(value = "keyword", defaultValue = "") String keyword,
