@@ -35,6 +35,8 @@ jobs:
           echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
           echo "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" >> .env
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
+          echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
 
       - name: Set application-dev.yml
         run: |
@@ -46,6 +48,8 @@ jobs:
           sed -i "s|@AWS_REGION@|${{ secrets.AWS_REGION }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@AWS_ACCESS_KEY@|${{ secrets.AWS_ACCESS_KEY }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@AWS_SECRET_ACCESS_KEY@|${{ secrets.AWS_SECRET_ACCESS_KEY }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@KAKAO_CLIENT_ID@|${{ secrets.KAKAO_CLIENT_ID }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@KAKAO_CLIENT_SECRET@|${{ secrets.KAKAO_CLIENT_SECRET }}|g" ./src/main/resources/application-dev.yml
 
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
