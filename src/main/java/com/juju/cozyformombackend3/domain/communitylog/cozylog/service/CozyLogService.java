@@ -55,6 +55,7 @@ public class CozyLogService {
     @Transactional
     public Long deleteCozyLog(Long userId, Long removeCozyLogId) {
         cozyLogRepository.deleteById(removeCozyLogId);
+        scrapRepository.deleteAllByCozyLogId(removeCozyLogId);
 
         return removeCozyLogId;
     }
@@ -108,7 +109,7 @@ public class CozyLogService {
     public void deleteCozyLogList(Long userId, DeleteMyCozyLogListRequest request) {
         cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
     }
-    
+
     public SearchCozyLogResponse searchCozyLog(final CozyLogCondition condition) {
         List<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogListByCondition(condition);
         Long totalCount = cozyLogRepository.countByCondition(condition);
