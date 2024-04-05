@@ -18,12 +18,32 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-        #        dialect: org.hibernate.dialect.MySQLDialect
-        dialect:
-        use_sql_comments: true
-    open-in-view: false
+  #        dialect: org.hibernate.dialect.MySQLDialect
+
+  security:
+    oauth2:
+      client:
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+        registration:
+          kakao:
+            client-name: kakao
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            client-authentication-method: client_secret_post
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+
+server:
+  port: 8080
 
 cloud:
   aws:
@@ -38,34 +58,11 @@ cloud:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_ACCESS_KEY}
 
-#
-#  security:
-#    oauth2:
-#      client:
-#        provider:
-#          kakao:
-#            authorization-uri: https://kauth.kakao.com/oauth/authorize
-#            token-uri: https://kauth.kakao.com/oauth/token
-#            user-info-uri: https://kapi.kakao.com/v2/user/me
-#            user-name-attribute: id
-#        registration:
-#          kakao:
-#            client-id: ${KAKAO_CLIENT_ID}
-#            client-secret: ${KAKAO_SECRET}
-#            client-authentication-method: client_secret_post
-#            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-#            authorization-grant-type: authorization_code
-#            client-name: kakao
-#            scope:
-#              - profile
-#              - account_email
-
 jwt:
   issuer: juju
   secret-key: secret-juju-for-cozy-for-mom
-
-server:
-  port: 8080
+  user-expiration-time: 604800000 #1000 * 60 * 60 * 24 * 7; // 7일
+  guest-expiration-time: 600000
 
 springdoc:
   swagger-ui:
@@ -100,3 +97,12 @@ springdoc:
   # 해당 패턴에 매칭되는 controller만 swagger-ui에 노출한다.
   paths-to-match:
     - /api/**
+
+logging:
+  level:
+    root: info
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
