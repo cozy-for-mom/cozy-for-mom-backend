@@ -41,7 +41,8 @@ public class CustomScrapRepositoryImpl implements CustomScrapRepository {
                 cozyLogImage.imageUrl.coalesce(""), cozyLog.cozyLogImageList.size()))
             .from(scrap)
             .leftJoin(cozyLog).on(cozyLog.id.eq(scrap.cozyLogId))
-            .leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id))
+            .leftJoin(comment).on(comment.cozyLog.id.eq(cozyLog.id)
+                .and(comment.isDeleted.eq(false)))
             .leftJoin(cozyLogImage).on(cozyLogImage.id.eq(firstImageSubQuery))
             .where(scrap.user.id.eq(userId).and(ltReportId(reportId)))
             .groupBy(cozyLog.id, cozyLog.title, cozyLog.content, cozyLog.createdAt, cozyLog.mode,
