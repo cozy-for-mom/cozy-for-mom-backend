@@ -25,9 +25,11 @@ import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 @RequiredArgsConstructor
 public class CozyLogService {
 
@@ -115,5 +117,13 @@ public class CozyLogService {
         Long totalCount = cozyLogRepository.countByCondition(condition);
 
         return SearchCozyLogResponse.of(totalCount, cozyLogs);
+    }
+
+    @Transactional
+    public void deleteAllCozyLog(Long userId) {
+        List<CozyLog> findMyCozyLog = cozyLogRepository.findAllByUserId(userId);
+        log.info(findMyCozyLog.toString());
+        cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId,
+            findMyCozyLog.stream().map(CozyLog::getId).toList());
     }
 }

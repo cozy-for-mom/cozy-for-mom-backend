@@ -50,4 +50,12 @@ public class MyCozyLogController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<SuccessResponse> removeAllMyCozyLog(
+        @Parameter(hidden = true) @LoginUserId Long userId) {
+        cozyLogService.deleteAllCozyLog(userId);
+
+        return ResponseEntity.noContent().build();
+    }
 }
