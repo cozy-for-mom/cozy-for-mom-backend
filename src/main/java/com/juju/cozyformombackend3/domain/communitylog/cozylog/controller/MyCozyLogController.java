@@ -1,8 +1,8 @@
 package com.juju.cozyformombackend3.domain.communitylog.cozylog.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,12 +42,12 @@ public class MyCozyLogController {
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
 
-    @PostMapping
+    @DeleteMapping
     public ResponseEntity<SuccessResponse> removeMyCozyLogList(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody DeleteMyCozyLogListRequest request) {
         cozyLogService.deleteCozyLogList(userId, request);
 
-        return ResponseEntity.ok().body(SuccessResponse.of(200, null));
+        return ResponseEntity.noContent().build();
     }
 }
