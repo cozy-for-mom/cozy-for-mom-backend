@@ -61,10 +61,11 @@ public class SupplementRecordService {
     }
 
     public GetDailySupplementResponse getSupplementRecord(long userId, String date) {
-        List<FindDailySupplementIntake> findRecordList = supplementRecordRepository
+        final List<Supplement> findSupplementList = supplementRepository.findAllByUserId(userId);
+        final List<FindDailySupplementIntake> findRecordList = supplementRecordRepository
             .findDailySupplementIntake(userId, date);
 
-        return GetDailySupplementResponse.of(findRecordList);
+        return GetDailySupplementResponse.of(findSupplementList, findRecordList);
     }
 
     private User findByUserId(Long userId) {

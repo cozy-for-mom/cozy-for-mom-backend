@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.juju.cozyformombackend3.domain.userlog.supplement.dto.object.FindDailySupplementIntake;
+import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,31 +20,28 @@ import lombok.Getter;
 public class GetDailySupplementResponse {
     private final List<DailySupplement> supplements;
 
-    public static GetDailySupplementResponse of(List<FindDailySupplementIntake> findRecordList) {
-        Map<Long, DailySupplement> supplementMap = findRecordList.stream()
-            .collect(Collectors.toMap(
-                FindDailySupplementIntake::getSupplementId,
-                intake -> {
-                    DailySupplement ds = DailySupplement.builder()
-                        .supplementId(intake.getSupplementId())
-                        .supplementName(intake.getSupplementName())
-                        .targetCount(intake.getTargetCount())
-                        .realCount(1)
-                        .build();
-                    ds.records.add(SupplementRecordDto.of(intake.getRecordId(), intake.getDatetime()));
-                    return ds;
-                },
-                (s1, s2) -> {
-                    s1.getRecords().addAll(s2.getRecords());
-                    s1.setRealCount(s1.getRealCount() + s2.getRealCount());
-                    return s1;
-                }
-            ));
+    public static GetDailySupplementResponse of(
+        List<Supplement> findSupplementList,
+        List<FindDailySupplementIntake> findRecordList) {
 
+        final Map<Long, DailySupplement> supplementMap = findSupplementList.stream()
+            .collect(Collectors.toMap(Supplement::getId,
+                supplement -> DailySupplement.builder()
+                    .supplementId(supplement.getId())
+                    .supplementName(supplement.getName())
+                    .targetCount(supplement.getTargetCount())
+                    .realCount(0)
+                    .build()));
+
+        findRecordList.forEach(supplementRecord -> {
+            DailySupplement saveRecord = supplementMap.get(supplementRecord.getSupplementId());
+            saveRecord.getRecords()
+                .add(SupplementRecordDto.of(supplementRecord.getRecordId(), supplementRecord.getDatetime()));
+            saveRecord.realCount++;
+        });
         List<DailySupplement> supplements = new ArrayList<>(supplementMap.values());
 
         return new GetDailySupplementResponse(supplements);
-
     }
 
     @Getter
