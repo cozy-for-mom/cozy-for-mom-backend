@@ -8,9 +8,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.juju.cozyformombackend3.domain.user.model.OAuth2Registration;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
 import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
 import com.juju.cozyformombackend3.global.auth.service.registration.OAuth2RegistrationComposite;
 import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;

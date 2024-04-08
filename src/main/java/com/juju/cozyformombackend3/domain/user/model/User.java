@@ -13,6 +13,7 @@ import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRec
 import com.juju.cozyformombackend3.domain.userlog.meal.model.MealRecord;
 import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
 import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 
 import jakarta.persistence.CascadeType;
@@ -42,8 +43,15 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_type", nullable = false)
+    @Column(name = "oauth_id", nullable = false)
+    private String oauthId;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "oauth_registration", nullable = false)
+    private OAuth2Registration oauth2Registration;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type", nullable = false)
     private UserType userType;
 
     @Column(name = "name", nullable = false)
@@ -52,7 +60,7 @@ public class User extends BaseEntity {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "profile_image_url", nullable = false)
+    @Column(name = "profile_image_url")
     private String profileImageUrl;
 
     @Column(name = "introduce", columnDefinition = "VARCHAR(255)")
@@ -92,8 +100,10 @@ public class User extends BaseEntity {
     private final List<Scrap> scrapList = new ArrayList<>();
 
     @Builder
-    public User(UserType userType, String name, String nickname, String profileImageUrl, String introduce,
-        LocalDate birth, String email) {
+    public User(String oauthId, OAuth2Registration oauth2Registration, UserType userType, String name, String nickname,
+        String profileImageUrl, String introduce, LocalDate birth, String email) {
+        this.oauthId = oauthId;
+        this.oauth2Registration = oauth2Registration;
         this.userType = userType;
         this.name = name;
         this.nickname = nickname;
@@ -123,5 +133,10 @@ public class User extends BaseEntity {
         this.profileImageUrl = request.getImage();
         this.birth = LocalDate.parse(request.getBirth());
         this.email = request.getEmail();
+    }
+
+    public void addBabyProfile(BabyProfile babyProfile) {
+        this.babyProfileList.add(babyProfile);
+        babyProfile.updateMom(this);
     }
 }

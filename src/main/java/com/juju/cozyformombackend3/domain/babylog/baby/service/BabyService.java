@@ -23,58 +23,58 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BabyService {
-	private final UserRepository userRepository;
-	private final BabyProfileRepository babyProfileRepository;
+    private final UserRepository userRepository;
+    private final BabyProfileRepository babyProfileRepository;
 
-	@Transactional
-	public CreateBabyProfileResponse saveBabyProfile(Long userId, CreateBabyProfileRequest request) {
-		User user = findUserById(userId);
-		final BabyProfile saveBabyProfile = request.toBabyProfile(user);
-		saveBabyProfile.addBaby(request.toBabyList(saveBabyProfile));
-		final BabyProfile savedBabyProfile = babyProfileRepository.save(saveBabyProfile);
+    @Transactional
+    public CreateBabyProfileResponse saveBabyProfile(Long userId, CreateBabyProfileRequest request) {
+        User user = findUserById(userId);
+        final BabyProfile saveBabyProfile = request.toBabyProfile(user);
+        saveBabyProfile.addBabyList(request.toBabyList(saveBabyProfile));
+        final BabyProfile savedBabyProfile = babyProfileRepository.save(saveBabyProfile);
 
-		return CreateBabyProfileResponse.of(savedBabyProfile.getId(),
-			savedBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
-	}
+        return CreateBabyProfileResponse.of(savedBabyProfile.getId(),
+            savedBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
+    }
 
-	private User findUserById(Long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
-	}
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+    }
 
-	@Transactional
-	public ModifyBabyProfileResponse updateBabyProfile(Long userId, Long babyProfileId,
-		ModifyBabyProfileRequest request) {
-		final BabyProfile findBabyProfile = babyProfileRepository.findById(babyProfileId)
-			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
-		findBabyProfile.update(request);
-		findBabyProfile.getBabyList().forEach(baby -> {
-			ModifyBabyProfileRequest.BabyDto dto = request.getBaby(baby.getId());
-			baby.update(dto.getName(), dto.getGender());
-		});
+    @Transactional
+    public ModifyBabyProfileResponse updateBabyProfile(Long userId, Long babyProfileId,
+        ModifyBabyProfileRequest request) {
+        final BabyProfile findBabyProfile = babyProfileRepository.findById(babyProfileId)
+            .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
+        findBabyProfile.update(request);
+        findBabyProfile.getBabyList().forEach(baby -> {
+            ModifyBabyProfileRequest.BabyDto dto = request.getBaby(baby.getId());
+            baby.update(dto.getName(), dto.getGender());
+        });
 
-		return ModifyBabyProfileResponse.of(findBabyProfile.getId(),
-			findBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
-	}
+        return ModifyBabyProfileResponse.of(findBabyProfile.getId(),
+            findBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
+    }
 
-	@Transactional
-	public RemoveBabyProfileResponse deleteBabyProfile(Long userId, Long babyProfileId) {
-		User user = findUserById(userId);
-		if (user.getRecentBabyProfileId() == babyProfileId) {
-			user.updateRecentBabyProfileId(null);
-		}
-		final BabyProfile deleteBabyProfile = babyProfileRepository.findById(babyProfileId)
-			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
-		babyProfileRepository.delete(deleteBabyProfile);
+    @Transactional
+    public RemoveBabyProfileResponse deleteBabyProfile(Long userId, Long babyProfileId) {
+        User user = findUserById(userId);
+        if (user.getRecentBabyProfileId() == babyProfileId) {
+            user.updateRecentBabyProfileId(null);
+        }
+        final BabyProfile deleteBabyProfile = babyProfileRepository.findById(babyProfileId)
+            .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
+        babyProfileRepository.delete(deleteBabyProfile);
 
-		return RemoveBabyProfileResponse.of(deleteBabyProfile.getId(),
-			deleteBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
-	}
+        return RemoveBabyProfileResponse.of(deleteBabyProfile.getId(),
+            deleteBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
+    }
 
-	public GetBabyProfileResponse getBabyProfile(Long userId, Long babyProfileId) {
-		BabyProfile foundBabyProfile = babyProfileRepository.findById(babyProfileId)
-			.orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
+    public GetBabyProfileResponse getBabyProfile(Long userId, Long babyProfileId) {
+        BabyProfile foundBabyProfile = babyProfileRepository.findById(babyProfileId)
+            .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
 
-		return GetBabyProfileResponse.of(foundBabyProfile);
-	}
+        return GetBabyProfileResponse.of(foundBabyProfile);
+    }
 }

@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.juju.cozyformombackend3.domain.user.model.OAuth2Registration;
 import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 @Component
