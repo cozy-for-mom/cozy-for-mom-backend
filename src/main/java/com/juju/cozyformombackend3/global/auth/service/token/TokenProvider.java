@@ -37,6 +37,8 @@ public class TokenProvider {
         info.put("nickname", user.getNickname());
         info.put("email", user.getEmail());
         info.put("role", UserRole.USER.name());
+        info.put("oauthId", user.getOauthId());
+        info.put("oauthType", user.getOauth2Registration().getRegistrationName());
         return makeToken(expirationDate, user.getEmail(), info);
     }
 
@@ -47,6 +49,8 @@ public class TokenProvider {
         info.put("nickname", userInfo.getNickname());
         info.put("profileImage", userInfo.getProfileImage());
         info.put("role", userInfo.getRole().name());
+        info.put("oauthId", userInfo.getOauthId());
+        // info.put("oauthType", userInfo.getOauth2Registration().getRegistrationName());
         return makeToken(expirationDate, userInfo.getEmail(), info);
     }
 
@@ -64,9 +68,14 @@ public class TokenProvider {
             .compact();
     }
 
-    public boolean validToken(String token) {
+    public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtTokenProperties.getSecretKey()).parseClaimsJws(token);
+            Jwts.parser()
+                // .verifyWith()
+                // .build()
+                // .parseSignedClaims(token)
+                // .getPayload();
+                .setSigningKey(jwtTokenProperties.getSecretKey()).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -77,13 +86,18 @@ public class TokenProvider {
         Claims claims = getClaims(token);
         Set<SimpleGrantedAuthority> authoritySet = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
         return new UsernamePasswordAuthenticationToken(
-            new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authoritySet), token,
-            authoritySet);
+            new org.springframework.security.core.userdetails.User(claims.getSubject(), "",
+                authoritySet), token, authoritySet);
     }
 
     public Long getUserId(String token) {
         Claims claims = getClaims(token);
         return claims.get("userId", Long.class);
+    }
+
+    public String getOAuthId(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("oauthId", String.class);
     }
 
     private Claims getClaims(String token) {
