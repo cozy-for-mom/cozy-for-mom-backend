@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.global.auth.dto.CheckNicknameDto;
+import com.juju.cozyformombackend3.global.auth.dto.CheckOAuthAccountDto;
 import com.juju.cozyformombackend3.global.auth.dto.api.SignInDto;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.service.AuthService;
@@ -37,6 +38,14 @@ public class AuthController {
     public ResponseEntity<SuccessResponse> checkDuplicateNickname(
         @Valid @RequestBody CheckNicknameDto.Request request) {
         CheckNicknameDto.Response response = authService.checkExistsNickname(request);
+
+        return ResponseEntity.ok().body(SuccessResponse.of(HttpStatus.OK.value(), response));
+    }
+
+    @PostMapping("/oauth")
+    public ResponseEntity<SuccessResponse> checkDuplicateOAuthAccount(
+        @Valid @RequestBody CheckOAuthAccountDto.Request request) {
+        CheckOAuthAccountDto.Response response = authService.checkExistsOAuthAccount(request);
 
         return ResponseEntity.ok().body(SuccessResponse.of(HttpStatus.OK.value(), response));
     }
