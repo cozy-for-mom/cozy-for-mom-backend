@@ -32,7 +32,9 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests(configurer -> configurer.anyRequest().permitAll());
+        http.authorizeHttpRequests(configurer -> configurer
+            // .requestMatchers(HttpMethod.GET, "api/v1/me").authenticated()
+            .anyRequest().permitAll());
         // http.oauth2Login(configurer -> configurer
         //     .successHandler(oauth2SuccessHandler)
         //     .failureHandler(authExceptionHandler)
