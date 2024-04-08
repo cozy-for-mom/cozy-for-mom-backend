@@ -134,4 +134,9 @@ public class User extends BaseEntity {
         this.birth = LocalDate.parse(request.getBirth());
         this.email = request.getEmail();
     }
+
+    public void addBabyProfile(BabyProfile babyProfile) {
+        this.babyProfileList.add(babyProfile);
+        babyProfile.updateMom(this);
+    }
 }

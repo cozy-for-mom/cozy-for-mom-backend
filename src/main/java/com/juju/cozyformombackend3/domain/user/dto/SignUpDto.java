@@ -1,11 +1,14 @@
 package com.juju.cozyformombackend3.domain.user.dto;
 
+import static com.juju.cozyformombackend3.global.util.DateParser.*;
+
 import java.time.LocalDate;
 import java.util.List;
 
+import com.juju.cozyformombackend3.domain.babylog.baby.model.Baby;
+import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.Gender;
 import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
-import com.juju.cozyformombackend3.global.util.DateParser;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +20,15 @@ public class SignUpDto {
     public static class Request {
         private final UserInfo userInfo;
         private final BabyInfo babyInfo;
+
+        public BabyProfile toBabyProfile() {
+            BabyProfile babyProfile = BabyProfile.of(babyInfo.babies.size(), getBabyInfo().getLastPeriodAt(),
+                getBabyInfo().getDueAt(), null);
+            babyInfo.getBabies()
+                .forEach(babyDto -> babyProfile.addBaby(Baby.of(babyProfile, babyDto.name, babyDto.getGender())));
+
+            return babyProfile;
+        }
 
         @Getter
         @AllArgsConstructor
@@ -33,7 +45,7 @@ public class SignUpDto {
             }
 
             public LocalDate getBirth() {
-                return DateParser.stringDateToLocalDate(birth);
+                return stringDateToLocalDate(birth);
             }
         }
 
@@ -43,6 +55,14 @@ public class SignUpDto {
             private final String dueAt;
             private final String lastPeriodAt;
             private final List<BabyDto> babies;
+
+            public LocalDate getDueAt() {
+                return stringDateToLocalDate(dueAt);
+            }
+
+            public LocalDate getLastPeriodAt() {
+                return stringDateToLocalDate(lastPeriodAt);
+            }
 
             @Getter
             @AllArgsConstructor

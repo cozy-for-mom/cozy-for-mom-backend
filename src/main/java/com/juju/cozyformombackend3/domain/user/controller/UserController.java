@@ -25,7 +25,6 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse> signUp(@Valid @RequestBody SignUpDto.Request request) {
-        System.out.println("whduhw");
         final SignUpDto.Response response = userService.registerUser(request);
         final URI location = URI.create("/api/v1/me");
 

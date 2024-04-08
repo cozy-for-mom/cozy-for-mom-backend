@@ -20,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,54 +30,72 @@ import lombok.NoArgsConstructor;
 @Getter
 public class BabyProfile {
 
-	@OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	List<Baby> babyList = new ArrayList<>();
+    @OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    List<Baby> babyList = new ArrayList<>();
 
-	// @OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	// List<GrowthDiary> growthDiaryList = new ArrayList<>();
+    // @OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    // List<GrowthDiary> growthDiaryList = new ArrayList<>();
 
-	@OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-	List<GrowthReport> growthReportList = new ArrayList<>();
+    @OneToMany(mappedBy = "babyProfile", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    List<GrowthReport> growthReportList = new ArrayList<>();
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	@Column(name = "twins", nullable = false)
-	private int twins;
+    @Column(name = "twins", nullable = false)
+    private int twins;
 
-	@Column(name = "pregnant_at", nullable = false)
-	private LocalDate pregnantAt;
+    @Column(name = "pregnant_at", nullable = false)
+    private LocalDate pregnantAt;
 
-	@Column(name = "due_at", nullable = false)
-	private LocalDate dueAt;
+    @Column(name = "due_at", nullable = false)
+    private LocalDate dueAt;
 
-	@Column(name = "image_url", columnDefinition = "TEXT")
-	private String imageUrl;
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
 
-	private BabyProfile(User user, int twins, LocalDate pregnantAt, LocalDate dueAt, String imageUrl) {
-		this.user = user;
-		this.twins = twins;
-		this.pregnantAt = pregnantAt;
-		this.dueAt = dueAt;
-		this.imageUrl = imageUrl;
-	}
+    @Builder
+    private BabyProfile(User user, int twins, LocalDate pregnantAt, LocalDate dueAt, String imageUrl) {
+        this.user = user;
+        this.twins = twins;
+        this.pregnantAt = pregnantAt;
+        this.dueAt = dueAt;
+        this.imageUrl = imageUrl;
+    }
 
-	public static BabyProfile of(User user, int twins, LocalDate pregnantAt, LocalDate dueAt, String imageUrl) {
-		return new BabyProfile(user, twins, pregnantAt, dueAt, imageUrl);
-	}
+    public static BabyProfile of(User user, int twins, LocalDate pregnantAt, LocalDate dueAt, String imageUrl) {
+        return new BabyProfile(user, twins, pregnantAt, dueAt, imageUrl);
+    }
 
-	public void addBaby(List<Baby> babyList) {
-		this.babyList.addAll(babyList);
-	}
+    public static BabyProfile of(int twins, LocalDate pregnantAt, LocalDate dueAt, String imageUrl) {
+        return BabyProfile.builder()
+            .twins(twins)
+            .pregnantAt(pregnantAt)
+            .dueAt(dueAt)
+            .imageUrl(imageUrl)
+            .build();
+    }
 
-	public void update(ModifyBabyProfileRequest request) {
-		this.dueAt = request.getDueAt();
-		this.imageUrl = request.getProfileImageUrl();
-	}
+    public void addBabyList(List<Baby> babyList) {
+        this.babyList.addAll(babyList);
+    }
+
+    public void update(ModifyBabyProfileRequest request) {
+        this.dueAt = request.getDueAt();
+        this.imageUrl = request.getProfileImageUrl();
+    }
+
+    public void addBaby(Baby baby) {
+        this.babyList.add(baby);
+    }
+
+    public void updateMom(User user) {
+        this.user = user;
+    }
 }
