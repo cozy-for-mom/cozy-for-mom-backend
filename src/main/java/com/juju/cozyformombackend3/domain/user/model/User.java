@@ -13,6 +13,7 @@ import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRec
 import com.juju.cozyformombackend3.domain.userlog.meal.model.MealRecord;
 import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
 import com.juju.cozyformombackend3.domain.userlog.weight.model.WeightRecord;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
 import com.juju.cozyformombackend3.global.model.BaseEntity;
 
 import jakarta.persistence.CascadeType;
@@ -59,7 +60,7 @@ public class User extends BaseEntity {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "profile_image_url", nullable = false)
+    @Column(name = "profile_image_url")
     private String profileImageUrl;
 
     @Column(name = "introduce", columnDefinition = "VARCHAR(255)")

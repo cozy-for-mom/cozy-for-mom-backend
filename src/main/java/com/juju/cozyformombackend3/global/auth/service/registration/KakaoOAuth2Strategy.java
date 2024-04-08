@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
-import com.juju.cozyformombackend3.domain.user.model.OAuth2Registration;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
 import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
 import com.juju.cozyformombackend3.global.auth.model.UserRole;
 
