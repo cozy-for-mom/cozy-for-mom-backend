@@ -1,11 +1,16 @@
 package com.juju.cozyformombackend3.domain.communitylog.cozylog.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.CozyLogCondition;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.RecentSearchKeyword;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.SearchKeywordRedis;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.DeleteMyCozyLogListRequest;
@@ -36,6 +41,7 @@ public class CozyLogService {
     private final CozyLogRepository cozyLogRepository;
     private final ScrapRepository scrapRepository;
     private final UserRepository userRepository;
+    private final RedisTemplate<String, SearchKeywordRedis> redisTemplate;
 
     @Transactional
     public Long saveCozyLog(Long userId, CreateCozyLogRequest request) {
@@ -112,10 +118,10 @@ public class CozyLogService {
         cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
     }
 
-    public SearchCozyLogResponse searchCozyLog(final CozyLogCondition condition) {
+    public SearchCozyLogResponse searchCozyLog(Long userId, final CozyLogCondition condition) {
         List<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogListByCondition(condition);
         Long totalCount = cozyLogRepository.countByCondition(condition);
-
+        saveRecentSearchLog(userId, condition.getKeyword());
         return SearchCozyLogResponse.of(totalCount, cozyLogs);
     }
 
@@ -125,5 +131,32 @@ public class CozyLogService {
         log.info(findMyCozyLog.toString());
         cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId,
             findMyCozyLog.stream().map(CozyLog::getId).toList());
+    }
+
+    public RecentSearchKeyword.Response findRecentSearchKeyword(Long userId) {
+        String key = "SearchKeyword_" + userId;
+        List<SearchKeywordRedis> keywordList = redisTemplate.opsForList()
+            .range(key, 0, 10L);
+
+        return Objects.nonNull(keywordList)
+            ? RecentSearchKeyword.Response.of(keywordList.stream().map(SearchKeywordRedis::getKeyword).toList())
+            : null;
+    }
+
+    private void saveRecentSearchLog(Long userId, String keyword) {
+        String now = LocalDateTime.now().toString();
+
+        String key = "SearchKeyword_" + userId;
+        SearchKeywordRedis value = SearchKeywordRedis.builder()
+            .keyword(keyword)
+            .createdAt(now)
+            .build();
+
+        Long size = redisTemplate.opsForList().size(key);
+        if (10L == size) {
+            redisTemplate.opsForList().rightPop(key);
+        }
+
+        redisTemplate.opsForList().leftPush(key, value);
     }
 }

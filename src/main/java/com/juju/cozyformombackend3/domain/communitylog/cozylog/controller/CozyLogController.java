@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.RecentSearchKeyword;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.ModifyCozyLogRequest;
@@ -93,7 +94,7 @@ public class CozyLogController {
         @RequestParam(value = "keyword", defaultValue = "") String keyword,
         @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
     ) {
-        SearchCozyLogResponse response = cozyLogService.searchCozyLog(
+        SearchCozyLogResponse response = cozyLogService.searchCozyLog(userId,
             CozyLogCondition.builder()
                 .userId(userId)
                 .lastLogId(lastLogId)
@@ -101,6 +102,14 @@ public class CozyLogController {
                 .keyword(keyword)
                 .sort(sort)
                 .build());
+
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
+
+    @GetMapping("/search/recent")
+    public ResponseEntity<SuccessResponse> recentSearchKeyword(
+        @Parameter(hidden = true) @LoginUserId Long userId) {
+        RecentSearchKeyword.Response response = cozyLogService.findRecentSearchKeyword(userId);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
