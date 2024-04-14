@@ -10,12 +10,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class FindGrowthListResponse {
-	private final String nextExaminationDate;
-	private final Long lastId;
-	private final Integer size;
-	private final List<GrowthSummary> list;
+    private final String nextExaminationDate;
+    private final Long lastId;
+    private final Integer size;
+    private final List<GrowthSummary> list;
 
-	public static FindGrowthListResponse of(String nextExaminationDate, List<GrowthSummary> list) {
-		return new FindGrowthListResponse(nextExaminationDate, list.getLast().getId(), list.size(), list);
-	}
+    public static FindGrowthListResponse of(String nextExaminationDate, List<GrowthSummary> list) {
+        return new FindGrowthListResponse(nextExaminationDate, list.getLast().getGrowthReportId(), list.size(), list);
+    }
 }
