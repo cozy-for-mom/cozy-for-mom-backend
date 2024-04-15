@@ -151,5 +151,10 @@ public class NotificationService {
 
     }
 
+    @Transactional
+    public void removeRecordMotification(Long notificationId) {
+        recordNotificationRepository.deleteById(notificationId);
+    }
+
     // private final
 }

@@ -3,6 +3,7 @@ package com.juju.cozyformombackend3.domain.notification.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -57,5 +58,14 @@ public class NotificationController {
             .modifyRecordNotificationActive(notificationId, request);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
+
+    @DeleteMapping("/record/{id}")
+    public ResponseEntity<Void> removeRecordNotification(
+        @Parameter(hidden = true) @LoginUserId Long userId,
+        @PathVariable(name = "id") Long notificationId) {
+        notificationService.removeRecordMotification(notificationId);
+
+        return ResponseEntity.noContent().build();
     }
 }
