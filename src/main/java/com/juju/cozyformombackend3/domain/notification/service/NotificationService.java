@@ -4,11 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
+import com.juju.cozyformombackend3.domain.notification.error.NotificationErrorCode;
 import com.juju.cozyformombackend3.domain.notification.model.DayOfWeek;
 import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindInterval;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotification;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotificationTime;
 import com.juju.cozyformombackend3.domain.notification.repository.RecordNotificationRepository;
+import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +47,17 @@ public class NotificationService {
         });
 
         return CreateRecordNotification.Response.of(saveNotification.getId());
+    }
+
+    @Transactional
+    public ModifyRecordNotificationActive.Response modifyRecordNotificationActive(
+        Long notificationId, ModifyRecordNotificationActive.Request request) {
+
+        final RecordNotification findNotification = recordNotificationRepository.findById(notificationId)
+            .orElseThrow(() -> new BusinessException(NotificationErrorCode.NOT_FOUND_NOTIFICATION));
+        findNotification.changeNotificationStatus(request.getIsActive());
+
+        return ModifyRecordNotificationActive.Response.of(findNotification.getId());
     }
 
     // private final

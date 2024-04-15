@@ -81,4 +81,8 @@ public class RecordNotification extends BaseEntity {
     public void addNotifyTime(RecordNotificationTime notificationTime) {
         this.notifyTimeList.add(notificationTime);
     }
+
+    public void changeNotificationStatus(boolean isActive) {
+        this.isActive = isActive;
+    }
 }
