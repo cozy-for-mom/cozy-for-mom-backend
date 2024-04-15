@@ -92,4 +92,13 @@ public class NotificationController {
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
+
+    @DeleteMapping("/examination/{id}")
+    public ResponseEntity<Void> removeExaminationNotification(
+        @Parameter(hidden = true) @LoginUserId Long userId,
+        @PathVariable(name = "id") Long notificationId) {
+        notificationService.removeExaminationNotification(notificationId);
+
+        return ResponseEntity.noContent().build();
+    }
 }
