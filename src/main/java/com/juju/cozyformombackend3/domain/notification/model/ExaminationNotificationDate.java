@@ -19,10 +19,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "examination_notification_time")
+@Table(name = "examination_notification_date")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ExaminationNotificationTime {
+public class ExaminationNotificationDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,10 +40,14 @@ public class ExaminationNotificationTime {
     private ExaminationNotification examinationNotification;
 
     @Builder
-    private ExaminationNotificationTime(NotificationRemindDateInterval remindInterval, LocalDate notifyAt,
+    private ExaminationNotificationDate(NotificationRemindDateInterval remindInterval, LocalDate notifyAt,
         ExaminationNotification examinationNotification) {
         this.remindInterval = remindInterval;
         this.notifyAt = notifyAt;
         this.examinationNotification = examinationNotification;
+    }
+
+    public void applyNotification(ExaminationNotification notification) {
+        this.examinationNotification = notification;
     }
 }
