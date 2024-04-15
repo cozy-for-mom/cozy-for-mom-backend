@@ -1,6 +1,7 @@
 package com.juju.cozyformombackend3.domain.notification.model;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,5 +55,25 @@ public class RecordNotificationTime {
         this.targetTimeAt = targetTimeAt;
         this.dayOfWeek = dayOfWeek;
         this.recordNotification = recordNotification;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        RecordNotificationTime that = (RecordNotificationTime)o;
+        return remindInterval == that.remindInterval && Objects.equals(targetTimeAt, that.targetTimeAt)
+            && dayOfWeek == that.dayOfWeek;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(remindInterval, targetTimeAt, dayOfWeek);
+    }
+
+    public void applyNotification(RecordNotification findNotification) {
+        this.recordNotification = findNotification;
     }
 }

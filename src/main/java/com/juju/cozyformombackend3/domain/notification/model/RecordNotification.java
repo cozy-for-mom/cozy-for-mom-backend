@@ -85,4 +85,10 @@ public class RecordNotification extends BaseEntity {
     public void changeNotificationStatus(boolean isActive) {
         this.isActive = isActive;
     }
+
+    public void changeTitle(String title) {
+        if (!this.title.equals(title)) {
+            this.title = title;
+        }
+    }
 }

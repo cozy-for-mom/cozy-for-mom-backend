@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
 import com.juju.cozyformombackend3.domain.notification.service.NotificationService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
@@ -34,6 +35,17 @@ public class NotificationController {
         final URI location = URI.create("/api/v1/notificaion/record");
 
         return ResponseEntity.created(location).body(SuccessResponse.of(201, response));
+    }
+
+    @PutMapping("/record/{id}")
+    public ResponseEntity<SuccessResponse> modifyRecordNotification(
+        @Parameter(hidden = true) @LoginUserId Long userId,
+        @PathVariable(name = "id") Long notificationId,
+        @RequestBody @Valid ModifyRecordNotification.Request request) {
+        ModifyRecordNotification.Response response = notificationService
+            .modifyRecordNotification(notificationId, request);
+
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
 
     @PutMapping("/record/active/{id}")
