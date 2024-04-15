@@ -8,14 +8,18 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.notification.dto.CreateExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
 import com.juju.cozyformombackend3.domain.notification.error.NotificationErrorCode;
 import com.juju.cozyformombackend3.domain.notification.model.DayOfWeek;
-import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindInterval;
+import com.juju.cozyformombackend3.domain.notification.model.ExaminationNotification;
+import com.juju.cozyformombackend3.domain.notification.model.ExaminationNotificationTime;
+import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindTimeInterval;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotification;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotificationTime;
+import com.juju.cozyformombackend3.domain.notification.repository.ExaminationNotificationRepository;
 import com.juju.cozyformombackend3.domain.notification.repository.RecordNotificationRepository;
 import com.juju.cozyformombackend3.domain.notification.repository.RecordNotificationTimeRepository;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
@@ -28,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class NotificationService {
     private final RecordNotificationRepository recordNotificationRepository;
     private final RecordNotificationTimeRepository recordNotificationTimeRepository;
+    private final ExaminationNotificationRepository examinationNotificationRepository;
 
     @Transactional
     public CreateRecordNotification.Response saveRecordNotification(Long userId,
@@ -42,7 +47,7 @@ public class NotificationService {
 
         request.getTargetTimeAtList().forEach(targetTime -> {
             for (DayOfWeek day : request.getDaysOfWeekList()) {
-                for (NotificationRemindInterval remindInterval : request.getNotifyAtList()) {
+                for (NotificationRemindTimeInterval remindInterval : request.getNotifyAtList()) {
                     saveNotification.addNotifyTime(RecordNotificationTime.builder()
                         .remindInterval(remindInterval)
                         .notifyAt(remindInterval.getNotifyTime(targetTime))
@@ -79,7 +84,7 @@ public class NotificationService {
         List<RecordNotificationTime> requestNotificationTimeList = new ArrayList<>();
         request.getTargetTimeAtList().forEach(targetTime -> {
             for (DayOfWeek day : request.getDaysOfWeekList()) {
-                for (NotificationRemindInterval remindInterval : request.getNotifyAtList()) {
+                for (NotificationRemindTimeInterval remindInterval : request.getNotifyAtList()) {
                     requestNotificationTimeList.add(RecordNotificationTime.builder()
                         .remindInterval(remindInterval)
                         .notifyAt(remindInterval.getNotifyTime(targetTime))
@@ -107,39 +112,6 @@ public class NotificationService {
         }
         findNotificationTime.removeAll(itemsToRemove);
 
-        // requestNotificationTimeList.forEach(notificationTime -> {
-        //     if (!findNotificationTime.contains(notificationTime)) {
-        //         notificationTime.applyNotification(findNotification);
-        //         findNotification.addNotifyTime(notificationTime);
-        //     }
-        // });
-        // findNotificationTime.forEach(notificationTime -> {
-        //     if (!requestNotificationTimeList.contains(notificationTime)) {
-        //         findNotificationTime.remove(notificationTime);
-        //     }
-        // });
-
-        // Set<DayOfWeek> notifyDayOfWeekSet = new HashSet<>();
-        // Set<NotificationRemindInterval> remindIntervalSet = new HashSet<>();
-        // Set<LocalTime> targetTimeSet = new HashSet<>();
-        // findNotification.getNotifyTimeList().forEach(notifyTime -> {
-        //     notifyDayOfWeekSet.add(notifyTime.getDayOfWeek());
-        //     remindIntervalSet.add(notifyTime.getRemindInterval());
-        //     targetTimeSet.add(notifyTime.getTargetTimeAt());
-        // });
-        //
-        // Set<DayOfWeek> requestNotifyDayOfWeekSet = new HashSet<>(request.getDaysOfWeekList());
-        // Set<NotificationRemindInterval> requestRemindIntervalSet = new HashSet<>(request.getNotifyAtList());
-        // Set<LocalTime> requestTargetTimeSet = new HashSet<>(request.getTargetTimeAtList());
-        //
-        // removeOverLapElement(notifyDayOfWeekSet, requestNotifyDayOfWeekSet);
-        // removeOverLapElement(remindIntervalSet, requestRemindIntervalSet);
-        // removeOverLapElement(targetTimeSet, requestTargetTimeSet);
-        //
-        // notifyDayOfWeekSet.forEach(day -> {
-        //     recordNotificationTimeRepository.deleteAllByRecordNotificationIdAndDayOfWeek(notificationId, day);
-        // });
-
         return ModifyRecordNotification.Response.of(findNotification.getId());
     }
 
@@ -152,8 +124,29 @@ public class NotificationService {
     }
 
     @Transactional
-    public void removeRecordMotification(Long notificationId) {
+    public void removeRecordNotification(Long notificationId) {
         recordNotificationRepository.deleteById(notificationId);
+    }
+
+    @Transactional
+    public CreateExaminationNotification.Response saveExaminationNotification(Long userId,
+        CreateExaminationNotification.Request request) {
+        final ExaminationNotification saveNotification = examinationNotificationRepository
+            .save(ExaminationNotification.builder()
+                .userId(userId)
+                .babyProfileId(request.getBabyProfileId())
+                .targetDateAt(request.getExaminationAt())
+                .build());
+
+        request.getNotifyAtList().forEach(remindDateInterval -> {
+            saveNotification.addNotifyDate(ExaminationNotificationTime.builder()
+                .remindInterval(remindDateInterval)
+                .notifyAt(remindDateInterval.getNotifyDate(request.getExaminationAt()))
+                .examinationNotification(saveNotification)
+                .build());
+        });
+
+        return CreateExaminationNotification.Response.of(saveNotification.getId());
     }
 
     // private final

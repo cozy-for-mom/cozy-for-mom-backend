@@ -4,7 +4,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.juju.cozyformombackend3.domain.notification.model.DayOfWeek;
-import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindInterval;
+import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindTimeInterval;
 import com.juju.cozyformombackend3.global.util.TimeParser;
 
 import lombok.AllArgsConstructor;
@@ -21,8 +21,8 @@ public class ModifyRecordNotification {
         private final List<String> targetTimeAt;
         private final List<String> daysOfWeek;
 
-        public List<NotificationRemindInterval> getNotifyAtList() {
-            return notifyAt.stream().map(NotificationRemindInterval::ofType).toList();
+        public List<NotificationRemindTimeInterval> getNotifyAtList() {
+            return notifyAt.stream().map(NotificationRemindTimeInterval::ofType).toList();
         }
 
         public List<LocalTime> getTargetTimeAtList() {

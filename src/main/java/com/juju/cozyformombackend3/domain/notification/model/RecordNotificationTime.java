@@ -31,7 +31,7 @@ public class RecordNotificationTime {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "remind_interval", nullable = false)
-    private NotificationRemindInterval remindInterval;
+    private NotificationRemindTimeInterval remindInterval;
 
     @Column(name = "notify_at", nullable = false)
     private LocalTime notifyAt;
@@ -48,7 +48,7 @@ public class RecordNotificationTime {
     private RecordNotification recordNotification;
 
     @Builder
-    private RecordNotificationTime(NotificationRemindInterval remindInterval, LocalTime notifyAt,
+    private RecordNotificationTime(NotificationRemindTimeInterval remindInterval, LocalTime notifyAt,
         LocalTime targetTimeAt, DayOfWeek dayOfWeek, RecordNotification recordNotification) {
         this.remindInterval = remindInterval;
         this.notifyAt = notifyAt;
