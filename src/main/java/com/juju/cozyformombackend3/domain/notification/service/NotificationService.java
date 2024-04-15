@@ -10,12 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.notification.dto.CreateExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.dto.ModifyExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
 import com.juju.cozyformombackend3.domain.notification.error.NotificationErrorCode;
 import com.juju.cozyformombackend3.domain.notification.model.DayOfWeek;
 import com.juju.cozyformombackend3.domain.notification.model.ExaminationNotification;
-import com.juju.cozyformombackend3.domain.notification.model.ExaminationNotificationTime;
+import com.juju.cozyformombackend3.domain.notification.model.ExaminationNotificationDate;
 import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindTimeInterval;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotification;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotificationTime;
@@ -139,7 +140,7 @@ public class NotificationService {
                 .build());
 
         request.getNotifyAtList().forEach(remindDateInterval -> {
-            saveNotification.addNotifyDate(ExaminationNotificationTime.builder()
+            saveNotification.addNotifyDate(ExaminationNotificationDate.builder()
                 .remindInterval(remindDateInterval)
                 .notifyAt(remindDateInterval.getNotifyDate(request.getExaminationAt()))
                 .examinationNotification(saveNotification)
@@ -147,6 +148,40 @@ public class NotificationService {
         });
 
         return CreateExaminationNotification.Response.of(saveNotification.getId());
+    }
+
+    @Transactional
+    public ModifyExaminationNotification.Response modifyExaminationNotification(Long userId, Long notificationId,
+        ModifyExaminationNotification.Request request) {
+        final ExaminationNotification findNotification = examinationNotificationRepository.findById(notificationId)
+            .orElseThrow(() -> new BusinessException(NotificationErrorCode.NOT_FOUND_NOTIFICATION));
+
+        findNotification.changeTargetDate(request.getExaminationAt());
+
+        List<ExaminationNotificationDate> requestNotificationDateList = new ArrayList<>();
+        request.getNotifyAtList().forEach(remindDateInterval ->
+            requestNotificationDateList.add(ExaminationNotificationDate.builder()
+                .remindInterval(remindDateInterval)
+                .notifyAt(remindDateInterval.getNotifyDate(request.getExaminationAt()))
+                .build()));
+
+        List<ExaminationNotificationDate> findNotificationDate = findNotification.getNotifyDateList();
+        for (ExaminationNotificationDate notifyDate : requestNotificationDateList) {
+            if (!findNotificationDate.contains(notifyDate)) {
+                notifyDate.applyNotification(findNotification);
+                findNotification.addNotifyDate(notifyDate);
+            }
+        }
+
+        List<ExaminationNotificationDate> itemsToRemove = new ArrayList<>();
+        for (ExaminationNotificationDate notifyDate : findNotificationDate) {
+            if (!requestNotificationDateList.contains(notifyDate)) {
+                itemsToRemove.add(notifyDate);
+            }
+        }
+        findNotificationDate.removeAll(itemsToRemove);
+
+        return ModifyExaminationNotification.Response.of(findNotification.getId());
     }
 
     // private final

@@ -37,7 +37,7 @@ public class ExaminationNotification extends BaseEntity {
 
     @OneToMany(mappedBy = "examinationNotification", cascade = {CascadeType.PERSIST,
         CascadeType.REMOVE}, orphanRemoval = true)
-    private List<ExaminationNotificationTime> notifyTimeList = new ArrayList<>();
+    private List<ExaminationNotificationDate> notifyDateList = new ArrayList<>();
 
     @Column(name = "target_date_at", nullable = false)
     private LocalDate targetDateAt;
@@ -54,7 +54,13 @@ public class ExaminationNotification extends BaseEntity {
         this.targetDateAt = targetDateAt;
     }
 
-    public void addNotifyDate(ExaminationNotificationTime notifyDate) {
-        this.notifyTimeList.add(notifyDate);
+    public void addNotifyDate(ExaminationNotificationDate notifyDate) {
+        this.notifyDateList.add(notifyDate);
+    }
+
+    public void changeTargetDate(LocalDate examinationAt) {
+        if (!this.targetDateAt.equals(examinationAt)) {
+            this.targetDateAt = examinationAt;
+        }
     }
 }
