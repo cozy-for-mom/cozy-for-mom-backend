@@ -184,5 +184,10 @@ public class NotificationService {
         return ModifyExaminationNotification.Response.of(findNotification.getId());
     }
 
+    @Transactional
+    public void removeExaminationNotification(Long notificationId) {
+        examinationNotificationRepository.deleteById(notificationId);
+    }
+
     // private final
 }
