@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.juju.cozyformombackend3.domain.notification.dto.CreateExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
@@ -67,5 +68,16 @@ public class NotificationController {
         notificationService.removeRecordMotification(notificationId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/examination")
+    public ResponseEntity<SuccessResponse> createExaminationNotification(
+        @Parameter(hidden = true) @LoginUserId Long userId,
+        @RequestBody @Valid CreateExaminationNotification.Request request) {
+        CreateExaminationNotification.Response response = notificationService.saveExaminationNotification(userId,
+            request);
+        final URI location = URI.create("/api/v1/notificaion/examination");
+
+        return ResponseEntity.created(location).body(SuccessResponse.of(201, response));
     }
 }

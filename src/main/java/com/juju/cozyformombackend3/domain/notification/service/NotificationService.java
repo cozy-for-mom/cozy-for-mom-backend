@@ -13,7 +13,7 @@ import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificat
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
 import com.juju.cozyformombackend3.domain.notification.error.NotificationErrorCode;
 import com.juju.cozyformombackend3.domain.notification.model.DayOfWeek;
-import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindInterval;
+import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindTimeInterval;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotification;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotificationTime;
 import com.juju.cozyformombackend3.domain.notification.repository.RecordNotificationRepository;
@@ -42,7 +42,7 @@ public class NotificationService {
 
         request.getTargetTimeAtList().forEach(targetTime -> {
             for (DayOfWeek day : request.getDaysOfWeekList()) {
-                for (NotificationRemindInterval remindInterval : request.getNotifyAtList()) {
+                for (NotificationRemindTimeInterval remindInterval : request.getNotifyAtList()) {
                     saveNotification.addNotifyTime(RecordNotificationTime.builder()
                         .remindInterval(remindInterval)
                         .notifyAt(remindInterval.getNotifyTime(targetTime))
@@ -79,7 +79,7 @@ public class NotificationService {
         List<RecordNotificationTime> requestNotificationTimeList = new ArrayList<>();
         request.getTargetTimeAtList().forEach(targetTime -> {
             for (DayOfWeek day : request.getDaysOfWeekList()) {
-                for (NotificationRemindInterval remindInterval : request.getNotifyAtList()) {
+                for (NotificationRemindTimeInterval remindInterval : request.getNotifyAtList()) {
                     requestNotificationTimeList.add(RecordNotificationTime.builder()
                         .remindInterval(remindInterval)
                         .notifyAt(remindInterval.getNotifyTime(targetTime))
@@ -154,6 +154,10 @@ public class NotificationService {
     @Transactional
     public void removeRecordMotification(Long notificationId) {
         recordNotificationRepository.deleteById(notificationId);
+    }
+
+    public CreateExaminationNotification.Response saveExaminationNotification(Long userId,
+        CreateExaminationNotification.Request request) {
     }
 
     // private final

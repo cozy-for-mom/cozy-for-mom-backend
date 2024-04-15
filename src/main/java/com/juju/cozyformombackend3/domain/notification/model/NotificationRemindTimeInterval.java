@@ -6,7 +6,7 @@ import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum NotificationRemindInterval {
+public enum NotificationRemindTimeInterval {
 
     ONE_HOUR_AGO("one hour ago") {
         public LocalTime getNotifyTime(LocalTime targetTime) {
@@ -26,8 +26,8 @@ public enum NotificationRemindInterval {
 
     private final String type;
 
-    public static NotificationRemindInterval ofType(String type) {
-        return Arrays.stream(NotificationRemindInterval.values())
+    public static NotificationRemindTimeInterval ofType(String type) {
+        return Arrays.stream(NotificationRemindTimeInterval.values())
             .filter(e -> e.getType().equals(type))
             .findAny()
             .orElse(null);

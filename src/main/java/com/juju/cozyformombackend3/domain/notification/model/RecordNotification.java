@@ -43,20 +43,6 @@ public class RecordNotification extends BaseEntity {
     @Column(name = "target_id")
     private Long targetId;
 
-    // @Enumerated(EnumType.STRING)
-    // @Column(name = "remind_interval", nullable = false)
-    // private NotificationRemindInterval remindInterval;
-
-    // @Column(name = "notify_at", nullable = false)
-    // private LocalTime notifyAt;
-
-    // @Column(name = "target_time_at", nullable = false)
-    // private LocalTime targetTimeAt;
-
-    // @Enumerated(EnumType.STRING)
-    // @Column(name = "day_of_week", nullable = false)
-    // private DayOfWeek dayOfWeek;
-
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
