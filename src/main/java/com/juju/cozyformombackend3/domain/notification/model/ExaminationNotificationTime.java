@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,11 +35,15 @@ public class ExaminationNotificationTime {
     @Column(name = "notify_at", nullable = false)
     private LocalDate notifyAt;
 
-    @Column(name = "target_date_at", nullable = false)
-    private LocalDate targetDateAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "examination_notification_id")
     private ExaminationNotification examinationNotification;
 
+    @Builder
+    private ExaminationNotificationTime(NotificationRemindDateInterval remindInterval, LocalDate notifyAt,
+        ExaminationNotification examinationNotification) {
+        this.remindInterval = remindInterval;
+        this.notifyAt = notifyAt;
+        this.examinationNotification = examinationNotification;
+    }
 }

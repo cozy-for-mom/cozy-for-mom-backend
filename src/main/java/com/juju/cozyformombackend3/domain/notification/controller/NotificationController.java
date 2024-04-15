@@ -65,7 +65,7 @@ public class NotificationController {
     public ResponseEntity<Void> removeRecordNotification(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long notificationId) {
-        notificationService.removeRecordMotification(notificationId);
+        notificationService.removeRecordNotification(notificationId);
 
         return ResponseEntity.noContent().build();
     }
@@ -74,8 +74,8 @@ public class NotificationController {
     public ResponseEntity<SuccessResponse> createExaminationNotification(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestBody @Valid CreateExaminationNotification.Request request) {
-        CreateExaminationNotification.Response response = notificationService.saveExaminationNotification(userId,
-            request);
+        CreateExaminationNotification.Response response = notificationService
+            .saveExaminationNotification(userId, request);
         final URI location = URI.create("/api/v1/notificaion/examination");
 
         return ResponseEntity.created(location).body(SuccessResponse.of(201, response));

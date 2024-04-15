@@ -1,5 +1,6 @@
 package com.juju.cozyformombackend3.domain.notification.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,8 +39,22 @@ public class ExaminationNotification extends BaseEntity {
         CascadeType.REMOVE}, orphanRemoval = true)
     private List<ExaminationNotificationTime> notifyTimeList = new ArrayList<>();
 
+    @Column(name = "target_date_at", nullable = false)
+    private LocalDate targetDateAt;
+
     @Override
     public void delete() {
 
+    }
+
+    @Builder
+    private ExaminationNotification(Long userId, Long babyProfileId, LocalDate targetDateAt) {
+        this.userId = userId;
+        this.babyProfileId = babyProfileId;
+        this.targetDateAt = targetDateAt;
+    }
+
+    public void addNotifyDate(ExaminationNotificationTime notifyDate) {
+        this.notifyTimeList.add(notifyDate);
     }
 }
