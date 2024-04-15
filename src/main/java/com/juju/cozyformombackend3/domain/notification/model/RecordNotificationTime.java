@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +35,9 @@ public class RecordNotificationTime {
     @Column(name = "notify_at", nullable = false)
     private LocalTime notifyAt;
 
+    @Column(name = "target_time_at", nullable = false)
+    private LocalTime targetTimeAt;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "day_of_week", nullable = false)
     private DayOfWeek dayOfWeek;
@@ -41,4 +45,14 @@ public class RecordNotificationTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "record_notification_id")
     private RecordNotification recordNotification;
+
+    @Builder
+    private RecordNotificationTime(NotificationRemindInterval remindInterval, LocalTime notifyAt,
+        LocalTime targetTimeAt, DayOfWeek dayOfWeek, RecordNotification recordNotification) {
+        this.remindInterval = remindInterval;
+        this.notifyAt = notifyAt;
+        this.targetTimeAt = targetTimeAt;
+        this.dayOfWeek = dayOfWeek;
+        this.recordNotification = recordNotification;
+    }
 }

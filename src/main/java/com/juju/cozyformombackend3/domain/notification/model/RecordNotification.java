@@ -1,6 +1,5 @@
 package com.juju.cozyformombackend3.domain.notification.model;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -50,8 +50,8 @@ public class RecordNotification extends BaseEntity {
     // @Column(name = "notify_at", nullable = false)
     // private LocalTime notifyAt;
 
-    @Column(name = "target_time_at", nullable = false)
-    private LocalTime targetTimeAt;
+    // @Column(name = "target_time_at", nullable = false)
+    // private LocalTime targetTimeAt;
 
     // @Enumerated(EnumType.STRING)
     // @Column(name = "day_of_week", nullable = false)
@@ -67,5 +67,18 @@ public class RecordNotification extends BaseEntity {
     @Override
     public void delete() {
 
+    }
+
+    @Builder
+    private RecordNotification(Long userId, NotificationCategory notificationCategory, String title, Long targetId) {
+        this.userId = userId;
+        this.notificationCategory = notificationCategory;
+        this.title = title;
+        this.targetId = targetId;
+        this.isActive = true;
+    }
+
+    public void addNotifyTime(RecordNotificationTime notificationTime) {
+        this.notifyTimeList.add(notificationTime);
     }
 }
