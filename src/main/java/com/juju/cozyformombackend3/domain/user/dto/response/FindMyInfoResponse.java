@@ -51,14 +51,17 @@ public class FindMyInfoResponse {
     @Getter
     private static class BabyProfileDto {
         private final Long babyProfileId;
+        private final String babyProfileImageUrl;
         private final List<BabyDto> babies = new ArrayList<>();
 
-        private BabyProfileDto(Long babyProfileId) {
+        private BabyProfileDto(Long babyProfileId, String babyProfileImageUrl) {
+
             this.babyProfileId = babyProfileId;
+            this.babyProfileImageUrl = babyProfileImageUrl;
         }
 
         public static BabyProfileDto of(BabyProfile profile) {
-            BabyProfileDto dto = new BabyProfileDto(profile.getId());
+            BabyProfileDto dto = new BabyProfileDto(profile.getId(), profile.getImageUrl());
             profile.getBabyList().forEach(baby -> dto.babies.add(BabyDto.of(baby.getId(), baby.getName())));
 
             return dto;
