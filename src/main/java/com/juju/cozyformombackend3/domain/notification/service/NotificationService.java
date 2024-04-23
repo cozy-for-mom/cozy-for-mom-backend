@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.notification.dto.CreateExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.dto.GetRecordNotificationList;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
@@ -17,6 +18,7 @@ import com.juju.cozyformombackend3.domain.notification.error.NotificationErrorCo
 import com.juju.cozyformombackend3.domain.notification.model.DayOfWeek;
 import com.juju.cozyformombackend3.domain.notification.model.ExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.model.ExaminationNotificationDate;
+import com.juju.cozyformombackend3.domain.notification.model.NotificationCategory;
 import com.juju.cozyformombackend3.domain.notification.model.NotificationRemindTimeInterval;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotification;
 import com.juju.cozyformombackend3.domain.notification.model.RecordNotificationTime;
@@ -187,6 +189,14 @@ public class NotificationService {
     @Transactional
     public void removeExaminationNotification(Long notificationId) {
         examinationNotificationRepository.deleteById(notificationId);
+    }
+
+    public GetRecordNotificationList.Response getRecordNotificationList(Long userId,
+        NotificationCategory notificationCategory) {
+        List<RecordNotification> findNotificationList = recordNotificationRepository
+            .findAllByUserIdAndNotificationCategory(userId, notificationCategory);
+
+        return GetRecordNotificationList.Response.of(findNotificationList);
     }
 
     // private final

@@ -77,4 +77,8 @@ public class RecordNotification extends BaseEntity {
             this.title = title;
         }
     }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
 }
