@@ -4,18 +4,22 @@ import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.notification.dto.CreateExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.dto.GetRecordNotificationList;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
+import com.juju.cozyformombackend3.domain.notification.model.NotificationCategory;
 import com.juju.cozyformombackend3.domain.notification.service.NotificationService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -29,6 +33,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NotificationController {
     private final NotificationService notificationService;
+
+    @GetMapping("/record")
+    public ResponseEntity<SuccessResponse> getRecordNotificationList(
+        @Parameter(hidden = true) @LoginUserId Long userId,
+        @RequestParam(value = "type", defaultValue = "supplement") NotificationCategory notificationCategory) {
+
+        GetRecordNotificationList.Response response = notificationService
+            .getRecordNotificationList(userId, notificationCategory);
+
+        return ResponseEntity.ok().body(SuccessResponse.of(200, response));
+    }
 
     @PostMapping("/record")
     public ResponseEntity<SuccessResponse> createRecordNotification(

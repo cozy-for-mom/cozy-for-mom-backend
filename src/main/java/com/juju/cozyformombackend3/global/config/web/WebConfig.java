@@ -9,6 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
+import com.juju.cozyformombackend3.domain.notification.model.NotificationCategory;
 import com.juju.cozyformombackend3.global.dto.request.RecordPeriod;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addConverter(new CozyLogSortConverter());
         registry.addConverter(new RecordPeriodConverter());
+        registry.addConverter(new NotificationCategoryConverter());
+        
     }
 
     private static class CozyLogSortConverter implements Converter<String, CozyLogSort> {
@@ -42,6 +45,13 @@ public class WebConfig implements WebMvcConfigurer {
         @Override
         public RecordPeriod convert(String keyword) {
             return RecordPeriod.of(keyword);
+        }
+    }
+
+    private static class NotificationCategoryConverter implements Converter<String, NotificationCategory> {
+        @Override
+        public NotificationCategory convert(String keyword) {
+            return NotificationCategory.ofType(keyword);
         }
     }
 }

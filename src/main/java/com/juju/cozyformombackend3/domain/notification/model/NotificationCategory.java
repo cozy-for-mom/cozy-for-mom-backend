@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum NotificationCategory {
-    SUPPLEMENT("supplement"), BLOODSUGAR("bloodsugar"), EXAMINATION("examination"),
-    EVENT("event"), ETC("etc");
+    SUPPLEMENT("supplement"), BLOODSUGAR("bloodsugar"),
+    EXAMINATION("examination");
+    // ,
+    // EVENT("event"), ETC("etc");
 
     private final String type;
 
@@ -15,7 +17,7 @@ public enum NotificationCategory {
         return Arrays.stream(NotificationCategory.values())
             .filter(e -> e.getType().equals(type))
             .findAny()
-            .orElse(ETC);
+            .orElse(SUPPLEMENT);
     }
 
     public String getType() {
