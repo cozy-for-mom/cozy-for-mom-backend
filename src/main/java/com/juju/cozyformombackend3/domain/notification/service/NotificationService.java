@@ -8,12 +8,12 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.juju.cozyformombackend3.domain.notification.dto.CreateExaminationNotification;
-import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
-import com.juju.cozyformombackend3.domain.notification.dto.GetRecordNotificationList;
-import com.juju.cozyformombackend3.domain.notification.dto.ModifyExaminationNotification;
-import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotification;
-import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.CreateExaminationNotification;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.CreateRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.GetRecordNotificationList;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyExaminationNotification;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyRecordNotificationActive;
 import com.juju.cozyformombackend3.domain.notification.error.NotificationErrorCode;
 import com.juju.cozyformombackend3.domain.notification.model.DayOfWeek;
 import com.juju.cozyformombackend3.domain.notification.model.ExaminationNotification;
@@ -45,7 +45,6 @@ public class NotificationService {
             .userId(userId)
             .notificationCategory(request.getType())
             .title(request.getTitle())
-            // .targetId()
             .build());
 
         request.getTargetTimeAtList().forEach(targetTime -> {

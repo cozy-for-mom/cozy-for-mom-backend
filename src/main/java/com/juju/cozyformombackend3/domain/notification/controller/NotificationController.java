@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.notification.dto.CreateExaminationNotification;
-import com.juju.cozyformombackend3.domain.notification.dto.CreateRecordNotification;
-import com.juju.cozyformombackend3.domain.notification.dto.GetRecordNotificationList;
-import com.juju.cozyformombackend3.domain.notification.dto.ModifyExaminationNotification;
-import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotification;
-import com.juju.cozyformombackend3.domain.notification.dto.ModifyRecordNotificationActive;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.CreateExaminationNotification;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.CreateRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.GetRecordNotificationList;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyExaminationNotification;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyRecordNotification;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyRecordNotificationActive;
 import com.juju.cozyformombackend3.domain.notification.model.NotificationCategory;
 import com.juju.cozyformombackend3.domain.notification.service.NotificationService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;

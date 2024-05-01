@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.notification.dto;
+package com.juju.cozyformombackend3.domain.notification.controller.dto;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +30,7 @@ public class GetRecordNotificationList {
                     daysOfWeek.add(time.getDayOfWeek().getType());
                 });
 
-                return RecordNotificationDto.of(noti.getTitle(), null, noti.getIsActive(),
+                return RecordNotificationDto.of(noti.getId(), noti.getTitle(), noti.getIsActive(),
                     new ArrayList<>(notifyAt), new ArrayList<>(targetTimeAt), new ArrayList<>(daysOfWeek));
             }).toList());
         }
@@ -38,8 +38,8 @@ public class GetRecordNotificationList {
         @Getter
         @AllArgsConstructor
         private static class RecordNotificationDto {
+            private final Long id;
             private final String title;
-            private final Integer targetCount;
             private final boolean isActive;
             private final List<String> notifyAt;
             private final List<String> targetTimeAt;
@@ -49,10 +49,9 @@ public class GetRecordNotificationList {
                 return this.isActive;
             }
 
-            public static RecordNotificationDto of(final String title, final Integer targetCount,
-                final boolean isActive,
+            public static RecordNotificationDto of(final Long id, final String title, final boolean isActive,
                 final List<String> notifyAt, final List<String> targetTimeAt, final List<String> daysOfWeek) {
-                return new RecordNotificationDto(title, targetCount, isActive, notifyAt, targetTimeAt, daysOfWeek);
+                return new RecordNotificationDto(id, title, isActive, notifyAt, targetTimeAt, daysOfWeek);
             }
         }
     }

@@ -40,9 +40,6 @@ public class RecordNotification extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "target_id")
-    private Long targetId;
-
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
@@ -56,11 +53,10 @@ public class RecordNotification extends BaseEntity {
     }
 
     @Builder
-    private RecordNotification(Long userId, NotificationCategory notificationCategory, String title, Long targetId) {
+    private RecordNotification(Long userId, NotificationCategory notificationCategory, String title) {
         this.userId = userId;
         this.notificationCategory = notificationCategory;
         this.title = title;
-        this.targetId = targetId;
         this.isActive = true;
     }
 
