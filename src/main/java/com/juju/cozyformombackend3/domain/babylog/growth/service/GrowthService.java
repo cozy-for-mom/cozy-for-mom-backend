@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
+import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.FindGrowth;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.SaveGrowth;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.UpdateGrowth;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response.FindGrowthListResponse;
-import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response.FindGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.object.GrowthSummary;
 import com.juju.cozyformombackend3.domain.babylog.growth.error.GrowthErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthDiary;
@@ -99,10 +99,10 @@ public class GrowthService {
         growthReportRepository.delete(findReport);
     }
 
-    public FindGrowthResponse getGrowth(Long userId, Long reportId) {
+    public FindGrowth.Response getGrowth(Long userId, Long reportId) {
         GrowthReport findReport = findGrowthReportById(reportId);
 
-        return FindGrowthResponse.of(findReport);
+        return FindGrowth.Response.of(findReport);
     }
 
     private User findUserById(Long userId) {

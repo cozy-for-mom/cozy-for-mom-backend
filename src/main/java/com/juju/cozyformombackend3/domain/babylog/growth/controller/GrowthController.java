@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.FindGrowth;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.SaveGrowth;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.UpdateGrowth;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response.FindGrowthListResponse;
-import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response.FindGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.service.GrowthService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -66,7 +66,7 @@ public class GrowthController {
     public ResponseEntity<SuccessResponse> getGrowth(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long reportId) {
-        FindGrowthResponse response = growthService.getGrowth(userId, reportId);
+        FindGrowth.Response response = growthService.getGrowth(userId, reportId);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }

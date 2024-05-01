@@ -3,9 +3,7 @@ package com.juju.cozyformombackend3.domain.babylog.growth.controller.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthReport;
-import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 import com.juju.cozyformombackend3.global.util.DateParser;
 import com.juju.cozyformombackend3.global.validation.annotation.IsLocalDate;
 import com.juju.cozyformombackend3.global.validation.annotation.IsPastOrPresentDate;
@@ -44,13 +42,6 @@ public class UpdateGrowth {
 
         public LocalDate getRecordAt() {
             return DateParser.stringDateToLocalDate(date);
-        }
-
-        public BabyInfo getBabyInfo(Long growthRecordId) {
-            return babies.stream()
-                .filter(babyInfo -> babyInfo.getGrowthRecordId().equals(growthRecordId))
-                .findFirst()
-                .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY));
         }
 
         public GrowthDiaryDto getGrowthDiaryDto() {
