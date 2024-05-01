@@ -14,24 +14,33 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CustomGrowthReportRepositoryImpl implements CustomGrowthReportRepository {
-	private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory jpaQueryFactory;
 
-	@Override
-	public List<GrowthSummary> findGrowthSummaryListByLastIdAndSize(Long reportId, Long size) {
-		return jpaQueryFactory.select(new QGrowthSummary(growthReport.id, growthReport.recordAt,
-				growthDiary.imageUrl, growthDiary.title, growthDiary.content))
-			.from(growthReport)
-			.leftJoin(growthReport.growthDiary, growthDiary)
-			.where(ltReportId(reportId))
-			.orderBy(growthReport.recordAt.desc())
-			.limit(size)
-			.fetch();
-	}
+    @Override
+    public List<GrowthSummary> findGrowthSummaryListByBabyProfileIdAndLastIdAndSize(
+        Long babyProfileId, Long reportId, Long size) {
 
-	private BooleanExpression ltReportId(Long reportId) {
-		if (reportId == 0) {
-			return null;
-		}
-		return growthReport.id.lt(reportId);
-	}
+        return jpaQueryFactory.select(new QGrowthSummary(growthReport.id, growthReport.recordAt,
+                growthDiary.imageUrl, growthDiary.title, growthDiary.content))
+            .from(growthReport)
+            .leftJoin(growthReport.growthDiary, growthDiary)
+            .where(eqBabyProfileId(babyProfileId).and(ltReportId(reportId)))
+            .orderBy(growthReport.recordAt.desc())
+            .limit(size)
+            .fetch();
+    }
+
+    private BooleanExpression eqBabyProfileId(Long babyProfileId) {
+        if (babyProfileId == 0) {
+            return null;
+        }
+        return growthReport.babyProfile.id.eq(babyProfileId);
+    }
+
+    private BooleanExpression ltReportId(Long reportId) {
+        if (reportId == 0) {
+            return null;
+        }
+        return growthReport.id.lt(reportId);
+    }
 }
