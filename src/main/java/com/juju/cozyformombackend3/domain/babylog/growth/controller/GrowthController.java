@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.FindGrowth;
+import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.FindGrowthList;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.SaveGrowth;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.UpdateGrowth;
-import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response.FindGrowthListResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.service.GrowthService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -71,12 +71,13 @@ public class GrowthController {
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
 
-    @GetMapping("/board")
+    @GetMapping("/{babyProfileId}/board")
     public ResponseEntity<SuccessResponse> getGrowthList(
+        @PathVariable(name = "babyProfileId") Long babyProfileId,
         @RequestParam(value = "lastId", defaultValue = "0") Long reportId,
         @RequestParam(value = "size", defaultValue = "10") Long size
     ) {
-        FindGrowthListResponse response = growthService.getGrowthList(reportId, size);
+        FindGrowthList.Response response = growthService.getGrowthList(babyProfileId, reportId, size);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }

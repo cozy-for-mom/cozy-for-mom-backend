@@ -5,5 +5,6 @@ import java.util.List;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.object.GrowthSummary;
 
 public interface CustomGrowthReportRepository {
-	List<GrowthSummary> findGrowthSummaryListByLastIdAndSize(Long reportId, Long size);
+    List<GrowthSummary> findGrowthSummaryListByBabyProfileIdAndLastIdAndSize(Long babyProfileId, Long reportId,
+        Long size);
 }

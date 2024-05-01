@@ -10,9 +10,9 @@ import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.FindGrowth;
+import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.FindGrowthList;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.SaveGrowth;
 import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.UpdateGrowth;
-import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response.FindGrowthListResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.dto.object.GrowthSummary;
 import com.juju.cozyformombackend3.domain.babylog.growth.error.GrowthErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.growth.model.GrowthDiary;
@@ -115,13 +115,13 @@ public class GrowthService {
             .orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_GROWTH_REPORT));
     }
 
-    public FindGrowthListResponse getGrowthList(Long reportId, Long size) {
+    public FindGrowthList.Response getGrowthList(Long babyProfileId, Long reportId, Long size) {
         List<GrowthSummary> growthSummaryList = growthReportRepository
-            .findGrowthSummaryListByLastIdAndSize(reportId, size);
+            .findGrowthSummaryListByBabyProfileIdAndLastIdAndSize(babyProfileId, reportId, size);
 
         // TODO
         LocalDate nextExaminationDate = LocalDate.now().plusWeeks(1);
 
-        return FindGrowthListResponse.of(nextExaminationDate.toString(), growthSummaryList);
+        return FindGrowthList.Response.of(nextExaminationDate.toString(), growthSummaryList);
     }
 }
