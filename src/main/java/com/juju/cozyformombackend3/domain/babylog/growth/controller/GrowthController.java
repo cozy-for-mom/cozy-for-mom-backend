@@ -13,12 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.SaveGrowthRequest;
-import com.juju.cozyformombackend3.domain.babylog.growth.dto.request.UpdateGrowthRequest;
-import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.FindGrowthListResponse;
-import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.FindGrowthResponse;
-import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.SaveGrowthResponse;
-import com.juju.cozyformombackend3.domain.babylog.growth.dto.response.UpdateGrowthResponse;
+import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.SaveGrowth;
+import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.UpdateGrowth;
+import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response.FindGrowthListResponse;
+import com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response.FindGrowthResponse;
 import com.juju.cozyformombackend3.domain.babylog.growth.service.GrowthService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -37,9 +35,9 @@ public class GrowthController {
     @PostMapping
     public ResponseEntity<SuccessResponse> createGrowth(
         @Parameter(hidden = true) @LoginUserId Long userId,
-        @RequestBody @Valid SaveGrowthRequest request) {
+        @RequestBody @Valid SaveGrowth.Request request) {
 
-        SaveGrowthResponse response = growthService.saveGrowth(userId, request);
+        SaveGrowth.Response response = growthService.saveGrowth(userId, request);
         URI uri = URI.create("/api/v1/growth/" + response.getGrowthDiaryId());
 
         return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
@@ -49,8 +47,8 @@ public class GrowthController {
     public ResponseEntity<SuccessResponse> modifyGrowth(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long reportId,
-        @RequestBody @Valid UpdateGrowthRequest request) {
-        UpdateGrowthResponse response = growthService.updateGrowth(userId, reportId, request);
+        @RequestBody @Valid UpdateGrowth.Request request) {
+        UpdateGrowth.Response response = growthService.updateGrowth(userId, reportId, request);
 
         return ResponseEntity.ok(SuccessResponse.of(200, response));
     }

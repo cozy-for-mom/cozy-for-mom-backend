@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.babylog.growth.dto.response;
+package com.juju.cozyformombackend3.domain.babylog.growth.controller.dto.response;
 
 import java.util.List;
 
