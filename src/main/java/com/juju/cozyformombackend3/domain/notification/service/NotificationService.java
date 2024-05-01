@@ -45,7 +45,6 @@ public class NotificationService {
             .userId(userId)
             .notificationCategory(request.getType())
             .title(request.getTitle())
-            // .targetId()
             .build());
 
         request.getTargetTimeAtList().forEach(targetTime -> {
