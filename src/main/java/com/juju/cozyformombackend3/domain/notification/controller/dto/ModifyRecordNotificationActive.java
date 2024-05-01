@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.notification.dto;
+package com.juju.cozyformombackend3.domain.notification.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
