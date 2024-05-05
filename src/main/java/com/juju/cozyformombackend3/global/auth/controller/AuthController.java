@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.global.auth.dto.CheckNicknameDto;
-import com.juju.cozyformombackend3.global.auth.dto.CheckOAuthAccountDto;
-import com.juju.cozyformombackend3.global.auth.dto.api.SignInDto;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
 import com.juju.cozyformombackend3.global.auth.service.AuthService;
+import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import jakarta.validation.Valid;
@@ -23,10 +23,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final TokenProvider tokenProvider;
 
-    @PostMapping
-    public ResponseEntity<SuccessResponse> signIn(@Valid @RequestBody SignInDto.Request request) {
-        String accessToken = authService.authenticate(request);
+    // @PostMapping
+    // public ResponseEntity<SuccessResponse> signIn(@Valid @RequestBody SignInDto.Request request) {
+    //     String accessToken = authService.authenticate(request);
+    //
+    //     HttpHeaders httpHeaders = new HttpHeaders();
+    //     httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
+    //
+    //     return new ResponseEntity<>(SuccessResponse.of(HttpStatus.OK.value(), null), httpHeaders, HttpStatus.OK);
+    // }
+
+    @PostMapping("/token/guest")
+    public ResponseEntity<SuccessResponse> testGuestToken() {
+        OAuth2UserInfo userInfo = OAuth2UserInfo.of("shsh1318@cozy.com", null, "shsh1318");
+        String accessToken = tokenProvider.generateGuestToken(userInfo);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
@@ -42,11 +54,4 @@ public class AuthController {
         return ResponseEntity.ok().body(SuccessResponse.of(HttpStatus.OK.value(), response));
     }
 
-    @PostMapping("/oauth")
-    public ResponseEntity<SuccessResponse> checkDuplicateOAuthAccount(
-        @Valid @RequestBody CheckOAuthAccountDto.Request request) {
-        CheckOAuthAccountDto.Response response = authService.checkExistsOAuthAccount(request);
-
-        return ResponseEntity.ok().body(SuccessResponse.of(HttpStatus.OK.value(), response));
-    }
 }

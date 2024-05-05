@@ -43,12 +43,15 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "oauth_id", nullable = false)
-    private String oauthId;
+    @Column(name = "oauth_value", nullable = false)
+    private String oauthValue;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "oauth_registration", nullable = false)
     private OAuth2Registration oauth2Registration;
+
+    @Column(name = "device_token", nullable = false)
+    private String deviceToken;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false)
@@ -100,10 +103,11 @@ public class User extends BaseEntity {
     private final List<Scrap> scrapList = new ArrayList<>();
 
     @Builder
-    public User(String oauthId, OAuth2Registration oauth2Registration, UserType userType, String name, String nickname,
-        String profileImageUrl, String introduce, LocalDate birth, String email) {
-        this.oauthId = oauthId;
+    public User(String oauthValue, OAuth2Registration oauth2Registration, String deviceToken, UserType userType,
+        String name, String nickname, String profileImageUrl, String introduce, LocalDate birth, String email) {
+        this.oauthValue = oauthValue;
         this.oauth2Registration = oauth2Registration;
+        this.deviceToken = deviceToken;
         this.userType = userType;
         this.name = name;
         this.nickname = nickname;

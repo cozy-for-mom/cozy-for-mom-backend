@@ -2,6 +2,7 @@ package com.juju.cozyformombackend3.global.config.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -34,6 +35,7 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(configurer -> configurer
             // .requestMatchers(HttpMethod.GET, "api/v1/me").authenticated()
+            .requestMatchers(HttpMethod.POST, "api/v1/user/signup").hasAuthority("ROLE_GUEST")
             .anyRequest().permitAll());
         // http.oauth2Login(configurer -> configurer
         //     .successHandler(oauth2SuccessHandler)

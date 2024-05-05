@@ -30,15 +30,23 @@ public class SignUpDto {
             return babyProfile;
         }
 
+        public OAuth2Registration getUserOAuthType() {
+            return userInfo.getOAuthType();
+        }
+
+        public String getUserEmail() {
+            return userInfo.getEmail();
+        }
+
         @Getter
         @AllArgsConstructor
         public static class UserInfo {
-            private final String oauthId;
             private final String oauthType;
             private final String name;
             private final String nickname;
             private final String birth;
             private final String email;
+            private final String deviceToken;
 
             public OAuth2Registration getOAuthType() {
                 return OAuth2Registration.ofType(oauthType);
@@ -84,6 +92,18 @@ public class SignUpDto {
 
         public static Response of(final Long userId) {
             return new Response(userId);
+        }
+    }
+
+    // TODO: 임시 dto 계층 분리해낼 것
+    @Getter
+    @RequiredArgsConstructor
+    public static class SignUpInfo {
+        private final Response response;
+        private final String token;
+
+        public static SignUpInfo of(final Response response, final String token) {
+            return new SignUpInfo(response, token);
         }
     }
 }

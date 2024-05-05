@@ -13,11 +13,11 @@ public interface UserRepository extends JpaRepository<User, Long>, CustomUserRep
 
     User findByEmail(String email);
 
-    Optional<User> findByOauthIdAndOauth2Registration(String oauthId, OAuth2Registration oAuthType);
+    Optional<User> findByOauthValueAndOauth2Registration(String oauthValue, OAuth2Registration oAuthType);
 
     boolean existsByNickname(String nickname);
 
     boolean existsByEmail(String email);
 
-    boolean existsByOauthIdAndOauth2Registration(String oauthId, OAuth2Registration oauthType);
+    boolean existsByOauthValueAndOauth2Registration(String oauthValue, OAuth2Registration oauthType);
 }
