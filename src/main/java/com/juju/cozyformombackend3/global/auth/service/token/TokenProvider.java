@@ -20,8 +20,10 @@ import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TokenProvider {
 
@@ -34,11 +36,8 @@ public class TokenProvider {
         Date expirationDate = new Date(new Date().getTime() + jwtTokenProperties.getUserExpirationTime());
         Map<String, String> info = new HashMap<>();
         info.put("userId", String.valueOf(user.getId()));
-        info.put("nickname", user.getNickname());
         info.put("email", user.getEmail());
         info.put("role", UserRole.USER.name());
-        info.put("oauthId", user.getOauthId());
-        info.put("oauthType", user.getOauth2Registration().getRegistrationName());
         return makeToken(expirationDate, user.getEmail(), info);
     }
 
@@ -46,11 +45,9 @@ public class TokenProvider {
         Date expirationDate = new Date(new Date().getTime() + jwtTokenProperties.getGuestExpirationTime());
         Map<String, String> info = new HashMap<>();
         info.put("email", userInfo.getEmail());
-        info.put("nickname", userInfo.getNickname());
         info.put("profileImage", userInfo.getProfileImage());
-        info.put("role", userInfo.getRole().name());
-        info.put("oauthId", userInfo.getOauthId());
-        // info.put("oauthType", userInfo.getOauth2Registration().getRegistrationName());
+        info.put("role", UserRole.GUEST.name());
+        info.put("oauthValue", userInfo.getOauthValue());
         return makeToken(expirationDate, userInfo.getEmail(), info);
     }
 
@@ -83,11 +80,14 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
+        log.info("hi getAuthentication token : " + token);
         Claims claims = getClaims(token);
-        Set<SimpleGrantedAuthority> authoritySet = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UsernamePasswordAuthenticationToken(
-            new org.springframework.security.core.userdetails.User(claims.getSubject(), "",
-                authoritySet), token, authoritySet);
+        Set<SimpleGrantedAuthority> authoritySet = Set.of(new SimpleGrantedAuthority("ROLE_GUEST"));
+        if (getInfo(token).get("role").equals(UserRole.USER.name())) {
+            authoritySet = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        return new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails
+            .User(claims.getSubject(), "", authoritySet), token, authoritySet);
     }
 
     public Long getUserId(String token) {
@@ -101,6 +101,12 @@ public class TokenProvider {
     }
 
     private Claims getClaims(String token) {
+        log.info("get Claim token : " + token);
         return Jwts.parser().setSigningKey(jwtTokenProperties.getSecretKey()).parseClaimsJws(token).getBody();
+    }
+
+    public Map<String, String> getInfo(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("info", Map.class);
     }
 }

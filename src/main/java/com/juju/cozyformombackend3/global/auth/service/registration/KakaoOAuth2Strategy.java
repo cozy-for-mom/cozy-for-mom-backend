@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
 import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
-import com.juju.cozyformombackend3.global.auth.model.UserRole;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +29,8 @@ public class KakaoOAuth2Strategy implements OAuth2Strategy {
         final String profileImage = String.valueOf(attributes.get("profile_image"));
         final String nickname = ((Map<String, String>)attributes.get("properties")).get("nickname");
         log.info("{}, {}, {}, {}", oauthId, email, profileImage, nickname);
-
         isEmailExist(email);
-        return OAuth2UserInfo.of(oauthId, email, profileImage, nickname, UserRole.USER);
+        
+        return OAuth2UserInfo.of(email, profileImage, oauthId);
     }
 }

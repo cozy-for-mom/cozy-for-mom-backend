@@ -30,6 +30,14 @@ public class SignUpDto {
             return babyProfile;
         }
 
+        public OAuth2Registration getUserOAuthType() {
+            return userInfo.getOAuthType();
+        }
+
+        public String getUserEmail() {
+            return userInfo.getEmail();
+        }
+
         @Getter
         @AllArgsConstructor
         public static class UserInfo {

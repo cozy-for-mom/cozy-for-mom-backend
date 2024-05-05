@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.auth.dto.CheckNicknameDto;
-import com.juju.cozyformombackend3.global.auth.dto.CheckOAuthAccountDto;
 import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
 import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
@@ -48,13 +47,13 @@ public class AuthService {
         }
     }
 
-    public CheckOAuthAccountDto.Response checkExistsOAuthAccount(CheckOAuthAccountDto.Request request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BusinessException(AuthErrorCode.CONFLICT_EXIST_EMAIL);
-        }
-        if (userRepository.existsByOauthIdAndOauth2Registration(request.getOauthId(), request.getOauthType())) {
-            throw new BusinessException(AuthErrorCode.CONFLICT_EXIST_OAUTH_ACCOUNT);
-        }
-        return CheckOAuthAccountDto.Response.of(request);
-    }
+    // public CheckOAuthAccountDto.Response checkExistsOAuthAccount(CheckOAuthAccountDto.Request request) {
+    //     if (userRepository.existsByEmail(request.getEmail())) {
+    //         throw new BusinessException(AuthErrorCode.CONFLICT_EXIST_EMAIL);
+    //     }
+    //     if (userRepository.existsByOauthIdAndOauth2Registration(request.getOauthId(), request.getOauthType())) {
+    //         throw new BusinessException(AuthErrorCode.CONFLICT_EXIST_OAUTH_ACCOUNT);
+    //     }
+    //     return CheckOAuthAccountDto.Response.of(request);
+    // }
 }
