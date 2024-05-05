@@ -80,7 +80,6 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        log.info("hi getAuthentication token : " + token);
         Claims claims = getClaims(token);
         Set<SimpleGrantedAuthority> authoritySet = Set.of(new SimpleGrantedAuthority("ROLE_GUEST"));
         if (getInfo(token).get("role").equals(UserRole.USER.name())) {
@@ -101,7 +100,6 @@ public class TokenProvider {
     }
 
     private Claims getClaims(String token) {
-        log.info("get Claim token : " + token);
         return Jwts.parser().setSigningKey(jwtTokenProperties.getSecretKey()).parseClaimsJws(token).getBody();
     }
 
