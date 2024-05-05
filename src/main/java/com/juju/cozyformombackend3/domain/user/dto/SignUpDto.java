@@ -86,4 +86,16 @@ public class SignUpDto {
             return new Response(userId);
         }
     }
+
+    // TODO: 임시 dto 계층 분리해낼 것
+    @Getter
+    @RequiredArgsConstructor
+    public static class SignUpInfo {
+        private final Response response;
+        private final String token;
+
+        public static SignUpInfo of(final Response response, final String token) {
+            return new SignUpInfo(response, token);
+        }
+    }
 }

@@ -9,6 +9,7 @@ import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.model.UserType;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
+import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final TokenProvider tokenProvider;
 
     @Transactional
-    public SignUpDto.Response registerUser(SignUpDto.Request request) {
+    public SignUpDto.SignUpInfo registerUser(SignUpDto.Request request) {
         // 해당 oauthId & Type으로 이미 회원가입했는지 확인
 
         // 없으면 사용자 등록하고
@@ -40,6 +42,8 @@ public class UserService {
             savedUser.addBabyProfile(request.toBabyProfile());
         }
 
-        return SignUpDto.Response.of(savedUser.getId());
+        final String token = tokenProvider.generateUserToken(savedUser);
+
+        return SignUpDto.SignUpInfo.of(SignUpDto.Response.of(savedUser.getId()), token);
     }
 }
