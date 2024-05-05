@@ -26,13 +26,14 @@ public class UserService {
 
         // 없으면 사용자 등록하고
         final User saveUser = User.builder()
-            .oauthId(request.getUserInfo().getOauthId())
+            .oauthId(null)
             .oauth2Registration(request.getUserInfo().getOAuthType())
             .userType(UserType.MOM)
             .name(request.getUserInfo().getName())
             .nickname(request.getUserInfo().getNickname())
             .birth(request.getUserInfo().getBirth())
             .email(request.getUserInfo().getEmail())
+            .deviceToken(request.getUserInfo().getDeviceToken())
             .build();
         final User savedUser = userRepository.save(saveUser);
         if (Objects.nonNull(request.getBabyInfo())) {

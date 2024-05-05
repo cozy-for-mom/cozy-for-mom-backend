@@ -33,12 +33,12 @@ public class SignUpDto {
         @Getter
         @AllArgsConstructor
         public static class UserInfo {
-            private final String oauthId;
             private final String oauthType;
             private final String name;
             private final String nickname;
             private final String birth;
             private final String email;
+            private final String deviceToken;
 
             public OAuth2Registration getOAuthType() {
                 return OAuth2Registration.ofType(oauthType);
