@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.global.auth.dto.CheckNicknameDto;
+import com.juju.cozyformombackend3.global.auth.dto.api.AuthenticateOAuthDto;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
 import com.juju.cozyformombackend3.global.auth.service.AuthService;
@@ -34,6 +35,17 @@ public class AuthController {
     //
     //     return new ResponseEntity<>(SuccessResponse.of(HttpStatus.OK.value(), null), httpHeaders, HttpStatus.OK);
     // }
+
+    @PostMapping("/oauth")
+    public ResponseEntity<SuccessResponse> authenticateOAuth(@Valid @RequestBody AuthenticateOAuthDto.Request request) {
+        String accessToken = authService.authenticateOAuth(request);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
+
+        return new ResponseEntity<>(SuccessResponse.of(HttpStatus.OK.value(), null), httpHeaders, HttpStatus.OK);
+
+    }
 
     @PostMapping("/token/guest")
     public ResponseEntity<SuccessResponse> testGuestToken() {

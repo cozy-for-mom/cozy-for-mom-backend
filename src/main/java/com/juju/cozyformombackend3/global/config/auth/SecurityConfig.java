@@ -37,11 +37,11 @@ public class SecurityConfig {
             // .requestMatchers(HttpMethod.GET, "api/v1/me").authenticated()
             .requestMatchers(HttpMethod.POST, "api/v1/user/signup").hasAuthority("ROLE_GUEST")
             .anyRequest().permitAll());
-        // http.oauth2Login(configurer -> configurer
-        //     .successHandler(oauth2SuccessHandler)
-        //     .failureHandler(authExceptionHandler)
-        //     .userInfoEndpoint(
-        //         userInfoEndpointConfigurer -> userInfoEndpointConfigurer.userService(customOAuth2UserService)));
+        http.oauth2Login(configurer -> configurer
+            .successHandler(oauth2SuccessHandler)
+            .failureHandler(authExceptionHandler)
+            .userInfoEndpoint(
+                userInfoEndpointConfigurer -> userInfoEndpointConfigurer.userService(customOAuth2UserService)));
         http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
