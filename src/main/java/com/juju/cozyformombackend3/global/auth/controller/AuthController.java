@@ -26,16 +26,6 @@ public class AuthController {
     private final AuthService authService;
     private final TokenProvider tokenProvider;
 
-    // @PostMapping
-    // public ResponseEntity<SuccessResponse> signIn(@Valid @RequestBody SignInDto.Request request) {
-    //     String accessToken = authService.authenticate(request);
-    //
-    //     HttpHeaders httpHeaders = new HttpHeaders();
-    //     httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
-    //
-    //     return new ResponseEntity<>(SuccessResponse.of(HttpStatus.OK.value(), null), httpHeaders, HttpStatus.OK);
-    // }
-
     @PostMapping("/oauth")
     public ResponseEntity<SuccessResponse> authenticateOAuth(@Valid @RequestBody AuthenticateOAuthDto.Request request) {
         String accessToken = authService.authenticateOAuth(request);

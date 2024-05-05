@@ -26,17 +26,5 @@ public class KakaoOAuth2Strategy implements OAuth2Strategy {
         KakaoDto response = kakaoApiClient.getUserInfo(token);
         log.info(response.toString());
         return OAuth2UserInfo.of(response.getEmail(), response.getProfileImageUrl(), response.getId());
-
-        // OAuth2UserInfo userInfo = requestUserInfo(accessValue);
-        // final Map<String, Object> attributes = user.getAttributes();
-        // log.info(attributes.toString());
-        // final String oauthId = String.valueOf(attributes.get("id"));
-        // final String email = c
-        // final String profileImage = String.valueOf(attributes.get("profile_image"));
-        // final String nickname = ((Map<String, String>)attributes.get("properties")).get("nickname");
-        // log.info("{}, {}, {}, {}", oauthId, email, profileImage, nickname);
-        // isEmailExist(email);
-
-        // OAuth2UserInfo.of(email, profileImage, oauthId);
     }
 }

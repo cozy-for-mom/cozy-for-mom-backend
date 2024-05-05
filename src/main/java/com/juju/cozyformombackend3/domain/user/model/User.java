@@ -143,4 +143,16 @@ public class User extends BaseEntity {
         this.babyProfileList.add(babyProfile);
         babyProfile.updateMom(this);
     }
+
+    public void updateDeviceToken(String deviceToken) {
+        if (!this.deviceToken.equals(deviceToken)) {
+            this.deviceToken = deviceToken;
+        }
+    }
+
+    public void updateOauthValue(String oauthValue) {
+        if (!this.oauthValue.equals(oauthValue)) {
+            this.oauthValue = oauthValue;
+        }
+    }
 }
