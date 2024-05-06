@@ -25,6 +25,8 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +50,9 @@ public class NotificationController {
     @PostMapping("/record")
     public ResponseEntity<SuccessResponse> createRecordNotification(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = CreateRecordNotification.Request.class)))
         @RequestBody @Valid CreateRecordNotification.Request request) {
         CreateRecordNotification.Response response = notificationService.saveRecordNotification(userId, request);
         final URI location = URI.create("/api/v1/notificaion/record");
@@ -59,6 +64,9 @@ public class NotificationController {
     public ResponseEntity<SuccessResponse> modifyRecordNotification(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long notificationId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = ModifyRecordNotification.Request.class)))
         @RequestBody @Valid ModifyRecordNotification.Request request) {
         ModifyRecordNotification.Response response = notificationService
             .modifyRecordNotification(notificationId, request);
@@ -70,6 +78,9 @@ public class NotificationController {
     public ResponseEntity<SuccessResponse> modifyRecordNotificationActive(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long notificationId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = ModifyRecordNotificationActive.Request.class)))
         @RequestBody @Valid ModifyRecordNotificationActive.Request request) {
         ModifyRecordNotificationActive.Response response = notificationService
             .modifyRecordNotificationActive(notificationId, request);
@@ -89,6 +100,9 @@ public class NotificationController {
     @PostMapping("/examination")
     public ResponseEntity<SuccessResponse> createExaminationNotification(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = CreateExaminationNotification.Request.class)))
         @RequestBody @Valid CreateExaminationNotification.Request request) {
         CreateExaminationNotification.Response response = notificationService
             .saveExaminationNotification(userId, request);
@@ -101,6 +115,9 @@ public class NotificationController {
     public ResponseEntity<SuccessResponse> modifyExaminationNotification(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long notificationId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = ModifyExaminationNotification.Request.class)))
         @RequestBody @Valid ModifyExaminationNotification.Request request) {
         ModifyExaminationNotification.Response response = notificationService
             .modifyExaminationNotification(userId, notificationId, request);

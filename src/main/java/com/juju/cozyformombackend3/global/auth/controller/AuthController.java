@@ -16,6 +16,8 @@ import com.juju.cozyformombackend3.global.auth.service.AuthService;
 import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +29,12 @@ public class AuthController {
     private final TokenProvider tokenProvider;
 
     @PostMapping("/oauth")
-    public ResponseEntity<SuccessResponse> authenticateOAuth(@Valid @RequestBody AuthenticateOAuthDto.Request request) {
+    public ResponseEntity<SuccessResponse> authenticateOAuth(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = AuthenticateOAuthDto.Request.class)))
+        @Valid @RequestBody AuthenticateOAuthDto.Request request) {
+
         String accessToken = authService.authenticateOAuth(request);
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -50,6 +57,9 @@ public class AuthController {
 
     @PostMapping("/nickname")
     public ResponseEntity<SuccessResponse> checkDuplicateNickname(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = CheckNicknameDto.Request.class)))
         @Valid @RequestBody CheckNicknameDto.Request request) {
         CheckNicknameDto.Response response = authService.checkExistsNickname(request);
 

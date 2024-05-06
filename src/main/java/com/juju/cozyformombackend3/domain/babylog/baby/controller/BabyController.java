@@ -21,6 +21,8 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +35,9 @@ public class BabyController {
     @PostMapping
     public ResponseEntity<SuccessResponse> createBabyProfile(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = CreateBabyProfileRequest.class)))
         @RequestBody @Valid CreateBabyProfileRequest request) {
         CreateBabyProfileResponse response = babyService.saveBabyProfile(userId, request);
         final URI uri = URI.create("/api/v1/baby/" + response.getBabyProfileId());
@@ -44,6 +49,9 @@ public class BabyController {
     public ResponseEntity<SuccessResponse> modifyBabyProfile(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long babyProfileId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = ModifyBabyProfileRequest.class)))
         @RequestBody @Valid ModifyBabyProfileRequest request) {
         ModifyBabyProfileResponse response = babyService.updateBabyProfile(userId, babyProfileId, request);
 

@@ -28,6 +28,8 @@ import com.juju.cozyformombackend3.global.dto.request.RecordPeriod;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -41,6 +43,9 @@ public class BloodSugarController {
     @PostMapping
     public ResponseEntity<SuccessResponse> saveBloodSugarRecord(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = SaveBloodSugarRecordRequest.class)))
         @RequestBody @Valid SaveBloodSugarRecordRequest request) {
 
         SaveBloodSugarRecordResponse response = bloodSugarService.saveBloodSugarRecord(request, userId);
@@ -53,6 +58,9 @@ public class BloodSugarController {
     public ResponseEntity<SuccessResponse> modifyBloodSugarRecord(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long id,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = ModifyBloodSugarRecordRequest.class)))
         @RequestBody @Valid ModifyBloodSugarRecordRequest request) {
 
         ModifyBloodSugarRecordResponse response = bloodSugarService.updateBloodSugarRecord(id, request, userId);

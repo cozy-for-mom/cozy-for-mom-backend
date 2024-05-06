@@ -22,6 +22,8 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +37,9 @@ public class GrowthController {
     @PostMapping
     public ResponseEntity<SuccessResponse> createGrowth(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = SaveGrowth.Request.class)))
         @RequestBody @Valid SaveGrowth.Request request) {
 
         SaveGrowth.Response response = growthService.saveGrowth(userId, request);
@@ -47,6 +52,9 @@ public class GrowthController {
     public ResponseEntity<SuccessResponse> modifyGrowth(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long reportId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = UpdateGrowth.Request.class)))
         @RequestBody @Valid UpdateGrowth.Request request) {
         UpdateGrowth.Response response = growthService.updateGrowth(userId, reportId, request);
 

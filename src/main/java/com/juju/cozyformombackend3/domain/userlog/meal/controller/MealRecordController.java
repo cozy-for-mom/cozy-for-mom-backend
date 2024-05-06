@@ -25,6 +25,8 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +42,9 @@ public class MealRecordController {
     @PostMapping
     public ResponseEntity<SuccessResponse> saveMealRecord(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = CreateMealRecordRequest.class)))
         @RequestBody @Valid CreateMealRecordRequest request) {
         CreateMealRecordResponse response = mealRecordService.createdMealRecord(userId, request);
         URI uri = URI.create("/api/v1/meal/" + response.getId());
@@ -51,6 +56,9 @@ public class MealRecordController {
     public ResponseEntity<SuccessResponse> modifyMealRecord(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long recordId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = UpdateMealRecordRequest.class)))
         @RequestBody @Valid UpdateMealRecordRequest request) {
         UpdateMealRecordResponse response = mealRecordService.updateMealRecord(userId, recordId, request);
 

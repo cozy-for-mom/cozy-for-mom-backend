@@ -18,6 +18,8 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +40,9 @@ public class MeController {
     @PutMapping
     public ResponseEntity<SuccessResponse> modifyMe(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = UpdateMyInfoRequest.class)))
         @RequestBody @Valid UpdateMyInfoRequest request) {
         UpdateMyInfoResponse response = meService.updateMe(userId, request);
 
@@ -47,6 +52,9 @@ public class MeController {
     @PostMapping("/baby/recent")
     public ResponseEntity<SuccessResponse> modifyRecentBabyProfile(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = UpdateRecentBabyProfileRequest.class)))
         @RequestBody @Valid UpdateRecentBabyProfileRequest request) {
         UpdateRecentBabyProfileResponse response = meService.updateRecentBabyProfile(userId, request);
 
