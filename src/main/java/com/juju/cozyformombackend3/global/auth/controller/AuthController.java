@@ -2,7 +2,6 @@ package com.juju.cozyformombackend3.global.auth.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,6 @@ import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +33,21 @@ public class AuthController {
         summary = "oauth 인증 및 토큰 발급 (로그인)",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(
-                    implementation = AuthenticateOAuthDto.Request.class
-                )
+                examples = {
+                    @ExampleObject(name = "kakao example", value = """ 
+                            { 
+                                "oauthType" : "kakao",
+                                "value" : "kakaoAccessToken",
+                                "deviceToken" : "deviceToken" 
+                            } 
+                        """),
+                    @ExampleObject(name = "apple example", value = """ 
+                            { 
+                                "oauthType" : "apple",
+                                "value" : "apple 인증코드 값",
+                                "deviceToken" : "deviceToken" 
+                            } 
+                        """)}
             )
         ),
         responses = {
