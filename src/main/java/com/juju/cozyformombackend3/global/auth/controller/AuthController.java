@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.juju.cozyformombackend3.global.auth.dto.CheckNicknameDto;
 import com.juju.cozyformombackend3.global.auth.dto.api.AuthenticateOAuthDto;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
-import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
 import com.juju.cozyformombackend3.global.auth.service.AuthService;
 import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -42,17 +41,6 @@ public class AuthController {
 
         return new ResponseEntity<>(SuccessResponse.of(HttpStatus.OK.value(), null), httpHeaders, HttpStatus.OK);
 
-    }
-
-    @PostMapping("/token/guest")
-    public ResponseEntity<SuccessResponse> testGuestToken() {
-        OAuth2UserInfo userInfo = OAuth2UserInfo.of("shsh1318@cozy.com", null, "shsh1318");
-        String accessToken = tokenProvider.generateGuestToken(userInfo);
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
-
-        return new ResponseEntity<>(SuccessResponse.of(HttpStatus.OK.value(), null), httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/nickname")
