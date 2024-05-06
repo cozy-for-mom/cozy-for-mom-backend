@@ -2,6 +2,7 @@ package com.juju.cozyformombackend3.global.auth.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +16,11 @@ import com.juju.cozyformombackend3.global.auth.service.AuthService;
 import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -27,11 +31,22 @@ public class AuthController {
     private final AuthService authService;
     private final TokenProvider tokenProvider;
 
+    @Operation(
+        summary = "oauth 인증 및 토큰 발급 (로그인)",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(
+                    implementation = AuthenticateOAuthDto.Request.class
+                )
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "중복되지 않음, 사용 가능한 닉네임")
+        }
+    )
     @PostMapping("/oauth")
     public ResponseEntity<SuccessResponse> authenticateOAuth(
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
-            content = @Content(
-                schema = @Schema(implementation = AuthenticateOAuthDto.Request.class)))
         @Valid @RequestBody AuthenticateOAuthDto.Request request) {
 
         String accessToken = authService.authenticateOAuth(request);
@@ -43,11 +58,24 @@ public class AuthController {
 
     }
 
+    @Operation(
+        summary = "닉네임 중복 확인",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                examples = {
+                    @ExampleObject(name = "someExample1", value = """ 
+                            { 
+                                "nickname" : "nickname1" 
+                            } 
+                        """)}
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "중복되지 않음, 사용 가능한 닉네임")
+        }
+    )
     @PostMapping("/nickname")
     public ResponseEntity<SuccessResponse> checkDuplicateNickname(
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
-            content = @Content(
-                schema = @Schema(implementation = CheckNicknameDto.Request.class)))
         @Valid @RequestBody CheckNicknameDto.Request request) {
         CheckNicknameDto.Response response = authService.checkExistsNickname(request);
 

@@ -1,5 +1,6 @@
 package com.juju.cozyformombackend3.global.auth.dto;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ public class CheckNicknameDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
+        @Parameter(required = true)
         private String nickname;
     }
 
