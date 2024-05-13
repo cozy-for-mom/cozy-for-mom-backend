@@ -19,6 +19,8 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +33,9 @@ public class ScrapController {
     @PostMapping()
     public ResponseEntity<SuccessResponse> scrapSave(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = ApplyScrapRequest.class)))
         @RequestBody @Valid ApplyScrapRequest request) {
         ScrapResponse response = scrapService.saveScrap(userId, request);
         URI location = URI.create("/api/v1/cozy-log/" + request.getCozyLogId());
@@ -41,6 +46,9 @@ public class ScrapController {
     @PostMapping("/unscraps")
     public ResponseEntity<Void> unscrapList(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = UnscrapListRequest.class)))
         @RequestBody UnscrapListRequest request) {
         scrapService.deleteScrapList(userId, request);
 

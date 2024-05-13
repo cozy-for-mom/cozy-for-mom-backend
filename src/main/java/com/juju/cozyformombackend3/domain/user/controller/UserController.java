@@ -19,6 +19,8 @@ import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +35,11 @@ public class UserController {
     private final TokenProvider tokenProvider;
 
     @PostMapping("/signup")
-    public ResponseEntity<SuccessResponse> signUp(@Valid @RequestBody SignUpDto.Request request) {
+    public ResponseEntity<SuccessResponse> signUp(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = SignUpDto.Request.class)))
+        @Valid @RequestBody SignUpDto.Request request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = authentication.getCredentials().toString();
         Map<String, String> guestInfo = tokenProvider.getInfo(token);

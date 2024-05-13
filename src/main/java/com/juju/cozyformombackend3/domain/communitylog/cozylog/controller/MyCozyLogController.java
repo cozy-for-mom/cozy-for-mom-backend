@@ -16,6 +16,8 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -45,6 +47,9 @@ public class MyCozyLogController {
     @DeleteMapping
     public ResponseEntity<SuccessResponse> removeMyCozyLogList(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = DeleteMyCozyLogListRequest.class)))
         @RequestBody DeleteMyCozyLogListRequest request) {
         cozyLogService.deleteCozyLogList(userId, request);
 

@@ -24,6 +24,8 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +39,9 @@ public class SupplementRecordController {
     @PostMapping("")
     public ResponseEntity<SuccessResponse> createSupplementRecord(
         @Parameter(hidden = true) @LoginUserId Long userId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = SaveSupplementRecordRequest.class)))
         @RequestBody @Valid SaveSupplementRecordRequest request) {
         SaveSupplementRecordResponse response = supplementRecordService.saveSupplementRecord(userId, request);
         URI uri = URI.create("/api/v1/supplement/intake" + LocalDate.now());
@@ -48,6 +53,9 @@ public class SupplementRecordController {
     public ResponseEntity<SuccessResponse> modifySupplementRecord(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long recordId,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+            content = @Content(
+                schema = @Schema(implementation = UpdateSupplementRecordRequest.class)))
         @RequestBody @Valid UpdateSupplementRecordRequest request) {
         UpdateSupplementRecordResponse response = supplementRecordService
             .updateSupplementRecord(userId, recordId, request);
