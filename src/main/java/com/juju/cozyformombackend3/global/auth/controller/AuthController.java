@@ -51,7 +51,8 @@ public class AuthController {
             )
         ),
         responses = {
-            @ApiResponse(responseCode = "200", description = "중복되지 않음, 사용 가능한 닉네임")
+            @ApiResponse(responseCode = "200", description = "Token 발급 성공"),
+            @ApiResponse(responseCode = "409", description = "이미 해당 이메일로 회원가입된 다른 소셜 로그인 계정이 존재함")
         }
     )
     @PostMapping("/oauth")
@@ -90,5 +91,4 @@ public class AuthController {
 
         return ResponseEntity.ok().body(SuccessResponse.of(HttpStatus.OK.value(), response));
     }
-
 }

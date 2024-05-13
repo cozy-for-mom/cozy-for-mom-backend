@@ -43,6 +43,7 @@ public class NotificationController {
         @Parameter(hidden = true) @LoginUserId Long userId,
         @RequestParam(value = "type", defaultValue = "supplement") NotificationCategory notificationCategory) {
 
+        System.out.println("userId = " + userId);
         GetRecordNotificationList.Response response = notificationService
             .getRecordNotificationList(userId, notificationCategory);
 
@@ -52,10 +53,12 @@ public class NotificationController {
     @Operation(
         summary = "혈당/영양제 알람 등록",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "notifyAt: { “one hour ago”, “thirty minutes ago”, “on time” }"
+                          + "daysOfWeek: { mon, tue, wed, thu, fri, sat, sun, all}",
             content = @Content(
                 examples = {
                     @ExampleObject(
-                        name = "someExample3",
+                        name = "supplement",
                         value = "{\"type\":\"supplement\",\"title\":\"철분 먹을 시간\",\"notifyAt\":[\"one hour ago\"],\"targetTimeAt\":[\"18:00\"],\"daysOfWeek\":[\"mon\",\"wed\",\"fri\"]}"
                     )
                 }
@@ -78,6 +81,8 @@ public class NotificationController {
     @Operation(
         summary = "혈당/영양제 알람 수정",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "notifyAt: { “one hour ago”, “thirty minutes ago”, “on time” }"
+                          + "daysOfWeek: { mon, tue, wed, thu, fri, sat, sun, all}",
             content = @Content(
                 examples = {
                     @ExampleObject(
@@ -103,7 +108,7 @@ public class NotificationController {
     }
 
     @Operation(
-        summary = "혈당/영양제 알람 수정",
+        summary = "혈당/영양제 알람 활성화 상태 수정",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = @Content(
                 examples = {
@@ -115,7 +120,7 @@ public class NotificationController {
             )
         ),
         responses = {
-            @ApiResponse(responseCode = "200", description = "생성 완료")
+            @ApiResponse(responseCode = "200", description = "수정 완료")
         }
     )
     @PutMapping("/record/active/{id}")
@@ -141,6 +146,7 @@ public class NotificationController {
     @Operation(
         summary = "검진일 알람 생성",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "notifyAt: { “on day”, “one day ago”, “two day ago”, “one week ago”, “none” }",
             content = @Content(
                 examples = {
                     @ExampleObject(
@@ -166,8 +172,9 @@ public class NotificationController {
     }
 
     @Operation(
-        summary = "검진일 알람 생성",
+        summary = "검진일 알람 수정",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "notifyAt: { “on day”, “one day ago”, “two day ago”, “one week ago”, “none” }",
             content = @Content(
                 examples = {
                     @ExampleObject(
@@ -178,7 +185,7 @@ public class NotificationController {
             )
         ),
         responses = {
-            @ApiResponse(responseCode = "201", description = "생성 완료")
+            @ApiResponse(responseCode = "201", description = "수정 완료")
         }
     )
     @PutMapping("/examination/{id}")
