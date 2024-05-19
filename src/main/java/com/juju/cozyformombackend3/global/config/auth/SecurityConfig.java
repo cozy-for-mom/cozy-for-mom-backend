@@ -15,7 +15,7 @@ import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.handler.AuthExceptionHandler;
 import com.juju.cozyformombackend3.global.auth.handler.OAuth2SuccessHandler;
 import com.juju.cozyformombackend3.global.auth.service.CustomOAuth2UserService;
-import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
+import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oauth2SuccessHandler;
     private final AuthExceptionHandler authExceptionHandler;
-    private final TokenProvider tokenProvider;
+    private final CozyTokenProvider cozyTokenProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,7 +42,7 @@ public class SecurityConfig {
             .failureHandler(authExceptionHandler)
             .userInfoEndpoint(
                 userInfoEndpointConfigurer -> userInfoEndpointConfigurer.userService(customOAuth2UserService)));
-        http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(cozyTokenProvider), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
 

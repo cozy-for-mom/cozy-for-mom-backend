@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
 import com.juju.cozyformombackend3.global.auth.model.UserRole;
-import com.juju.cozyformombackend3.global.auth.service.UserDetailService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
@@ -25,12 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TokenProvider {
+public class CozyTokenProvider {
 
     private final static String PREFIX = "Bearer ";
     private final JWTTokenProperties jwtTokenProperties;
-
-    private final UserDetailService userDetailService;
 
     public String generateUserToken(User user) {
         Date expirationDate = new Date(new Date().getTime() + jwtTokenProperties.getUserExpirationTime());

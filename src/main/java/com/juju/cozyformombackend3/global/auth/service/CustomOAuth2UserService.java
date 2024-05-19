@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
 import com.juju.cozyformombackend3.global.auth.service.registration.OAuth2RegistrationComposite;
-import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
+import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final OAuth2RegistrationComposite oauth2ProviderComposite;
     private final UserRepository userRepository;
-    private final TokenProvider tokenProvider;
+    private final CozyTokenProvider cozyTokenProvider;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

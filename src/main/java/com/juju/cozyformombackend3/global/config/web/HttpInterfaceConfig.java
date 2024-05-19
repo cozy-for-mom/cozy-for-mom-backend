@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.RestClient;
 
+import com.juju.cozyformombackend3.global.auth.service.registration.client.AppleApiClient;
 import com.juju.cozyformombackend3.global.auth.service.registration.client.KakaoApiClient;
 
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,13 @@ public class HttpInterfaceConfig {
     private final HttpInterfaceFactory httpInterfaceFactory;
 
     @Bean
-    public KakaoApiClient tossPaymentsClient() {
+    public KakaoApiClient kakaoApiClient() {
         return httpInterfaceFactory.create(KakaoApiClient.class, createRestClient());
+    }
+
+    @Bean
+    public AppleApiClient appleApiClient() {
+        return httpInterfaceFactory.create(AppleApiClient.class, createRestClient());
     }
 
     private RestClient createRestClient() {
