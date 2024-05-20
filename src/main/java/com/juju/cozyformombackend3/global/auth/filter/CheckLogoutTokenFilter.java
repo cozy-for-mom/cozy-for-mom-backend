@@ -4,7 +4,11 @@ import java.io.IOException;
 
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
+import com.juju.cozyformombackend3.global.error.exception.AuthException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,9 +19,12 @@ public class CheckLogoutTokenFilter extends OncePerRequestFilter {
 
     private static final String LOGOUT_TOKEN_HASH_KEY = "logout_token";
     private final RedisTemplate<String, String> redisTemplate;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public CheckLogoutTokenFilter(RedisTemplate<String, String> redisTemplate) {
+    public CheckLogoutTokenFilter(RedisTemplate<String, String> redisTemplate,
+        AuthenticationEntryPoint authenticationEntryPoint) {
         this.redisTemplate = redisTemplate;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Override
@@ -26,8 +33,8 @@ public class CheckLogoutTokenFilter extends OncePerRequestFilter {
         String token = getTokenFromRequest(request);
 
         if (token != null && isTokenLoggedOut(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token has been logged out");
+            AuthException authException = new AuthException(AuthErrorCode.UNAUTHORIZED);
+            authenticationEntryPoint.commence(request, response, authException);
             return;
         }
 

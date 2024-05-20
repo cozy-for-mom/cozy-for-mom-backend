@@ -62,4 +62,9 @@ public class AppleOAuth2Strategy implements OAuth2Strategy {
         log.info(response.toString());
         return OAuth2UserInfo.of(email, null, refreshToken);
     }
+
+    @Override
+    public boolean unlinkOAuth2Account(String oauthValue) {
+        return false;
+    }
 }

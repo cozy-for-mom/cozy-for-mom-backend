@@ -5,5 +5,7 @@ import java.util.List;
 import com.juju.cozyformombackend3.domain.communitylog.comment.dto.CommentDto;
 
 public interface CustomCommentRepository {
-	List<CommentDto> findAllByCozyLogId(Long cozyLogId);
+    List<CommentDto> findAllByCozyLogId(Long cozyLogId);
+
+    void updateCommentsIsDeletedByUserId(boolean isDelete, Long userId);
 }

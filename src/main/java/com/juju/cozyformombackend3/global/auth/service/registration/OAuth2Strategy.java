@@ -10,7 +10,7 @@ public interface OAuth2Strategy {
 
     OAuth2UserInfo getUserInfo(String accessValue);
 
-    // boolean unlinkOAuth2Account(MemberCommand.WithdrawRequest command);
+    boolean unlinkOAuth2Account(String oauthValue);
 
     default void isEmailExist(String email) {
         if (null == email) {
