@@ -41,7 +41,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "api/v1/user/signup").hasAuthority("ROLE_GUEST")
             .anyRequest().permitAll());
         http.addFilterBefore(new JwtFilter(cozyTokenProvider), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new CheckLogoutTokenFilter(redisTemplate), JwtFilter.class);
+        http.addFilterBefore(new CheckLogoutTokenFilter(redisTemplate, authExceptionHandler), JwtFilter.class);
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
 
