@@ -14,7 +14,11 @@ public enum AuthErrorCode implements ErrorCode {
     NOT_FOUND_USER(HttpStatus.NOT_FOUND.value(), "존재하지 않는 회원입니다."),
     CONFLICT_EXIST_NICKNAME(HttpStatus.CONFLICT.value(), "이미 사용중인 닉네임입니다."),
     CONFLICT_EXIST_EMAIL(HttpStatus.CONFLICT.value(), "이미 해당 이메일로 회원가입된 계정이 존재합니다."),
-    CONFLICT_EXIST_OAUTH_ACCOUNT(HttpStatus.CONFLICT.value(), "이미 회원가입된 소셜 로그인 계정입니다.");
+    CONFLICT_EXIST_OAUTH_ACCOUNT(HttpStatus.CONFLICT.value(), "이미 회원가입된 소셜 로그인 계정입니다."),
+    NOT_FOUND_PRIVATE_KEY(HttpStatus.NOT_FOUND.value(), "개인키를 찾을 수 없습니다."),
+    SERVER_ERROR_CANT_READ_PRIVATE_KEY(HttpStatus.INTERNAL_SERVER_ERROR.value(), "개인키를 읽을 수 없습니다."),
+    SERVER_ERROR_CANT_CONVERT_PRIVATE_KEY(HttpStatus.INTERNAL_SERVER_ERROR.value(), "개인키를 변환할 수 없습니다."),
+    ;
 
     private final int status;
     private final String message;

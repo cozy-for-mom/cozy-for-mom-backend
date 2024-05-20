@@ -40,6 +40,7 @@ public class AuthService {
     public String authenticateOAuth(AuthenticateOAuthDto.Request request) {
         // deviceToekn으로 유저 유효성검사
 
+        log.info("provider: {}", request.getOAuthType());
         final OAuth2UserInfo userInfo = oauth2ProviderComposite.getOAuth2Strategy(request.getOAuthType())
             .getUserInfo(request.getValue());
         final User findUser = userRepository.findByEmail(userInfo.getEmail());
