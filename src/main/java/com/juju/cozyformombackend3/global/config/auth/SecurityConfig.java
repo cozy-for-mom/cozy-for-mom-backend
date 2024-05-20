@@ -32,6 +32,9 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
+        http.exceptionHandling(exceptionConfig -> exceptionConfig
+            .authenticationEntryPoint(authExceptionHandler)
+            .accessDeniedHandler(authExceptionHandler));
         http.authorizeHttpRequests(configurer -> configurer
             .requestMatchers(HttpMethod.GET, "api/v1/me").hasAuthority("ROLE_USER")
             .requestMatchers(HttpMethod.DELETE, "api/v1/user/logout").hasAuthority("ROLE_USER")
