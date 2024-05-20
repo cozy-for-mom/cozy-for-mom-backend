@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juju.cozyformombackend3.domain.user.dto.LogoutDto;
+import com.juju.cozyformombackend3.domain.user.dto.SignOutDto;
 import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
 import com.juju.cozyformombackend3.domain.user.service.UserService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
@@ -59,13 +60,23 @@ public class UserController {
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<SuccessResponse> logout(
+    public ResponseEntity<SuccessResponse> logOut(
         @Parameter(hidden = true) @LoginUserId Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = authentication.getCredentials().toString();
         Long tmpUserId = cozyTokenProvider.getUserId(token);
 
         LogoutDto.Response response = userService.logout(tmpUserId, token);
+
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK.value(), response));
+    }
+
+    @DeleteMapping("/signout")
+    public ResponseEntity<SuccessResponse> signOut(
+        @Parameter(hidden = true) @LoginUserId Long userId,
+        @RequestBody SignOutDto.Request request) {
+
+        LogoutDto.Response response = userService.signOut(6L, request.getReason());
 
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK.value(), response));
     }

@@ -8,12 +8,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.communitylog.comment.repository.CommentRepository;
 import com.juju.cozyformombackend3.domain.user.dto.LogoutDto;
 import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.model.UserType;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
+import com.juju.cozyformombackend3.global.auth.service.registration.OAuth2RegistrationComposite;
 import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
@@ -28,6 +30,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final CozyTokenProvider cozyTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
+    private final CommentRepository commentRepository;
+    private final OAuth2RegistrationComposite oauth2ProviderComposite;
 
     @Transactional
     public SignUpDto.SignUpInfo registerUser(Map<String, String> guestInfo, SignUpDto.Request request) {
@@ -80,5 +84,25 @@ public class UserService {
         // long ttl = expirationTime - currentTime;
         hashOperations.put(hashKey, accessToken, key);
         // redisTemplate.expire(key, ttl, TimeUnit.SECONDS);
+    }
+
+    @Transactional
+    public LogoutDto.Response signOut(Long userId, String reason) {
+        final User findUser = userRepository.findById(userId)
+            .orElseThrow(() -> new BusinessException(AuthErrorCode.NOT_FOUND_USER));
+
+        // 로그아웃 토큰 저장
+        // saveLogoutTokenInRedis(userId, accessToken);
+
+        // 회원 탈퇴
+        //comment isDelete
+        commentRepository.updateCommentsIsDeletedByUserId(false, userId);
+        // user delete
+        userRepository.deleteById(userId);
+
+        // oauth unlink
+        oauth2ProviderComposite.getOAuth2Strategy(findUser.getOauth2Registration())
+            .unlinkOAuth2Account(findUser.getOauthValue());
+        return LogoutDto.Response.of(userId);
     }
 }

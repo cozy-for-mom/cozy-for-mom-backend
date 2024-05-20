@@ -11,14 +11,8 @@ import com.juju.cozyformombackend3.global.auth.service.registration.AppleOAuthPu
 import com.juju.cozyformombackend3.global.auth.service.registration.AppleToken;
 
 public interface AppleApiClient {
-    // @GetExchange("https://")
-    // KakaoDto getUserInfo(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String token);
-
     @GetExchange("https://appleid.apple.com/auth/keys")
     AppleOAuthPublicKeyDto getOAuthPublicKey();
-
-    //@PostMapping(value = "https://appleid.apple.com/auth/token", consumes = "application/x-www-form-urlencoded")
-    //AppleToken.Response getToken(AppleToken.Request request);
 
     @PostExchange("https://appleid.apple.com/auth/token")
     AppleToken.Response getToken(

@@ -1,5 +1,7 @@
 package com.juju.cozyformombackend3.domain.communitylog.cozylog.service;
 
+import static org.springframework.util.StringUtils.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -145,6 +147,10 @@ public class CozyLogService {
 
     private void saveRecentSearchLog(Long userId, String keyword) {
         String now = LocalDateTime.now().toString();
+
+        if (!hasText(keyword)) {
+            return;
+        }
 
         String key = "SearchKeyword_" + userId;
         SearchKeywordRedis value = SearchKeywordRedis.builder()
