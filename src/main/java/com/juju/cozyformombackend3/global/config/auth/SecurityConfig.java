@@ -21,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    // private final CustomOAuth2UserService customOAuth2UserService;
-    // private final OAuth2SuccessHandler oauth2SuccessHandler;
     private final AuthExceptionHandler authExceptionHandler;
     private final CozyTokenProvider cozyTokenProvider;
 
@@ -35,11 +33,6 @@ public class SecurityConfig {
             // .requestMatchers(HttpMethod.GET, "api/v1/me").authenticated()
             .requestMatchers(HttpMethod.POST, "api/v1/user/signup").hasAuthority("ROLE_GUEST")
             .anyRequest().permitAll());
-        // http.oauth2Login(configurer -> configurer
-        //     .successHandler(oauth2SuccessHandler)
-        //     .failureHandler(authExceptionHandler)
-        //     .userInfoEndpoint(
-        //         userInfoEndpointConfigurer -> userInfoEndpointConfigurer.userService(customOAuth2UserService)));
         http.addFilterBefore(new JwtFilter(cozyTokenProvider), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
