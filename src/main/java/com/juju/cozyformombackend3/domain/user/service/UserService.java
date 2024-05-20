@@ -78,7 +78,7 @@ public class UserService {
         // long expirationTime = cozyTokenProvider.getExpiration(accessToken);
         // long currentTime = Instant.now().getEpochSecond();
         // long ttl = expirationTime - currentTime;
-        hashOperations.put(hashKey, key, accessToken);
+        hashOperations.put(hashKey, accessToken, key);
         // redisTemplate.expire(key, ttl, TimeUnit.SECONDS);
     }
 }

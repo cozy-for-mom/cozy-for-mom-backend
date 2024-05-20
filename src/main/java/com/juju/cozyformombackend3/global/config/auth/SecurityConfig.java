@@ -2,6 +2,7 @@ package com.juju.cozyformombackend3.global.config.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.juju.cozyformombackend3.global.auth.filter.CheckLogoutTokenFilter;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.handler.AuthExceptionHandler;
 import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
     private final AuthExceptionHandler authExceptionHandler;
     private final CozyTokenProvider cozyTokenProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,6 +38,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "api/v1/user/signup").hasAuthority("ROLE_GUEST")
             .anyRequest().permitAll());
         http.addFilterBefore(new JwtFilter(cozyTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CheckLogoutTokenFilter(redisTemplate), JwtFilter.class);
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
 

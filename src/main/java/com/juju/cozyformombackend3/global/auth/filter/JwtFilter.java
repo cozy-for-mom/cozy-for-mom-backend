@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtFilter extends GenericFilterBean {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    private CozyTokenProvider cozyTokenProvider;
+    private final CozyTokenProvider cozyTokenProvider;
 
     public JwtFilter(CozyTokenProvider cozyTokenProvider) {
         this.cozyTokenProvider = cozyTokenProvider;
@@ -33,7 +33,6 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
-        log.info("jwt: {}, uri: {}", jwt, requestURI);
 
         if (StringUtils.hasText(jwt) && cozyTokenProvider.validateToken(jwt)) {
             Authentication authentication = cozyTokenProvider.getAuthentication(jwt);
