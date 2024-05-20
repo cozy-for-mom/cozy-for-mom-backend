@@ -40,6 +40,10 @@ jobs:
           echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
           echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
           echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
+          echo "APPLE_KEY_ID=${{ secrets.APPLE_KEY_ID }}" >> .env
+          echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env
+          echo "APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}" >> .env
+          echo "APPLE_AUTH_KEY_PATH=${{ secrets.APPLE_AUTH_KEY_PATH }}" >> .env
 
       - name: Set application-dev.yml
         run: |
@@ -56,6 +60,19 @@ jobs:
           sed -i "s|@REDIS_HOST@|${{ secrets.REDIS_HOST }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@REDIS_PORT@|${{ secrets.REDIS_PORT }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@REDIS_PASSWORD@|${{ secrets.REDIS_PASSWORD }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@APPLE_KEY_ID@|${{ secrets.APPLE_KEY_ID }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@APPLE_TEAM_ID@|${{ secrets.APPLE_TEAM_ID }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@APPLE_CLIENT_ID@|${{ secrets.APPLE_CLIENT_ID }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@APPLE_AUTH_KEY_PATH@|${{ secrets.APPLE_AUTH_KEY_PATH }}|g" ./src/main/resources/application-dev.yml
+
+      - name: Set apple auth key
+        run: |
+          cd ./src/main/resources    
+          echo pwd   
+          mkdir -p "$(dirname "${{ secrets.APPLE_AUTH_KEY_PATH }}")"
+          echo "${{ secrets.APPLE_AUTH_KEY }}" > ${{ secrets.APPLE_AUTH_KEY_PATH }}
+          chmod 600 ${{ secrets.APPLE_AUTH_KEY_PATH }}
+        shell: bash
 
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
@@ -68,7 +85,6 @@ jobs:
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-
 
       - name: Docker Hub build & push
         run: |

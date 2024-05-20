@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
 import com.juju.cozyformombackend3.domain.user.service.UserService;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
-import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
+import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
     private final UserService userService;
-    private final TokenProvider tokenProvider;
+    private final CozyTokenProvider cozyTokenProvider;
 
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse> signUp(
@@ -42,7 +42,7 @@ public class UserController {
         @Valid @RequestBody SignUpDto.Request request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = authentication.getCredentials().toString();
-        Map<String, String> guestInfo = tokenProvider.getInfo(token);
+        Map<String, String> guestInfo = cozyTokenProvider.getInfo(token);
 
         final SignUpDto.SignUpInfo response = userService.registerUser(guestInfo, request);
         final URI location = URI.create("/api/v1/me");

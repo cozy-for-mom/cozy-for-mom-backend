@@ -12,7 +12,6 @@ import com.juju.cozyformombackend3.global.auth.dto.CheckNicknameDto;
 import com.juju.cozyformombackend3.global.auth.dto.api.AuthenticateOAuthDto;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.service.AuthService;
-import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final TokenProvider tokenProvider;
 
     @Operation(
         summary = "oauth 인증 및 토큰 발급 (로그인)",

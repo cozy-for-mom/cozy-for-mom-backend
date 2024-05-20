@@ -11,7 +11,7 @@ import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.model.UserType;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
-import com.juju.cozyformombackend3.global.auth.service.token.TokenProvider;
+import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final TokenProvider tokenProvider;
+    private final CozyTokenProvider cozyTokenProvider;
 
     @Transactional
     public SignUpDto.SignUpInfo registerUser(Map<String, String> guestInfo, SignUpDto.Request request) {
@@ -52,7 +52,7 @@ public class UserService {
             savedUser.addBabyProfile(request.toBabyProfile());
         }
 
-        final String token = tokenProvider.generateUserToken(savedUser);
+        final String token = cozyTokenProvider.generateUserToken(savedUser);
 
         return SignUpDto.SignUpInfo.of(SignUpDto.Response.of(savedUser.getId()), token);
     }
