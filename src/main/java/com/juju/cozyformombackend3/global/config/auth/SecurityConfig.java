@@ -13,8 +13,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.handler.AuthExceptionHandler;
-import com.juju.cozyformombackend3.global.auth.handler.OAuth2SuccessHandler;
-import com.juju.cozyformombackend3.global.auth.service.CustomOAuth2UserService;
 import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -23,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final OAuth2SuccessHandler oauth2SuccessHandler;
+    // private final CustomOAuth2UserService customOAuth2UserService;
+    // private final OAuth2SuccessHandler oauth2SuccessHandler;
     private final AuthExceptionHandler authExceptionHandler;
     private final CozyTokenProvider cozyTokenProvider;
 
@@ -37,11 +35,11 @@ public class SecurityConfig {
             // .requestMatchers(HttpMethod.GET, "api/v1/me").authenticated()
             .requestMatchers(HttpMethod.POST, "api/v1/user/signup").hasAuthority("ROLE_GUEST")
             .anyRequest().permitAll());
-        http.oauth2Login(configurer -> configurer
-            .successHandler(oauth2SuccessHandler)
-            .failureHandler(authExceptionHandler)
-            .userInfoEndpoint(
-                userInfoEndpointConfigurer -> userInfoEndpointConfigurer.userService(customOAuth2UserService)));
+        // http.oauth2Login(configurer -> configurer
+        //     .successHandler(oauth2SuccessHandler)
+        //     .failureHandler(authExceptionHandler)
+        //     .userInfoEndpoint(
+        //         userInfoEndpointConfigurer -> userInfoEndpointConfigurer.userService(customOAuth2UserService)));
         http.addFilterBefore(new JwtFilter(cozyTokenProvider), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
