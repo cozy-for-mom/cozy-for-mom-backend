@@ -30,7 +30,8 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(configurer -> configurer
-            // .requestMatchers(HttpMethod.GET, "api/v1/me").authenticated()
+            .requestMatchers(HttpMethod.GET, "api/v1/me").hasAuthority("ROLE_USER")
+            .requestMatchers(HttpMethod.DELETE, "api/v1/user/logout").hasAuthority("ROLE_USER")
             .requestMatchers(HttpMethod.POST, "api/v1/user/signup").hasAuthority("ROLE_GUEST")
             .anyRequest().permitAll());
         http.addFilterBefore(new JwtFilter(cozyTokenProvider), UsernamePasswordAuthenticationFilter.class);
