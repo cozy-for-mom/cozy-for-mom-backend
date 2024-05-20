@@ -2,8 +2,6 @@ name: Java CD with Gradle and Docker
 
 on:
   push:
-
-
     branches: [ "main", "develop" ]
 
 jobs:
@@ -68,7 +66,7 @@ jobs:
       - name: Set apple auth key
         run: |
           cd ./src/main/resources    
-          echo pwd   
+          pwd   
           mkdir -p "$(dirname "${{ secrets.APPLE_AUTH_KEY_PATH }}")"
           echo "${{ secrets.APPLE_AUTH_KEY }}" > ${{ secrets.APPLE_AUTH_KEY_PATH }}
           chmod 600 ${{ secrets.APPLE_AUTH_KEY_PATH }}
@@ -90,9 +88,7 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker-compose build
-          echo "df"
           docker images
-          echo "hi"
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
       - name: Deploy to Prod WAS Server

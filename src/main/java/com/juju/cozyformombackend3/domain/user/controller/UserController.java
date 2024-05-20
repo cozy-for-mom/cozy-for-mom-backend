@@ -8,17 +8,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.juju.cozyformombackend3.domain.user.dto.LogoutDto;
 import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
 import com.juju.cozyformombackend3.domain.user.service.UserService;
+import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -54,4 +58,15 @@ public class UserController {
             HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/logout")
+    public ResponseEntity<SuccessResponse> logout(
+        @Parameter(hidden = true) @LoginUserId Long userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String token = authentication.getCredentials().toString();
+        Long tmpUserId = cozyTokenProvider.getUserId(token);
+
+        LogoutDto.Response response = userService.logout(tmpUserId, token);
+
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK.value(), response));
+    }
 }

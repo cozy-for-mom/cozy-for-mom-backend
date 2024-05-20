@@ -78,6 +78,7 @@ public class CozyTokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
+        log.info("claims: {}", claims);
         Set<SimpleGrantedAuthority> authoritySet = Set.of(new SimpleGrantedAuthority("ROLE_GUEST"));
         if (getInfo(token).get("role").equals(UserRole.USER.name())) {
             authoritySet = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
@@ -87,8 +88,7 @@ public class CozyTokenProvider {
     }
 
     public Long getUserId(String token) {
-        Claims claims = getClaims(token);
-        return claims.get("userId", Long.class);
+        return Long.valueOf(getInfo(token).get("userId"));
     }
 
     public String getOAuthId(String token) {
@@ -98,6 +98,11 @@ public class CozyTokenProvider {
 
     private Claims getClaims(String token) {
         return Jwts.parser().setSigningKey(jwtTokenProperties.getSecretKey()).parseClaimsJws(token).getBody();
+    }
+
+    public long getExpiration(String token) {
+        Claims claims = getClaims(token);
+        return claims.getExpiration().getTime();
     }
 
     public Map<String, String> getInfo(String token) {

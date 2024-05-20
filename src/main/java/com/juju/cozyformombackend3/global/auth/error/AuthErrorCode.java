@@ -18,6 +18,8 @@ public enum AuthErrorCode implements ErrorCode {
     NOT_FOUND_PRIVATE_KEY(HttpStatus.NOT_FOUND.value(), "개인키를 찾을 수 없습니다."),
     SERVER_ERROR_CANT_READ_PRIVATE_KEY(HttpStatus.INTERNAL_SERVER_ERROR.value(), "개인키를 읽을 수 없습니다."),
     SERVER_ERROR_CANT_CONVERT_PRIVATE_KEY(HttpStatus.INTERNAL_SERVER_ERROR.value(), "개인키를 변환할 수 없습니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "인증되지 않은 사용자입니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN.value(), "권한이 없습니다."),
     ;
 
     private final int status;

@@ -3,9 +3,12 @@ package com.juju.cozyformombackend3.domain.user.service;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.user.dto.LogoutDto;
 import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.model.UserType;
@@ -24,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
     private final UserRepository userRepository;
     private final CozyTokenProvider cozyTokenProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
     public SignUpDto.SignUpInfo registerUser(Map<String, String> guestInfo, SignUpDto.Request request) {
@@ -55,5 +59,26 @@ public class UserService {
         final String token = cozyTokenProvider.generateUserToken(savedUser);
 
         return SignUpDto.SignUpInfo.of(SignUpDto.Response.of(savedUser.getId()), token);
+    }
+
+    @Transactional
+    public LogoutDto.Response logout(Long userId, String accessToken) {
+        saveLogoutTokenInRedis(userId, accessToken);
+
+        return LogoutDto.Response.of(userId);
+    }
+
+    private void saveLogoutTokenInRedis(Long userId, String accessToken) {
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        String hashKey = "logout_token";
+        String key = "logout_" + userId;
+        log.info("token: {}", accessToken);
+
+        // 만료 시간까지 남은 시간 계산
+        // long expirationTime = cozyTokenProvider.getExpiration(accessToken);
+        // long currentTime = Instant.now().getEpochSecond();
+        // long ttl = expirationTime - currentTime;
+        hashOperations.put(hashKey, accessToken, key);
+        // redisTemplate.expire(key, ttl, TimeUnit.SECONDS);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.juju.cozyformombackend3.global.dto.response.ErrorResponse;
 import com.juju.cozyformombackend3.global.error.code.ErrorCode;
+import com.juju.cozyformombackend3.global.error.exception.AuthException;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +33,13 @@ public class CozyExceptionHandler {
         String firstErrorMessage = e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
         return ResponseEntity.status(e.getStatusCode())
             .body(ErrorResponse.of(request, e.getStatusCode(), firstErrorMessage));
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthException e, HttpServletRequest request) {
+        log.warn(e.getMessage(), e);
+        return ResponseEntity.status(e.getErrorCode().getStatus())
+            .body(ErrorResponse.of(request, e.getErrorCode()));
     }
 
     @ExceptionHandler(Exception.class)

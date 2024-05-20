@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtFilter extends GenericFilterBean {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    private CozyTokenProvider cozyTokenProvider;
+    private final CozyTokenProvider cozyTokenProvider;
 
     public JwtFilter(CozyTokenProvider cozyTokenProvider) {
         this.cozyTokenProvider = cozyTokenProvider;
