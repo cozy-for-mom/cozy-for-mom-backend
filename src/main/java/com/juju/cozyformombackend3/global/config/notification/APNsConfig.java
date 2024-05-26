@@ -17,7 +17,7 @@ public class APNsConfig {
     private final APNsProperties apnsProperties;
 
     @Bean
-    public ApnsClient someAppDevApnsClient() {
+    public ApnsClient cozyApnsClient() {
 
         try {
             return new ApnsClientBuilder()

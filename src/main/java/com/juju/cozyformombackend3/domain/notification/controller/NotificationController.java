@@ -20,6 +20,7 @@ import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyExam
 import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyRecordNotificationActive;
 import com.juju.cozyformombackend3.domain.notification.model.NotificationCategory;
+import com.juju.cozyformombackend3.domain.notification.service.APNsService;
 import com.juju.cozyformombackend3.domain.notification.service.NotificationService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -37,6 +38,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NotificationController {
     private final NotificationService notificationService;
+    private final APNsService apnsService;
+
+    @PostMapping("/apns/test")
+    public ResponseEntity<SuccessResponse> apnsPushTest() {
+        apnsService.pushTestToAPNs();
+        return ResponseEntity.ok().body(SuccessResponse.of(200, "푸시 발송 완료"));
+    }
 
     @GetMapping("/record")
     public ResponseEntity<SuccessResponse> getRecordNotificationList(
