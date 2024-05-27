@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.global.config.notification;
+package com.juju.cozyformombackend3.global.config.notification.apns;
 
 import java.io.IOException;
 
