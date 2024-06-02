@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.request.CreateCommentRequest;
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.request.ModifyCommentRequest;
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.response.CreateCommentResponse;
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.response.FindCommentListResponse;
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.response.ModifyCommentResponse;
+import com.juju.cozyformombackend3.domain.communitylog.comment.controller.dto.CreateComment;
+import com.juju.cozyformombackend3.domain.communitylog.comment.controller.dto.FindCommentList;
+import com.juju.cozyformombackend3.domain.communitylog.comment.controller.dto.ModifyComment;
 import com.juju.cozyformombackend3.domain.communitylog.comment.service.CommentService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -40,13 +38,12 @@ public class CommentController {
         @PathVariable(name = "id") Long cozyLogId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = CreateCommentRequest.class)))
-        @RequestBody @Valid CreateCommentRequest request) {
-        CreateCommentResponse response = commentService.createComment(userId, cozyLogId, request);
+                schema = @Schema(implementation = CreateComment.Request.class)))
+        @RequestBody @Valid CreateComment.Request request) {
+        CreateComment.Response response = commentService.createComment(userId, cozyLogId, request);
         URI location = URI.create("/api/v1/cozy-log/" + cozyLogId + "/comment/" + response.getCommentId());
 
-        return ResponseEntity.created(location)
-            .body(SuccessResponse.of(201, response));
+        return ResponseEntity.created(location).body(SuccessResponse.of(201, response));
     }
 
     @PutMapping
@@ -55,11 +52,11 @@ public class CommentController {
         @PathVariable(name = "id") Long cozyLogId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = ModifyCommentRequest.class)))
-        @RequestBody @Valid ModifyCommentRequest request) {
+                schema = @Schema(implementation = ModifyComment.Request.class)))
+        @RequestBody @Valid ModifyComment.Request request) {
         Long modifiedCommentId = commentService.updateComment(userId, request);
 
-        return ResponseEntity.ok(SuccessResponse.of(200, ModifyCommentResponse.of(modifiedCommentId)));
+        return ResponseEntity.ok(SuccessResponse.of(200, ModifyComment.Response.of(modifiedCommentId)));
     }
 
     @DeleteMapping("/{commentId}")
@@ -76,7 +73,7 @@ public class CommentController {
     public ResponseEntity<SuccessResponse> getCommentList(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long cozyLogId) {
-        FindCommentListResponse response = commentService.findCommentList(cozyLogId);
+        FindCommentList.Response response = commentService.findCommentList(cozyLogId);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
