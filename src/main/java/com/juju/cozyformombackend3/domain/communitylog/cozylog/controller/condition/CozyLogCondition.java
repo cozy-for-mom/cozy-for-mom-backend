@@ -1,6 +1,4 @@
-package com.juju.cozyformombackend3.domain.communitylog.cozylog.controller;
-
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
+package com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

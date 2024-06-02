@@ -9,10 +9,10 @@ import static com.querydsl.core.types.dsl.Expressions.*;
 import java.util.List;
 import java.util.Objects;
 
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.CozyLogCondition;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition.CozyLogCondition;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition.CozyLogSort;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.QCozyLogSummary;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogMode;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;

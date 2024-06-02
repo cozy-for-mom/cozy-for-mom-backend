@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request;
+package com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition;
 
 import java.util.Arrays;
 

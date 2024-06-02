@@ -13,15 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.RecentSearchKeyword;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.ModifyCozyLogRequest;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CozyLogDetailResponse;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CreateCozyLogResponse;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.GetCozyLogListResponse;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.ModifyCozyLogResponse;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.SearchCozyLogResponse;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition.CozyLogCondition;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition.CozyLogSort;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.CozyLogDetail;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.CreateCozyLog;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.FindCozyLogList;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.ModifyCozyLog;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.RecentSearchKeyword;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.SearchCozyLog;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -42,13 +41,13 @@ public class CozyLogController {
         @Parameter(hidden = true) @LoginUserId Long userId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = CreateCozyLogRequest.class)))
-        @RequestBody CreateCozyLogRequest request) {
+                schema = @Schema(implementation = CreateCozyLog.Request.class)))
+        @RequestBody CreateCozyLog.Request request) {
         Long createdCozyLogId = cozyLogService.saveCozyLog(userId, request);
         URI location = URI.create("/api/v1/cozy-log/" + createdCozyLogId);
 
         return ResponseEntity.created(location)
-            .body(SuccessResponse.of(201, CreateCozyLogResponse.of(createdCozyLogId)));
+            .body(SuccessResponse.of(201, CreateCozyLog.Response.of(createdCozyLogId)));
     }
 
     @PutMapping
@@ -56,11 +55,11 @@ public class CozyLogController {
         @Parameter(hidden = true) @LoginUserId Long userId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = ModifyCozyLogRequest.class)))
-        @RequestBody ModifyCozyLogRequest request) {
+                schema = @Schema(implementation = ModifyCozyLog.Request.class)))
+        @RequestBody ModifyCozyLog.Request request) {
         Long modifiedCozyLogId = cozyLogService.updateCozyLog(userId, request);
 
-        return ResponseEntity.ok(SuccessResponse.of(200, ModifyCozyLogResponse.of(modifiedCozyLogId)));
+        return ResponseEntity.ok(SuccessResponse.of(200, ModifyCozyLog.Response.of(modifiedCozyLogId)));
     }
 
     @DeleteMapping("/{id}")
@@ -76,7 +75,7 @@ public class CozyLogController {
     public ResponseEntity<SuccessResponse> cozyLogDetail(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable("id") Long cozyLogId) {
-        CozyLogDetailResponse response = cozyLogService.findCozyLogDetail(userId, cozyLogId);
+        CozyLogDetail.Response response = cozyLogService.findCozyLogDetail(userId, cozyLogId);
 
         return ResponseEntity.ok(SuccessResponse.of(200, response));
     }
@@ -88,7 +87,7 @@ public class CozyLogController {
         @RequestParam(value = "size", defaultValue = "10") Long size,
         @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
     ) {
-        GetCozyLogListResponse response = cozyLogService.findCozyLogList(
+        FindCozyLogList.Response response = cozyLogService.findCozyLogList(
             CozyLogCondition.builder().userId(userId).lastLogId(reportId).size(size).sort(sort).build());
 
         return ResponseEntity.ok(SuccessResponse.of(200, response));
@@ -102,7 +101,7 @@ public class CozyLogController {
         @RequestParam(value = "keyword", defaultValue = "") String keyword,
         @RequestParam(value = "sort", defaultValue = "lately") CozyLogSort sort
     ) {
-        SearchCozyLogResponse response = cozyLogService.searchCozyLog(userId,
+        SearchCozyLog.Response response = cozyLogService.searchCozyLog(userId,
             CozyLogCondition.builder()
                 .userId(userId)
                 .lastLogId(lastLogId)

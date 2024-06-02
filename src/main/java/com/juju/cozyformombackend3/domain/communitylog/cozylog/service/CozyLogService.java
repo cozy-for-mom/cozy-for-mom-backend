@@ -10,17 +10,17 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.CozyLogCondition;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.RecentSearchKeyword;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition.CozyLogCondition;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.CozyLogDetail;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.CreateCozyLog;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.DeleteMyCozyLogList;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.FindCozyLogList;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.FindMyCozyLogList;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.ModifyCozyLog;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.RecentSearchKeyword;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.SearchCozyLog;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.SearchKeywordRedis;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.querydto.CozyLogSummary;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CreateCozyLogRequest;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.DeleteMyCozyLogListRequest;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.ModifyCozyLogRequest;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.CozyLogDetailResponse;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.FindMyCozyLogListResponse;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.GetCozyLogListResponse;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.SearchCozyLogResponse;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.error.CozyLogErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLog;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLogMode;
@@ -46,14 +46,14 @@ public class CozyLogService {
     private final RedisTemplate<String, SearchKeywordRedis> redisTemplate;
 
     @Transactional
-    public Long saveCozyLog(Long userId, CreateCozyLogRequest request) {
+    public Long saveCozyLog(Long userId, CreateCozyLog.Request request) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
         return cozyLogRepository.save(request.toEntity(user)).getId();
     }
 
     @Transactional
-    public Long updateCozyLog(Long userId, ModifyCozyLogRequest request) {
+    public Long updateCozyLog(Long userId, ModifyCozyLog.Request request) {
         CozyLog foundCozyLog = findCozyLogById(request.getId());
 
         foundCozyLog.updateTextContent(request.getTitle(), request.getContent(), request.getMode());
@@ -70,13 +70,13 @@ public class CozyLogService {
         return removeCozyLogId;
     }
 
-    public CozyLogDetailResponse findCozyLogDetail(Long userId, Long cozyLogId) {
+    public CozyLogDetail.Response findCozyLogDetail(Long userId, Long cozyLogId) {
         CozyLog foundCozyLog = findCozyLogById(cozyLogId);
         checkAccessibleCozyLog(userId, foundCozyLog);
         Long scrapCount = scrapRepository.countByCozyLogId(cozyLogId);
         boolean isScraped = isScrapedCozyLog(userId, cozyLogId);
 
-        return CozyLogDetailResponse.of(foundCozyLog, scrapCount, isScraped);
+        return CozyLogDetail.Response.of(foundCozyLog, scrapCount, isScraped);
 
     }
 
@@ -102,29 +102,29 @@ public class CozyLogService {
             .orElseThrow(() -> new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG));
     }
 
-    public GetCozyLogListResponse findCozyLogList(final CozyLogCondition condition) {
+    public FindCozyLogList.Response findCozyLogList(final CozyLogCondition condition) {
         List<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogListByCondition(condition);
 
-        return GetCozyLogListResponse.of(cozyLogs);
+        return FindCozyLogList.Response.of(cozyLogs);
     }
 
-    public FindMyCozyLogListResponse findMyCozyLog(final CozyLogCondition condition) {
+    public FindMyCozyLogList.Response findMyCozyLog(final CozyLogCondition condition) {
         List<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogListByCondition(condition);
 
         Long count = cozyLogRepository.countByUserId(condition.getWriterId());
-        return FindMyCozyLogListResponse.of(count, cozyLogs);
+        return FindMyCozyLogList.Response.of(count, cozyLogs);
     }
 
     @Transactional
-    public void deleteCozyLogList(Long userId, DeleteMyCozyLogListRequest request) {
+    public void deleteCozyLogList(Long userId, DeleteMyCozyLogList.Request request) {
         cozyLogRepository.deleteCozyLogByUserIdAndCozyLogIds(userId, request.getCozyLogIds());
     }
 
-    public SearchCozyLogResponse searchCozyLog(Long userId, final CozyLogCondition condition) {
+    public SearchCozyLog.Response searchCozyLog(Long userId, final CozyLogCondition condition) {
         List<CozyLogSummary> cozyLogs = cozyLogRepository.searchCozyLogListByCondition(condition);
         Long totalCount = cozyLogRepository.countByCondition(condition);
         saveRecentSearchLog(userId, condition.getKeyword());
-        return SearchCozyLogResponse.of(totalCount, cozyLogs);
+        return SearchCozyLog.Response.of(totalCount, cozyLogs);
     }
 
     @Transactional

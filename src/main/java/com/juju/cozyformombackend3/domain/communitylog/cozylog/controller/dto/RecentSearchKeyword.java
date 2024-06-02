@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.communitylog.cozylog.dto;
+package com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto;
 
 import java.util.List;
 
