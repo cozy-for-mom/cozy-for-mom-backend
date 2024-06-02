@@ -50,7 +50,7 @@ public class User extends BaseEntity {
     @Column(name = "oauth_registration", nullable = false)
     private OAuth2Registration oauth2Registration;
 
-    @Column(name = "device_token", nullable = false)
+    @Column(name = "device_token")
     private String deviceToken;
 
     @Enumerated(EnumType.STRING)
