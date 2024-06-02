@@ -33,6 +33,8 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
+        log.info("requestURI: {}", requestURI);
+        log.info("jwt: {}", jwt);
 
         if (StringUtils.hasText(jwt) && cozyTokenProvider.validateToken(jwt)) {
             Authentication authentication = cozyTokenProvider.getAuthentication(jwt);

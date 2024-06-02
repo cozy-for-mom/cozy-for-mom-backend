@@ -14,7 +14,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CheckLogoutTokenFilter extends OncePerRequestFilter {
 
     private static final String LOGOUT_TOKEN_HASH_KEY = "logout_token";
@@ -31,6 +33,7 @@ public class CheckLogoutTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
         String token = getTokenFromRequest(request);
+        log.info("token: {}", token);
 
         if (token != null && isTokenLoggedOut(token)) {
             AuthException authException = new AuthException(AuthErrorCode.UNAUTHORIZED);
