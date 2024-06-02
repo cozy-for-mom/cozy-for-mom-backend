@@ -82,7 +82,7 @@ jobs:
         run: |
           cd ./src/main/resources    
           pwd
-          echo "${{ secrets.APPLE_APNS_CERT }}" | base64 -d -o ${{ secrets.APPLE_APNS_CERT_PATH }}
+          echo "${{ secrets.APPLE_APNS_CERT }}" | base64 -d > "${{ secrets.APPLE_APNS_CERT_PATH }}"
           chmod 600 ${{ secrets.APPLE_APNS_CERT_PATH }}
         shell: bash
 
