@@ -21,7 +21,7 @@ public class APNsService {
     private final APNsProperties apnsProperties;
     private final ApnsClient apnsClient;
 
-    public void pushTestToAPNs() {
+    public void pushTestToAPNs(String token) {
         log.info("APNs push test start");
 
         ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
@@ -31,7 +31,7 @@ public class APNsService {
         payloadBuilder.addCustomProperty("test_data_2", "def");
         final String payload = payloadBuilder.build();
 
-        final String token = TokenUtil.sanitizeTokenString("destination_device_token");
+        TokenUtil.sanitizeTokenString(token);
         final SimpleApnsPushNotification pushNotification =
             new SimpleApnsPushNotification(token, apnsProperties.getClientId(), payload);
         log.info("pushNotification: {}", pushNotification);

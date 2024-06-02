@@ -43,6 +43,8 @@ jobs:
           echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env
           echo "APPLE_CLIENT_ID=${{ secrets.APPLE_CLIENT_ID }}" >> .env
           echo "APPLE_AUTH_KEY_PATH=${{ secrets.APPLE_AUTH_KEY_PATH }}" >> .env
+          echo "APPLE_APNS_CERT_PATH=${{ secrets.APPLE_APNS_CERT_PATH }}" >> .env
+          echo "APPLE_APNS_CERT_PASSWORD=${{ secrets.APPLE_APNS_CERT_PASSWORD }}" >> .env
 
       - name: Set application-dev.yml
         run: |
@@ -64,6 +66,8 @@ jobs:
           sed -i "s|@APPLE_TEAM_ID@|${{ secrets.APPLE_TEAM_ID }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@APPLE_CLIENT_ID@|${{ secrets.APPLE_CLIENT_ID }}|g" ./src/main/resources/application-dev.yml
           sed -i "s|@APPLE_AUTH_KEY_PATH@|${{ secrets.APPLE_AUTH_KEY_PATH }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@APPLE_APNS_CERT_PATH@|${{ secrets.APPLE_APNS_CERT_PATH }}|g" ./src/main/resources/application-dev.yml
+          sed -i "s|@APPLE_APNS_CERT_PASSWORD@|${{ secrets.APPLE_APNS_CERT_PASSWORD }}|g" ./src/main/resources/application-dev.yml
 
       - name: Set apple auth key
         run: |
@@ -72,6 +76,14 @@ jobs:
           mkdir -p "$(dirname "${{ secrets.APPLE_AUTH_KEY_PATH }}")"
           echo "${{ secrets.APPLE_AUTH_KEY }}" > ${{ secrets.APPLE_AUTH_KEY_PATH }}
           chmod 600 ${{ secrets.APPLE_AUTH_KEY_PATH }}
+        shell: bash
+
+      - name: Set apple apns cert
+        run: |
+          cd ./src/main/resources    
+          pwd
+          echo "${{ secrets.APPLE_APNS_CERT }}" | base64 -d -o ${{ secrets.APPLE_APNS_CERT_PATH }}
+          chmod 600 ${{ secrets.APPLE_APNS_CERT_PATH }}
         shell: bash
 
       - name: Grant execute permisson for gradlew

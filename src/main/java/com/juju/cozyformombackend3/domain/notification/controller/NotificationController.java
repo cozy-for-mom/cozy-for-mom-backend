@@ -41,8 +41,8 @@ public class NotificationController {
     private final APNsService apnsService;
 
     @PostMapping("/apns/test")
-    public ResponseEntity<SuccessResponse> apnsPushTest() {
-        apnsService.pushTestToAPNs();
+    public ResponseEntity<SuccessResponse> apnsPushTest(@RequestParam(value = "token") String token) {
+        apnsService.pushTestToAPNs(token);
         return ResponseEntity.ok().body(SuccessResponse.of(200, "푸시 발송 완료"));
     }
 
