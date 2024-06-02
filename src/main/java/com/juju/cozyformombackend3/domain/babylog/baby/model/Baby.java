@@ -1,6 +1,6 @@
 package com.juju.cozyformombackend3.domain.babylog.baby.model;
 
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
+import com.juju.cozyformombackend3.domain.babylog.baby.controller.dto.ModifyBabyProfile;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,42 +23,42 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Baby {
 
-	// @OneToMany(mappedBy = "baby", orphanRemoval = true)
-	// List<GrowthRecord> growthRecordList = new ArrayList<>();
+    // @OneToMany(mappedBy = "baby", orphanRemoval = true)
+    // List<GrowthRecord> growthRecordList = new ArrayList<>();
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "baby_profile_id")
-	private BabyProfile babyProfile;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "baby_profile_id")
+    private BabyProfile babyProfile;
 
-	@Column(name = "name", nullable = false)
-	private String name;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-	@Column(name = "gender", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Gender gender;
+    @Column(name = "gender", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
-	private Baby(BabyProfile babyProfile, String name, Gender gender) {
-		this.babyProfile = babyProfile;
-		this.name = name;
-		this.gender = gender;
-	}
+    private Baby(BabyProfile babyProfile, String name, Gender gender) {
+        this.babyProfile = babyProfile;
+        this.name = name;
+        this.gender = gender;
+    }
 
-	public static Baby of(BabyProfile babyProfile, String name, Gender gender) {
-		return new Baby(babyProfile, name, gender);
-	}
+    public static Baby of(BabyProfile babyProfile, String name, Gender gender) {
+        return new Baby(babyProfile, name, gender);
+    }
 
-	public void update(ModifyBabyProfileRequest.BabyDto baby) {
+    public void update(ModifyBabyProfile.Request.BabyDto baby) {
 
-	}
+    }
 
-	public void update(String name, Gender gender) {
-		this.name = name;
-		this.gender = gender;
-	}
+    public void update(String name, Gender gender) {
+        this.name = name;
+        this.gender = gender;
+    }
 }
 
 

@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.CreateBabyProfileRequest;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.CreateBabyProfileResponse;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.ModifyBabyProfileResponse;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.RemoveBabyProfileResponse;
+import com.juju.cozyformombackend3.domain.babylog.baby.controller.dto.CreateBabyProfile;
+import com.juju.cozyformombackend3.domain.babylog.baby.controller.dto.ModifyBabyProfile;
+import com.juju.cozyformombackend3.domain.babylog.baby.controller.dto.RemoveBabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.service.BabyService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -37,9 +35,9 @@ public class BabyController {
         @Parameter(hidden = true) @LoginUserId Long userId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = CreateBabyProfileRequest.class)))
-        @RequestBody @Valid CreateBabyProfileRequest request) {
-        CreateBabyProfileResponse response = babyService.saveBabyProfile(userId, request);
+                schema = @Schema(implementation = CreateBabyProfile.Request.class)))
+        @RequestBody @Valid CreateBabyProfile.Request request) {
+        CreateBabyProfile.Response response = babyService.saveBabyProfile(userId, request);
         final URI uri = URI.create("/api/v1/baby/" + response.getBabyProfileId());
 
         return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
@@ -51,9 +49,9 @@ public class BabyController {
         @PathVariable(name = "id") Long babyProfileId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = ModifyBabyProfileRequest.class)))
-        @RequestBody @Valid ModifyBabyProfileRequest request) {
-        ModifyBabyProfileResponse response = babyService.updateBabyProfile(userId, babyProfileId, request);
+                schema = @Schema(implementation = ModifyBabyProfile.Request.class)))
+        @RequestBody @Valid ModifyBabyProfile.Request request) {
+        ModifyBabyProfile.Response response = babyService.updateBabyProfile(userId, babyProfileId, request);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
@@ -62,7 +60,7 @@ public class BabyController {
     public ResponseEntity<SuccessResponse> removeBabyProfile(
         @Parameter(hidden = true) @LoginUserId Long userId,
         @PathVariable(name = "id") Long babyProfileId) {
-        RemoveBabyProfileResponse response = babyService.deleteBabyProfile(userId, babyProfileId);
+        RemoveBabyProfile.Response response = babyService.deleteBabyProfile(userId, babyProfileId);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
