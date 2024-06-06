@@ -10,11 +10,9 @@ services:
       - "8080"
     ports:
       - "8080:8080"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10GB"
-        max-file: "7"
-        path: "/home/ubuntu/cozy-dev/log"
-    restart: always
+    volumes:
+      - server-log:/celebee/log
 
+volumes:
+  server-log:
+    external: true
