@@ -42,7 +42,6 @@ public class CozyTokenProvider {
         Date expirationDate = new Date(new Date().getTime() + jwtTokenProperties.getGuestExpirationTime());
         Map<String, String> info = new HashMap<>();
         info.put("email", userInfo.getEmail());
-        info.put("profileImage", userInfo.getProfileImage());
         info.put("role", UserRole.GUEST.name());
         info.put("oauthValue", userInfo.getOauthValue());
         return makeToken(expirationDate, userInfo.getEmail(), info);

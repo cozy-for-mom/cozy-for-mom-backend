@@ -66,13 +66,15 @@ public class WeightService {
         // TODO 쿼리 합치기
         final WeightRecord lastWeightRecord = weightRepository.findFirstByUserIdOrderByRecordAtDesc(
             condition.getUserId());
+        final LocalDate lastRecordDate = Objects.nonNull(lastWeightRecord) ?
+            lastWeightRecord.getRecordAt() : null;
         final WeightRecord conditionWeightRecord = weightRepository
             .findByUserIdAndRecordAt(condition.getUserId(), condition.getDate());
         final Double todayWeight = Objects.nonNull(conditionWeightRecord) ?
             conditionWeightRecord.getWeight() : 0.0D;
         final List<FindPeriodicWeight> findPeriodicWeights = weightRepository.findPeriodRecordByDate(condition);
 
-        return FindWeightListResponse.of(condition.getType(), todayWeight, lastWeightRecord.getRecordAt(),
+        return FindWeightListResponse.of(condition.getType(), todayWeight, lastRecordDate,
             findPeriodicWeights);
     }
 
