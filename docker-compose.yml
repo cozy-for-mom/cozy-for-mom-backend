@@ -11,7 +11,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - server-log:/cozy-server/log
+      - server-log:/var/lib/docker/volumes/server-log
     restart: always
 
 volumes:
