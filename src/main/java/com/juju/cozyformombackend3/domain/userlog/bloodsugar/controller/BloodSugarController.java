@@ -15,12 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.FindBloodSugarListResponse;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.FindDailyBloodSugarListResponse;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.ModifyBloodSugarRecordResponse;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller.dto.FindBloodSugarListResponse;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller.dto.FindDailyBloodSugarListResponse;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller.dto.ModifyBloodSugarRecord;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller.dto.SaveBloodSugarRecord;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.service.BloodSugarService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.request.FindPeriodRecordCondition;
@@ -45,10 +43,10 @@ public class BloodSugarController {
         @Parameter(hidden = true) @LoginUserId Long userId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = SaveBloodSugarRecordRequest.class)))
-        @RequestBody @Valid SaveBloodSugarRecordRequest request) {
+                schema = @Schema(implementation = SaveBloodSugarRecord.Request.class)))
+        @RequestBody @Valid SaveBloodSugarRecord.Request request) {
 
-        SaveBloodSugarRecordResponse response = bloodSugarService.saveBloodSugarRecord(request, userId);
+        SaveBloodSugarRecord.Response response = bloodSugarService.saveBloodSugarRecord(request, userId);
         URI uri = URI.create("/api/v1/bloodsugar/" + response.getBloodSugarRecordId());
 
         return ResponseEntity.created(uri).body(SuccessResponse.of(201, response));
@@ -60,10 +58,10 @@ public class BloodSugarController {
         @PathVariable(name = "id") Long id,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = ModifyBloodSugarRecordRequest.class)))
-        @RequestBody @Valid ModifyBloodSugarRecordRequest request) {
+                schema = @Schema(implementation = ModifyBloodSugarRecord.Request.class)))
+        @RequestBody @Valid ModifyBloodSugarRecord.Request request) {
 
-        ModifyBloodSugarRecordResponse response = bloodSugarService.updateBloodSugarRecord(id, request, userId);
+        ModifyBloodSugarRecord.Response response = bloodSugarService.updateBloodSugarRecord(id, request, userId);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
