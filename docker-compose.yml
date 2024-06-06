@@ -11,8 +11,11 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - server-log:/celebee/log
+      - server-log:/cozy-server/log
+    restart: always
 
 volumes:
   server-log:
     external: true
+
+
