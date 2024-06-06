@@ -6,6 +6,9 @@
     <!-- log 변수 값 설정 -->
     <property name="CONSOLE_LOG_PATTERN"
               value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} %clr(%-5level){yellow} %clr(%-40.40logger{39}){cyan} %clr([%X{REQUEST_METHOD} %X{REQUEST_URI}]){blue} %clr(%X{REQUEST_ID}){magenta} %clr(%X{REQUEST_IP}){yellow} %clr(%X{REQUEST_TIME}){blue} %m%n"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %-40.40logger{39} [%X{REQUEST_METHOD} %X{REQUEST_URI}] %X{REQUEST_ID} %X{REQUEST_IP} %X{REQUEST_TIME} %m%n"/>
+
 
     <!-- 콘솔(STDOUT) -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -14,10 +17,22 @@
         </layout>
     </appender>
 
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./log/%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxFileSize>1GB</maxFileSize>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+    </appender>
+
     <!-- log root 레벨 설정 (logging.level.root=info)-->
     <root level="info">
         <!-- 참조할 appender 설정 - STDOUT -->
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
     </root>
 
 </configuration>
