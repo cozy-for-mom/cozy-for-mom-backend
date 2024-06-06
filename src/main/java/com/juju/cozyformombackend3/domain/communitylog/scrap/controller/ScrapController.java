@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.ApplyScrapRequest;
-import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request.UnscrapListRequest;
-import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.response.FindScrapListResponse;
-import com.juju.cozyformombackend3.domain.communitylog.scrap.dto.response.ScrapResponse;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.controller.dto.request.ApplyScrapRequest;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.controller.dto.request.UnscrapListRequest;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.controller.dto.response.FindScrapListResponse;
+import com.juju.cozyformombackend3.domain.communitylog.scrap.controller.dto.response.ScrapResponse;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.service.ScrapService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;

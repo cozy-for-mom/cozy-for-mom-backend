@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.communitylog.scrap.dto.response;
+package com.juju.cozyformombackend3.domain.communitylog.scrap.controller.dto.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

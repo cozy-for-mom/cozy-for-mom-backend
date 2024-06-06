@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.user.dto;
+package com.juju.cozyformombackend3.domain.user.controller.dto;
 
 import static com.juju.cozyformombackend3.global.util.DateParser.*;
 
@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-public class SignUpDto {
+public class SignUp {
     @Getter
     @AllArgsConstructor
     public static class Request {

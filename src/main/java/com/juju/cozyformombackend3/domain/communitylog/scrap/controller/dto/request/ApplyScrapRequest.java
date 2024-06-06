@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.domain.communitylog.scrap.dto.request;
+package com.juju.cozyformombackend3.domain.communitylog.scrap.controller.dto.request;
 
 import com.juju.cozyformombackend3.domain.communitylog.scrap.model.Scrap;
 import com.juju.cozyformombackend3.domain.user.model.User;

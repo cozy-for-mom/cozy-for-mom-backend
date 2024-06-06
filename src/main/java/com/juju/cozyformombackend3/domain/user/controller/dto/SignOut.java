@@ -1,11 +1,11 @@
-package com.juju.cozyformombackend3.domain.user.dto;
+package com.juju.cozyformombackend3.domain.user.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-public class SignOutDto {
+public class SignOut {
 
     @Getter
     @AllArgsConstructor
@@ -19,8 +19,8 @@ public class SignOutDto {
     public static class Response {
         private final Long userId;
 
-        public static SignOutDto.Response of(final Long userId) {
-            return new SignOutDto.Response(userId);
+        public static SignOut.Response of(final Long userId) {
+            return new SignOut.Response(userId);
         }
     }
 }

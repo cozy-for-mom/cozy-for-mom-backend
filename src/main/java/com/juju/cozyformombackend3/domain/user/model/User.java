@@ -8,7 +8,7 @@ import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.model.CozyLog;
 import com.juju.cozyformombackend3.domain.communitylog.like.model.Like;
 import com.juju.cozyformombackend3.domain.communitylog.scrap.model.Scrap;
-import com.juju.cozyformombackend3.domain.user.dto.request.UpdateMyInfoRequest;
+import com.juju.cozyformombackend3.domain.user.controller.dto.UpdateMyInfo;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.userlog.meal.model.MealRecord;
 import com.juju.cozyformombackend3.domain.userlog.supplement.model.Supplement;
@@ -130,7 +130,7 @@ public class User extends BaseEntity {
         this.recentBabyProfileId = recentBabyProfileId;
     }
 
-    public void update(UpdateMyInfoRequest request) {
+    public void update(UpdateMyInfo.Request request) {
         this.name = request.getName();
         this.nickname = request.getNickname();
         this.introduce = request.getIntroduce();
