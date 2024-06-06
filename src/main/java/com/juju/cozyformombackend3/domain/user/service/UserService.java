@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.communitylog.comment.repository.CommentRepository;
-import com.juju.cozyformombackend3.domain.user.dto.LogoutDto;
-import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
+import com.juju.cozyformombackend3.domain.user.controller.dto.Logout;
+import com.juju.cozyformombackend3.domain.user.controller.dto.SignUp;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.model.UserType;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
@@ -34,7 +34,7 @@ public class UserService {
     private final OAuth2RegistrationComposite oauth2ProviderComposite;
 
     @Transactional
-    public SignUpDto.SignUpInfo registerUser(Map<String, String> guestInfo, SignUpDto.Request request) {
+    public SignUp.SignUpInfo registerUser(Map<String, String> guestInfo, SignUp.Request request) {
         // 해당 oauthId & Type으로 이미 회원가입했는지 확인
         if (userRepository.existsByOauthValueAndOauth2Registration(guestInfo.get("oauthValue"),
             request.getUserOAuthType())) {
@@ -62,14 +62,14 @@ public class UserService {
 
         final String token = cozyTokenProvider.generateUserToken(savedUser);
 
-        return SignUpDto.SignUpInfo.of(SignUpDto.Response.of(savedUser.getId()), token);
+        return SignUp.SignUpInfo.of(SignUp.Response.of(savedUser.getId()), token);
     }
 
     @Transactional
-    public LogoutDto.Response logout(Long userId, String accessToken) {
+    public Logout.Response logout(Long userId, String accessToken) {
         saveLogoutTokenInRedis(userId, accessToken);
 
-        return LogoutDto.Response.of(userId);
+        return Logout.Response.of(userId);
     }
 
     private void saveLogoutTokenInRedis(Long userId, String accessToken) {
@@ -87,7 +87,7 @@ public class UserService {
     }
 
     @Transactional
-    public LogoutDto.Response signOut(Long userId, String reason) {
+    public Logout.Response signOut(Long userId, String reason) {
         final User findUser = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessException(AuthErrorCode.NOT_FOUND_USER));
 
@@ -103,6 +103,6 @@ public class UserService {
         // oauth unlink
         oauth2ProviderComposite.getOAuth2Strategy(findUser.getOauth2Registration())
             .unlinkOAuth2Account(findUser.getOauthValue());
-        return LogoutDto.Response.of(userId);
+        return Logout.Response.of(userId);
     }
 }

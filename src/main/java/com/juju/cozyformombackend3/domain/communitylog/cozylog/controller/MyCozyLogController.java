@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.DeleteMyCozyLogListRequest;
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.response.FindMyCozyLogListResponse;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition.CozyLogCondition;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition.CozyLogSort;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.DeleteMyCozyLogList;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.dto.FindMyCozyLogList;
 import com.juju.cozyformombackend3.domain.communitylog.cozylog.service.CozyLogService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -32,7 +33,7 @@ public class MyCozyLogController {
         @RequestParam(value = "lastId", required = false) Long reportId,
         @RequestParam(value = "size", defaultValue = "10") Long size,
         @RequestParam(value = "sort", defaultValue = "") CozyLogSort sort) {
-        FindMyCozyLogListResponse response = cozyLogService.findMyCozyLog(
+        FindMyCozyLogList.Response response = cozyLogService.findMyCozyLog(
             CozyLogCondition.builder()
                 .userId(userId)
                 .lastLogId(reportId)
@@ -49,8 +50,8 @@ public class MyCozyLogController {
         @Parameter(hidden = true) @LoginUserId Long userId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = DeleteMyCozyLogListRequest.class)))
-        @RequestBody DeleteMyCozyLogListRequest request) {
+                schema = @Schema(implementation = DeleteMyCozyLogList.Request.class)))
+        @RequestBody DeleteMyCozyLogList.Request request) {
         cozyLogService.deleteCozyLogList(userId, request);
 
         return ResponseEntity.noContent().build();

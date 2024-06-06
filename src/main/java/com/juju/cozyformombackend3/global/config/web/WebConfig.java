@@ -8,7 +8,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.juju.cozyformombackend3.domain.communitylog.cozylog.dto.request.CozyLogSort;
+import com.juju.cozyformombackend3.domain.communitylog.cozylog.controller.condition.CozyLogSort;
 import com.juju.cozyformombackend3.domain.notification.model.NotificationCategory;
 import com.juju.cozyformombackend3.global.dto.request.RecordPeriod;
 
@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new CozyLogSortConverter());
         registry.addConverter(new RecordPeriodConverter());
         registry.addConverter(new NotificationCategoryConverter());
-        
+
     }
 
     private static class CozyLogSortConverter implements Converter<String, CozyLogSort> {

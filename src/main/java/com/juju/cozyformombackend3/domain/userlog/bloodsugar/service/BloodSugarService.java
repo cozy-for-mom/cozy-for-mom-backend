@@ -9,13 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller.dto.FindBloodSugarListResponse;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller.dto.FindDailyBloodSugarListResponse;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller.dto.ModifyBloodSugarRecord;
+import com.juju.cozyformombackend3.domain.userlog.bloodsugar.controller.dto.SaveBloodSugarRecord;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.object.FindPeriodicBloodSugar;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.ModifyBloodSugarRecordRequest;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.request.SaveBloodSugarRecordRequest;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.FindBloodSugarListResponse;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.FindDailyBloodSugarListResponse;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.ModifyBloodSugarRecordResponse;
-import com.juju.cozyformombackend3.domain.userlog.bloodsugar.dto.response.SaveBloodSugarRecordResponse;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.error.BloodSugarErrorCode;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.model.BloodSugarRecord;
 import com.juju.cozyformombackend3.domain.userlog.bloodsugar.repository.BloodSugarRepository;
@@ -33,7 +31,7 @@ public class BloodSugarService {
     private final UserRepository userRepository;
 
     @Transactional
-    public SaveBloodSugarRecordResponse saveBloodSugarRecord(SaveBloodSugarRecordRequest request, Long userId) {
+    public SaveBloodSugarRecord.Response saveBloodSugarRecord(SaveBloodSugarRecord.Request request, Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
 
@@ -43,11 +41,11 @@ public class BloodSugarService {
         }
         BloodSugarRecord savedRecord = bloodSugarRepository.save(request.toBloodSugar(user));
 
-        return SaveBloodSugarRecordResponse.of(savedRecord.getId());
+        return SaveBloodSugarRecord.Response.of(savedRecord.getId());
     }
 
     @Transactional
-    public ModifyBloodSugarRecordResponse updateBloodSugarRecord(Long recordId, ModifyBloodSugarRecordRequest request,
+    public ModifyBloodSugarRecord.Response updateBloodSugarRecord(Long recordId, ModifyBloodSugarRecord.Request request,
         Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
@@ -58,7 +56,7 @@ public class BloodSugarService {
             throw new BusinessException(BloodSugarErrorCode.FORBIDDEN_NOT_YOUR_RESOURCE);
         }
         modifiedRecord.update(request.getDate(), request.getType(), request.getLevel());
-        return ModifyBloodSugarRecordResponse.of(modifiedRecord.getId());
+        return ModifyBloodSugarRecord.Response.of(modifiedRecord.getId());
     }
 
     @Transactional

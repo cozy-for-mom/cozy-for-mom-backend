@@ -9,11 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.communitylog.comment.controller.dto.CreateComment;
+import com.juju.cozyformombackend3.domain.communitylog.comment.controller.dto.FindCommentList;
+import com.juju.cozyformombackend3.domain.communitylog.comment.controller.dto.ModifyComment;
 import com.juju.cozyformombackend3.domain.communitylog.comment.dto.CommentDto;
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.request.CreateCommentRequest;
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.request.ModifyCommentRequest;
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.response.CreateCommentResponse;
-import com.juju.cozyformombackend3.domain.communitylog.comment.dto.response.FindCommentListResponse;
 import com.juju.cozyformombackend3.domain.communitylog.comment.error.CommentErrorCode;
 import com.juju.cozyformombackend3.domain.communitylog.comment.model.Comment;
 import com.juju.cozyformombackend3.domain.communitylog.comment.repository.CommentRepository;
@@ -37,7 +36,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public CreateCommentResponse createComment(Long userId, Long cozyLogId, CreateCommentRequest request) {
+    public CreateComment.Response createComment(Long userId, Long cozyLogId, CreateComment.Request request) {
         CozyLog foundCozyLog = cozyLogRepository.findById(cozyLogId)
             .orElseThrow(() -> new BusinessException(CozyLogErrorCode.NOT_FOUND_COZY_LOG));
         User writer = userRepository.findById(userId)
@@ -48,11 +47,11 @@ public class CommentService {
             savedComment.isParentComment();
         }
 
-        return CreateCommentResponse.of(savedComment.getId());
+        return CreateComment.Response.of(savedComment.getId());
     }
 
     @Transactional
-    public Long updateComment(Long userId, ModifyCommentRequest request) {
+    public Long updateComment(Long userId, ModifyComment.Request request) {
         Comment foundComment = commentRepository.findById(request.getCommentId())
             .orElseThrow(() -> new BusinessException(CommentErrorCode.NOT_FOUND_COMMENT));
         foundComment.update(request.getComment());
@@ -67,7 +66,7 @@ public class CommentService {
         foundComment.delete();
     }
 
-    public FindCommentListResponse findCommentList(Long cozyLogId) {
+    public FindCommentList.Response findCommentList(Long cozyLogId) {
         List<CommentDto> commentList = commentRepository.findAllByCozyLogId(cozyLogId);
         Map<Long, CommentDto> response = commentList.stream()
             .filter(comment -> comment.getCommentId().equals(comment.getParentId()))
@@ -78,6 +77,6 @@ public class CommentService {
                 response.get(comment.getParentId()).addChildComment(comment);
             }
         });
-        return FindCommentListResponse.of(response.values().stream().toList());
+        return FindCommentList.Response.of(response.values().stream().toList());
     }
 }

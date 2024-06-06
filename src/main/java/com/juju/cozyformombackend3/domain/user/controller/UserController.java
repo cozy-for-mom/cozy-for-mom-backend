@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.user.dto.LogoutDto;
-import com.juju.cozyformombackend3.domain.user.dto.SignOutDto;
-import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
+import com.juju.cozyformombackend3.domain.user.controller.dto.Logout;
+import com.juju.cozyformombackend3.domain.user.controller.dto.SignOut;
+import com.juju.cozyformombackend3.domain.user.controller.dto.SignUp;
 import com.juju.cozyformombackend3.domain.user.service.UserService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
@@ -43,13 +43,13 @@ public class UserController {
     public ResponseEntity<SuccessResponse> signUp(
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = SignUpDto.Request.class)))
-        @Valid @RequestBody SignUpDto.Request request) {
+                schema = @Schema(implementation = SignUp.Request.class)))
+        @Valid @RequestBody SignUp.Request request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = authentication.getCredentials().toString();
         Map<String, String> guestInfo = cozyTokenProvider.getInfo(token);
 
-        final SignUpDto.SignUpInfo response = userService.registerUser(guestInfo, request);
+        final SignUp.SignUpInfo response = userService.registerUser(guestInfo, request);
         final URI location = URI.create("/api/v1/me");
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + response.getToken());
@@ -66,7 +66,7 @@ public class UserController {
         String token = authentication.getCredentials().toString();
         Long tmpUserId = cozyTokenProvider.getUserId(token);
 
-        LogoutDto.Response response = userService.logout(tmpUserId, token);
+        Logout.Response response = userService.logout(tmpUserId, token);
 
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK.value(), response));
     }
@@ -74,9 +74,9 @@ public class UserController {
     @DeleteMapping("/signout")
     public ResponseEntity<SuccessResponse> signOut(
         @Parameter(hidden = true) @LoginUserId Long userId,
-        @RequestBody SignOutDto.Request request) {
+        @RequestBody SignOut.Request request) {
 
-        LogoutDto.Response response = userService.signOut(6L, request.getReason());
+        Logout.Response response = userService.signOut(6L, request.getReason());
 
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK.value(), response));
     }

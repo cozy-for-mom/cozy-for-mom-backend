@@ -1,0 +1,69 @@
+package com.juju.cozyformombackend3.domain.babylog.baby.controller.dto;
+
+import static com.juju.cozyformombackend3.global.util.DateParser.*;
+
+import java.util.List;
+
+import com.juju.cozyformombackend3.domain.babylog.baby.model.Baby;
+import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
+import com.juju.cozyformombackend3.domain.babylog.baby.model.Gender;
+import com.juju.cozyformombackend3.domain.user.model.User;
+import com.juju.cozyformombackend3.global.validation.annotation.IsFuture;
+import com.juju.cozyformombackend3.global.validation.annotation.IsGenderType;
+import com.juju.cozyformombackend3.global.validation.annotation.IsLocalDate;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+public class CreateBabyProfile {
+
+    @Getter
+    public static class Request {
+
+        @IsLocalDate
+        @IsFuture
+        //TODO 미래 날짜
+        private String dueAt;
+        private String profileImageUrl;
+        private List<BabyDto> babies;
+
+        @Getter
+        @RequiredArgsConstructor
+        private static class BabyDto {
+            @NotBlank(message = "아이의 이름을 입력해주세요.")
+            private final String name;
+            @IsGenderType
+            private final String gender;
+
+            public static BabyDto of(String name, String gender) {
+                return new BabyDto(name, gender);
+            }
+        }
+
+        public BabyProfile toBabyProfile(User user) {
+            return BabyProfile.of(user, babies.size(),
+                stringDateToLocalDate(dueAt),
+                stringDateToLocalDate(dueAt),
+                profileImageUrl);
+        }
+
+        public List<Baby> toBabyList(BabyProfile saveBabyProfile) {
+            return babies.stream()
+                .map(babyDto -> Baby.of(saveBabyProfile, babyDto.getName(), Gender.ofType(babyDto.getGender())))
+                .toList();
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Response {
+        private final Long babyProfileId;
+        private final List<Long> babyIds;
+
+        public static Response of(final Long babyProfileId, List<Long> babyIds) {
+            return new Response(babyProfileId, babyIds);
+        }
+    }
+}

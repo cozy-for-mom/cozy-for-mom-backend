@@ -8,12 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
+import com.juju.cozyformombackend3.domain.user.controller.dto.FindMyInfo;
+import com.juju.cozyformombackend3.domain.user.controller.dto.UpdateMyInfo;
+import com.juju.cozyformombackend3.domain.user.controller.dto.UpdateRecentBabyProfileRequest;
+import com.juju.cozyformombackend3.domain.user.controller.dto.UpdateRecentBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.user.dto.object.UserSummary;
-import com.juju.cozyformombackend3.domain.user.dto.request.UpdateMyInfoRequest;
-import com.juju.cozyformombackend3.domain.user.dto.request.UpdateRecentBabyProfileRequest;
-import com.juju.cozyformombackend3.domain.user.dto.response.FindMyInfoResponse;
-import com.juju.cozyformombackend3.domain.user.dto.response.UpdateMyInfoResponse;
-import com.juju.cozyformombackend3.domain.user.dto.response.UpdateRecentBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
@@ -29,21 +28,21 @@ import lombok.extern.slf4j.Slf4j;
 public class MeService {
     private final UserRepository userRepository;
 
-    public FindMyInfoResponse findMe(Long userId) {
+    public FindMyInfo.Response findMe(Long userId) {
         // UserSummary findUserSummary = userRepository.findUserSummaryById(userId);
         UserSummary findUserSummary = new UserSummary(
             userRepository.findById(userId).orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER)));
 
-        return FindMyInfoResponse.of(findUserSummary);
+        return FindMyInfo.Response.of(findUserSummary);
     }
 
     @Transactional
-    public UpdateMyInfoResponse updateMe(Long userId, UpdateMyInfoRequest request) {
+    public UpdateMyInfo.Response updateMe(Long userId, UpdateMyInfo.Request request) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
         user.update(request);
 
-        return UpdateMyInfoResponse.of(userId);
+        return UpdateMyInfo.Response.of(userId);
     }
 
     @Transactional

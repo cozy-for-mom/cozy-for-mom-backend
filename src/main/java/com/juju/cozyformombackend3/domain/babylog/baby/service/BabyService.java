@@ -3,12 +3,10 @@ package com.juju.cozyformombackend3.domain.babylog.baby.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.CreateBabyProfileRequest;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.request.ModifyBabyProfileRequest;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.CreateBabyProfileResponse;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.GetBabyProfileResponse;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.ModifyBabyProfileResponse;
-import com.juju.cozyformombackend3.domain.babylog.baby.dto.response.RemoveBabyProfileResponse;
+import com.juju.cozyformombackend3.domain.babylog.baby.controller.dto.CreateBabyProfile;
+import com.juju.cozyformombackend3.domain.babylog.baby.controller.dto.GetBabyProfile;
+import com.juju.cozyformombackend3.domain.babylog.baby.controller.dto.ModifyBabyProfile;
+import com.juju.cozyformombackend3.domain.babylog.baby.controller.dto.RemoveBabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
@@ -27,13 +25,13 @@ public class BabyService {
     private final BabyProfileRepository babyProfileRepository;
 
     @Transactional
-    public CreateBabyProfileResponse saveBabyProfile(Long userId, CreateBabyProfileRequest request) {
+    public CreateBabyProfile.Response saveBabyProfile(Long userId, CreateBabyProfile.Request request) {
         User user = findUserById(userId);
         final BabyProfile saveBabyProfile = request.toBabyProfile(user);
         saveBabyProfile.addBabyList(request.toBabyList(saveBabyProfile));
         final BabyProfile savedBabyProfile = babyProfileRepository.save(saveBabyProfile);
 
-        return CreateBabyProfileResponse.of(savedBabyProfile.getId(),
+        return CreateBabyProfile.Response.of(savedBabyProfile.getId(),
             savedBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
     }
 
@@ -43,22 +41,22 @@ public class BabyService {
     }
 
     @Transactional
-    public ModifyBabyProfileResponse updateBabyProfile(Long userId, Long babyProfileId,
-        ModifyBabyProfileRequest request) {
+    public ModifyBabyProfile.Response updateBabyProfile(Long userId, Long babyProfileId,
+        ModifyBabyProfile.Request request) {
         final BabyProfile findBabyProfile = babyProfileRepository.findById(babyProfileId)
             .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
         findBabyProfile.update(request);
         findBabyProfile.getBabyList().forEach(baby -> {
-            ModifyBabyProfileRequest.BabyDto dto = request.getBaby(baby.getId());
+            ModifyBabyProfile.Request.BabyDto dto = request.getBaby(baby.getId());
             baby.update(dto.getName(), dto.getGender());
         });
 
-        return ModifyBabyProfileResponse.of(findBabyProfile.getId(),
+        return ModifyBabyProfile.Response.of(findBabyProfile.getId(),
             findBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
     }
 
     @Transactional
-    public RemoveBabyProfileResponse deleteBabyProfile(Long userId, Long babyProfileId) {
+    public RemoveBabyProfile.Response deleteBabyProfile(Long userId, Long babyProfileId) {
         User user = findUserById(userId);
         if (user.getRecentBabyProfileId() == babyProfileId) {
             user.updateRecentBabyProfileId(null);
@@ -67,14 +65,14 @@ public class BabyService {
             .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
         babyProfileRepository.delete(deleteBabyProfile);
 
-        return RemoveBabyProfileResponse.of(deleteBabyProfile.getId(),
+        return RemoveBabyProfile.Response.of(deleteBabyProfile.getId(),
             deleteBabyProfile.getBabyList().stream().map(baby -> baby.getId()).toList());
     }
 
-    public GetBabyProfileResponse getBabyProfile(Long userId, Long babyProfileId) {
+    public GetBabyProfile.Response getBabyProfile(Long userId, Long babyProfileId) {
         BabyProfile foundBabyProfile = babyProfileRepository.findById(babyProfileId)
             .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
 
-        return GetBabyProfileResponse.of(foundBabyProfile);
+        return GetBabyProfile.Response.of(foundBabyProfile);
     }
 }

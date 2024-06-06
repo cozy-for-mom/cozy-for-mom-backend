@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.juju.cozyformombackend3.domain.user.dto.request.UpdateMyInfoRequest;
-import com.juju.cozyformombackend3.domain.user.dto.request.UpdateRecentBabyProfileRequest;
-import com.juju.cozyformombackend3.domain.user.dto.response.FindMyInfoResponse;
-import com.juju.cozyformombackend3.domain.user.dto.response.UpdateMyInfoResponse;
-import com.juju.cozyformombackend3.domain.user.dto.response.UpdateRecentBabyProfileResponse;
+import com.juju.cozyformombackend3.domain.user.controller.dto.FindMyInfo;
+import com.juju.cozyformombackend3.domain.user.controller.dto.UpdateMyInfo;
+import com.juju.cozyformombackend3.domain.user.controller.dto.UpdateRecentBabyProfileRequest;
+import com.juju.cozyformombackend3.domain.user.controller.dto.UpdateRecentBabyProfileResponse;
 import com.juju.cozyformombackend3.domain.user.service.MeService;
 import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
@@ -32,7 +31,7 @@ public class MeController {
     @GetMapping
     public ResponseEntity<SuccessResponse> getMe(
         @Parameter(hidden = true) @LoginUserId Long userId) {
-        FindMyInfoResponse response = meService.findMe(userId);
+        FindMyInfo.Response response = meService.findMe(userId);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
@@ -42,9 +41,9 @@ public class MeController {
         @Parameter(hidden = true) @LoginUserId Long userId,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
             content = @Content(
-                schema = @Schema(implementation = UpdateMyInfoRequest.class)))
-        @RequestBody @Valid UpdateMyInfoRequest request) {
-        UpdateMyInfoResponse response = meService.updateMe(userId, request);
+                schema = @Schema(implementation = UpdateMyInfo.Request.class)))
+        @RequestBody @Valid UpdateMyInfo.Request request) {
+        UpdateMyInfo.Response response = meService.updateMe(userId, request);
 
         return ResponseEntity.ok().body(SuccessResponse.of(200, response));
     }
