@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
@@ -35,6 +36,11 @@ public class JwtFilter extends GenericFilterBean {
         String requestURI = httpServletRequest.getRequestURI();
         log.info("requestURI: {}", requestURI);
         log.info("jwt: {}", jwt);
+
+        if (CorsUtils.isPreFlightRequest(httpServletRequest)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
 
         if (StringUtils.hasText(jwt) && cozyTokenProvider.validateToken(jwt)) {
             Authentication authentication = cozyTokenProvider.getAuthentication(jwt);

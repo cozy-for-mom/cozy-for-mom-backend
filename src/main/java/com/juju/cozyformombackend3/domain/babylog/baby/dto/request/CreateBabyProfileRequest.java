@@ -41,7 +41,7 @@ public class CreateBabyProfileRequest {
 
     public BabyProfile toBabyProfile(User user) {
         return BabyProfile.of(user, babies.size(),
-            stringDateToLocalDate(dueAt),
+            stringDateToLocalDate(dueAt).minusDays(266),
             stringDateToLocalDate(dueAt),
             profileImageUrl);
     }

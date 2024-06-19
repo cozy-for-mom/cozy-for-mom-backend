@@ -19,6 +19,7 @@ import com.juju.cozyformombackend3.domain.notification.controller.dto.GetRecordN
 import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyExaminationNotification;
 import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyRecordNotification;
 import com.juju.cozyformombackend3.domain.notification.controller.dto.ModifyRecordNotificationActive;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.NotiTestRequest;
 import com.juju.cozyformombackend3.domain.notification.model.NotificationCategory;
 import com.juju.cozyformombackend3.domain.notification.service.APNsService;
 import com.juju.cozyformombackend3.domain.notification.service.NotificationService;
@@ -32,17 +33,39 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/notification")
+@Slf4j
 @RequiredArgsConstructor
 public class NotificationController {
     private final NotificationService notificationService;
     private final APNsService apnsService;
 
+    @Operation(
+        summary = "알림 test",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "token에는 전송 대상의 device token 넣으면 됨요",
+            content = @Content(
+                examples = {
+                    @ExampleObject(
+                        name = "noti test",
+                        value = "{\"aps\":{\"alert\":{\"title\":\"제목\",\"subtitle\":\"부제목\",\"body\":\"본문\"},\"category\":\"NOTIFICATION_TYPE\"}}"
+                    )
+                }
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "완료")
+        }
+    )
     @PostMapping("/apns/test")
-    public ResponseEntity<SuccessResponse> apnsPushTest(@RequestParam(value = "token") String token) {
-        apnsService.pushTestToAPNs(token);
+    public ResponseEntity<SuccessResponse> apnsPushTest(
+        @RequestParam(value = "token") String token,
+        @RequestBody NotiTestRequest request) {
+        log.info("token: {}", token);
+        apnsService.pushTestToAPNs(token, request);
         return ResponseEntity.ok().body(SuccessResponse.of(200, "푸시 발송 완료"));
     }
 

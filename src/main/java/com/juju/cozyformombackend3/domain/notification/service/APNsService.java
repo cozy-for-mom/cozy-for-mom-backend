@@ -9,6 +9,7 @@ import com.eatthepath.pushy.apns.util.SimpleApnsPayloadBuilder;
 import com.eatthepath.pushy.apns.util.SimpleApnsPushNotification;
 import com.eatthepath.pushy.apns.util.TokenUtil;
 import com.eatthepath.pushy.apns.util.concurrent.PushNotificationFuture;
+import com.juju.cozyformombackend3.domain.notification.controller.dto.NotiTestRequest;
 import com.juju.cozyformombackend3.global.config.notification.apns.APNsProperties;
 
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,16 @@ public class APNsService {
     private final APNsProperties apnsProperties;
     private final ApnsClient apnsClient;
 
-    public void pushTestToAPNs(String token) {
+    public void pushTestToAPNs(String token, NotiTestRequest request) {
         log.info("APNs push test start");
 
         ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
-        payloadBuilder.setAlertTitle("test_title");
-        payloadBuilder.setAlertBody("test_body");
-        payloadBuilder.addCustomProperty("test_data_1", "abc");
-        payloadBuilder.addCustomProperty("test_data_2", "def");
+        payloadBuilder.setAlertTitle(request.getAps().getAlert().getTitle());
+        payloadBuilder.setAlertSubtitle(request.getAps().getAlert().getSubtitle());
+        payloadBuilder.setAlertBody(request.getAps().getAlert().getBody());
+        payloadBuilder.setCategoryName(request.getAps().getCategory());
+        // payloadBuilder.addCustomProperty("test_data_1", "abc");
+        // payloadBuilder.addCustomProperty("test_data_2", "def");
         final String payload = payloadBuilder.build();
 
         TokenUtil.sanitizeTokenString(token);
