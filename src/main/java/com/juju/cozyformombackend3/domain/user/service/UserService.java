@@ -8,6 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
+import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
 import com.juju.cozyformombackend3.domain.communitylog.comment.repository.CommentRepository;
 import com.juju.cozyformombackend3.domain.user.dto.LogoutDto;
 import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
@@ -28,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final BabyProfileRepository babyProfileRepository;
     private final CozyTokenProvider cozyTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
     private final CommentRepository commentRepository;
@@ -57,7 +60,9 @@ public class UserService {
             .build();
         final User savedUser = userRepository.save(saveUser);
         if (Objects.nonNull(request.getBabyInfo())) {
-            savedUser.addBabyProfile(request.toBabyProfile());
+            BabyProfile savedBabyProfile = babyProfileRepository.save(request.toBabyProfile());
+            savedUser.addBabyProfile(savedBabyProfile);
+            savedUser.updateRecentBabyProfileId(savedBabyProfile.getId());
         }
 
         final String token = cozyTokenProvider.generateUserToken(savedUser);
