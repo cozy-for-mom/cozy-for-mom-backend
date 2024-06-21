@@ -1,10 +1,10 @@
-package com.juju.cozyformombackend3.global.auth.service.registration;
-
-import java.util.List;
-import java.util.Optional;
+package com.juju.cozyformombackend3.global.auth.service.registration.apiclient.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -24,27 +24,27 @@ public class AppleOAuthPublicKeyDto {
         @Override
         public String toString() {
             return "Key{" +
-                   "kty='" + kty + '\'' +
-                   ", kid='" + kid + '\'' +
-                   ", use='" + use + '\'' +
-                   ", alg='" + alg + '\'' +
-                   ", n='" + n + '\'' +
-                   ", e='" + e + '\'' +
-                   '}';
+                    "kty='" + kty + '\'' +
+                    ", kid='" + kid + '\'' +
+                    ", use='" + use + '\'' +
+                    ", alg='" + alg + '\'' +
+                    ", n='" + n + '\'' +
+                    ", e='" + e + '\'' +
+                    '}';
         }
     }
 
     public Optional<Key> getMatchedKeyBy(String kid, String alg) {
         return this.keys.stream()
-            .filter(key -> key.getKid().equals(kid) && key.getAlg().equals(alg))
-            .findFirst();
+                .filter(key -> key.getKid().equals(kid) && key.getAlg().equals(alg))
+                .findFirst();
     }
 
     @Override
     public String toString() {
         return "AppleOAuthPublicKeyDto{" +
-               "keys=" + keys +
-               '}';
+                "keys=" + keys +
+                '}';
     }
 }
 

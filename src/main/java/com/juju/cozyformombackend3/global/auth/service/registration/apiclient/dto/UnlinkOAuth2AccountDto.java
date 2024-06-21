@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.global.auth.service.registration;
+package com.juju.cozyformombackend3.global.auth.service.registration.apiclient.dto;
 
 import lombok.Builder;
 import lombok.Getter;

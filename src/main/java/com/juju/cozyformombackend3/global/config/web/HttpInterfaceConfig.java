@@ -1,15 +1,13 @@
 package com.juju.cozyformombackend3.global.config.web;
 
+import com.juju.cozyformombackend3.global.auth.service.registration.apiclient.AppleApiClient;
+import com.juju.cozyformombackend3.global.auth.service.registration.apiclient.KakaoApiClient;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.RestClient;
-
-import com.juju.cozyformombackend3.global.auth.service.registration.client.AppleApiClient;
-import com.juju.cozyformombackend3.global.auth.service.registration.client.KakaoApiClient;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @Slf4j
@@ -29,19 +27,19 @@ public class HttpInterfaceConfig {
 
     private RestClient createRestClient() {
         return RestClient.builder()
-            // .baseUrl(baseUrl)
-            .defaultStatusHandler(
-                HttpStatusCode::is4xxClientError,
-                (request, response) -> {
-                    log.error("Client Error Code={}", response.getStatusCode());
-                    log.error("Client Error Message={}", new String(response.getBody().readAllBytes()));
-                })
-            .defaultStatusHandler(
-                HttpStatusCode::is5xxServerError,
-                (request, response) -> {
-                    log.error("Server Error Code={}", response.getStatusCode());
-                    log.error("Server Error Message={}", new String(response.getBody().readAllBytes()));
-                })
-            .build();
+                // .baseUrl(baseUrl)
+                .defaultStatusHandler(
+                        HttpStatusCode::is4xxClientError,
+                        (request, response) -> {
+                            log.error("Client Error Code={}", response.getStatusCode());
+                            log.error("Client Error Message={}", new String(response.getBody().readAllBytes()));
+                        })
+                .defaultStatusHandler(
+                        HttpStatusCode::is5xxServerError,
+                        (request, response) -> {
+                            log.error("Server Error Code={}", response.getStatusCode());
+                            log.error("Server Error Message={}", new String(response.getBody().readAllBytes()));
+                        })
+                .build();
     }
 }

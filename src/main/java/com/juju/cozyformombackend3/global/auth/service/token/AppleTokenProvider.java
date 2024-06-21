@@ -1,5 +1,21 @@
 package com.juju.cozyformombackend3.global.auth.service.token;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
+import com.juju.cozyformombackend3.global.auth.service.registration.apiclient.dto.AppleOAuthPublicKeyDto;
+import com.juju.cozyformombackend3.global.auth.service.registration.apple.AppleAuthProperties;
+import com.juju.cozyformombackend3.global.error.exception.BusinessException;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.openssl.PEMException;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -19,28 +35,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.openssl.PEMException;
-import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
-import com.juju.cozyformombackend3.global.auth.service.registration.AppleAuthProperties;
-import com.juju.cozyformombackend3.global.auth.service.registration.AppleOAuthPublicKeyDto;
-import com.juju.cozyformombackend3.global.error.exception.BusinessException;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -57,9 +51,9 @@ public class AppleTokenProvider {
         try {
             String headerOfIdentityToken = identityToken.substring(0, identityToken.indexOf("."));
             Map<String, String> header = new ObjectMapper().readValue(
-                new String(Base64.getDecoder().decode(headerOfIdentityToken), StandardCharsets.UTF_8), Map.class);
+                    new String(Base64.getDecoder().decode(headerOfIdentityToken), StandardCharsets.UTF_8), Map.class);
             AppleOAuthPublicKeyDto.Key key = publicKeys.getMatchedKeyBy(header.get("kid"), header.get("alg"))
-                .orElseThrow(() -> new NullPointerException("Failed get public key from apple's id server."));
+                    .orElseThrow(() -> new NullPointerException("Failed get public key from apple's id server."));
 
             byte[] nBytes = Base64.getUrlDecoder().decode(key.getN());
             byte[] eBytes = Base64.getUrlDecoder().decode(key.getE());
@@ -94,15 +88,15 @@ public class AppleTokenProvider {
     public String generateClientSecret() {
         Date expirationDate = Date.from(LocalDateTime.now().plusMonths(5).atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
-            .setHeaderParam("kid", appleAuthProperties.getKeyId())
-            .setHeaderParam("alg", "ES256")
-            .setIssuer(appleAuthProperties.getTeamId())
-            .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(expirationDate)
-            .setAudience(appleAuthProperties.getAud())
-            .setSubject(appleAuthProperties.getClientId())
-            .signWith(getPrivateKey(), SignatureAlgorithm.ES256)
-            .compact();
+                .setHeaderParam("kid", appleAuthProperties.getKeyId())
+                .setHeaderParam("alg", "ES256")
+                .setIssuer(appleAuthProperties.getTeamId())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(expirationDate)
+                .setAudience(appleAuthProperties.getAud())
+                .setSubject(appleAuthProperties.getClientId())
+                .signWith(getPrivateKey(), SignatureAlgorithm.ES256)
+                .compact();
     }
 
     public PrivateKey getPrivateKey() {
@@ -120,7 +114,7 @@ public class AppleTokenProvider {
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
         PrivateKeyInfo object = null;
         try {
-            object = (PrivateKeyInfo)pemParser.readObject();
+            object = (PrivateKeyInfo) pemParser.readObject();
         } catch (IOException e) {
             throw new BusinessException(AuthErrorCode.SERVER_ERROR_CANT_READ_PRIVATE_KEY);
         }

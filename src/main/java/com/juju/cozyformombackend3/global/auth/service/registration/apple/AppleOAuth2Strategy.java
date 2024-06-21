@@ -1,20 +1,20 @@
-package com.juju.cozyformombackend3.global.auth.service.registration;
+package com.juju.cozyformombackend3.global.auth.service.registration.apple;
 
+import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
+import com.juju.cozyformombackend3.global.auth.service.registration.OAuth2Strategy;
+import com.juju.cozyformombackend3.global.auth.service.registration.apiclient.AppleApiClient;
+import com.juju.cozyformombackend3.global.auth.service.registration.apiclient.dto.AppleOAuthPublicKeyDto;
+import com.juju.cozyformombackend3.global.auth.service.token.AppleTokenProvider;
+import com.juju.cozyformombackend3.global.error.exception.AuthException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
-import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
-import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
-import com.juju.cozyformombackend3.global.auth.service.registration.client.AppleApiClient;
-import com.juju.cozyformombackend3.global.auth.service.token.AppleTokenProvider;
-import com.juju.cozyformombackend3.global.error.exception.AuthException;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -48,7 +48,7 @@ public class AppleOAuth2Strategy implements OAuth2Strategy {
         // 6. client secret으로 refresh token 발급
         log.info("3. client secret으로 refresh token 발급");
         AppleToken.Request request = AppleToken.Request.of(accessValue, appleAuthProperties.getClientId(), clientSecret,
-            "authorization_code");
+                "authorization_code");
         log.info("refreshtoken request: {}", request);
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("code", request.getCode());
@@ -77,7 +77,7 @@ public class AppleOAuth2Strategy implements OAuth2Strategy {
 
         log.info("Apple account unlink request {}", requestBody);
         final ResponseEntity response = appleApiClient.unlinkAccount(
-            MediaType.APPLICATION_FORM_URLENCODED_VALUE, requestBody);
+                MediaType.APPLICATION_FORM_URLENCODED_VALUE, requestBody);
         if (response.getStatusCode().is2xxSuccessful()) {
             log.info("Kakao account unlink success response {}", response.getBody());
             return true;

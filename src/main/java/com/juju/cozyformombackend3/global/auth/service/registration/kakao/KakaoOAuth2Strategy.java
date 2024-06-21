@@ -1,19 +1,20 @@
-package com.juju.cozyformombackend3.global.auth.service.registration;
+package com.juju.cozyformombackend3.global.auth.service.registration.kakao;
 
+import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
+import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
+import com.juju.cozyformombackend3.global.auth.service.registration.OAuth2Strategy;
+import com.juju.cozyformombackend3.global.auth.service.registration.apiclient.KakaoApiClient;
+import com.juju.cozyformombackend3.global.auth.service.registration.apiclient.dto.KakaoDto;
+import com.juju.cozyformombackend3.global.auth.service.registration.apiclient.dto.UnlinkOAuth2AccountDto;
+import com.juju.cozyformombackend3.global.error.exception.AuthException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import com.juju.cozyformombackend3.global.auth.error.AuthErrorCode;
-import com.juju.cozyformombackend3.global.auth.model.OAuth2Registration;
-import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
-import com.juju.cozyformombackend3.global.auth.service.registration.client.KakaoApiClient;
-import com.juju.cozyformombackend3.global.error.exception.AuthException;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -43,7 +44,7 @@ public class KakaoOAuth2Strategy implements OAuth2Strategy {
         requestBody.add("target_id", oauthValue);
 
         ResponseEntity<UnlinkOAuth2AccountDto.KakaoResponse> response = kakaoApiClient.unlinkAccount(
-            MediaType.APPLICATION_FORM_URLENCODED_VALUE, appAdminKey, requestBody);
+                MediaType.APPLICATION_FORM_URLENCODED_VALUE, appAdminKey, requestBody);
         if (response.getStatusCode().is2xxSuccessful()) {
             log.info("Kakao account unlink success response {}", response.getBody().getId());
             return true;

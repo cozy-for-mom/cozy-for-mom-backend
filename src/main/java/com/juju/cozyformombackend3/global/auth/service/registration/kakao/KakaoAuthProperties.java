@@ -1,9 +1,8 @@
-package com.juju.cozyformombackend3.global.auth.service.registration;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
+package com.juju.cozyformombackend3.global.auth.service.registration.kakao;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "oauth2.kakao")
 @Getter

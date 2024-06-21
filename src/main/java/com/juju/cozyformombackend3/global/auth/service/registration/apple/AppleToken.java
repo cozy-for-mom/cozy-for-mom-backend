@@ -1,4 +1,4 @@
-package com.juju.cozyformombackend3.global.auth.service.registration;
+package com.juju.cozyformombackend3.global.auth.service.registration.apple;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,7 @@ public class AppleToken {
         //private String refresh_token;
 
         public static Request of(String code, String clientId, String clientSecret, String grantType
-            /*, String refreshToken*/) {
+                /*, String refreshToken*/) {
             Request request = new Request();
             request.code = code;
             request.client_id = clientId;
@@ -30,11 +30,11 @@ public class AppleToken {
         @Override
         public String toString() {
             return "Request{" +
-                   "code='" + code + '\'' +
-                   ", client_id='" + client_id + '\'' +
-                   ", client_secret='" + client_secret + '\'' +
-                   ", grant_type='" + grant_type + '\'' +
-                   '}';
+                    "code='" + code + '\'' +
+                    ", client_id='" + client_id + '\'' +
+                    ", client_secret='" + client_secret + '\'' +
+                    ", grant_type='" + grant_type + '\'' +
+                    '}';
         }
     }
 
@@ -70,13 +70,13 @@ public class AppleToken {
         @Override
         public String toString() {
             return "Response{" +
-                   "access_token='" + access_token + '\'' +
-                   ", expires_in='" + expires_in + '\'' +
-                   ", id_token='" + id_token + '\'' +
-                   ", refresh_token='" + refresh_token + '\'' +
-                   ", token_type='" + token_type + '\'' +
-                   ", error='" + error + '\'' +
-                   '}';
+                    "access_token='" + access_token + '\'' +
+                    ", expires_in='" + expires_in + '\'' +
+                    ", id_token='" + id_token + '\'' +
+                    ", refresh_token='" + refresh_token + '\'' +
+                    ", token_type='" + token_type + '\'' +
+                    ", error='" + error + '\'' +
+                    '}';
         }
     }
 }
