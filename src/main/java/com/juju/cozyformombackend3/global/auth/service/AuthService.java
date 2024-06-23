@@ -1,10 +1,5 @@
 package com.juju.cozyformombackend3.global.auth.service;
 
-import java.util.Objects;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.auth.dto.CheckNicknameDto;
@@ -14,9 +9,12 @@ import com.juju.cozyformombackend3.global.auth.model.OAuth2UserInfo;
 import com.juju.cozyformombackend3.global.auth.service.registration.OAuth2RegistrationComposite;
 import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,13 +35,18 @@ public class AuthService {
     }
 
     @Transactional // TODO: 하는 일에 비해 트랜젝션 범위가 너무 큼
-    public String authenticateOAuth(AuthenticateOAuthDto.Request request) {
-        // deviceToekn으로 유저 유효성검사
 
-        log.info("provider: {}", request.getOAuthType());
+
+    public String authenticateOAuth(AuthenticateOAuthDto.Request request) {
+
         final OAuth2UserInfo userInfo = oauth2ProviderComposite.getOAuth2Strategy(request.getOAuthType())
-            .getUserInfo(request.getValue());
+                .getUserInfo(request.getValue());
         final User findUser = userRepository.findByEmail(userInfo.getEmail());
+
+        return getAuthorizeToken(request, findUser, userInfo);
+    }
+
+    private String getAuthorizeToken(AuthenticateOAuthDto.Request request, User findUser, OAuth2UserInfo userInfo) {
         if (findUser == null) {
             return cozyTokenProvider.generateGuestToken(userInfo);
         } else {
