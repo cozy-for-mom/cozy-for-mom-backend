@@ -1,11 +1,5 @@
 package com.juju.cozyformombackend3.domain.babylog.growth.service;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.juju.cozyformombackend3.domain.babylog.baby.error.BabyErrorCode;
 import com.juju.cozyformombackend3.domain.babylog.baby.model.BabyProfile;
 import com.juju.cozyformombackend3.domain.babylog.baby.repository.BabyProfileRepository;
@@ -25,8 +19,12 @@ import com.juju.cozyformombackend3.domain.user.error.UserErrorCode;
 import com.juju.cozyformombackend3.domain.user.model.User;
 import com.juju.cozyformombackend3.domain.user.repository.UserRepository;
 import com.juju.cozyformombackend3.global.error.exception.BusinessException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -47,17 +45,17 @@ public class GrowthService {
 
         GrowthDiary savedDiary = growthDiaryRepository.save(request.toGrowthDiary());
         GrowthReport saveReport = GrowthReport.builder()
-            .babyProfile(foundBabyProfile)
-            .growthDiary(savedDiary)
-            .recordAt(request.getRecordAt())
-            .build();
+                .babyProfile(foundBabyProfile)
+                .growthDiary(savedDiary)
+                .recordAt(request.getRecordAt())
+                .build();
         GrowthReport savedReport = growthReportRepository.save(saveReport);
 
         request.toGrowthRecordList(foundBabyProfile.getBabyList())
-            .forEach(growthRecord -> {
-                growthRecordRepository.save(growthRecord);
-                saveReport.updateGrowthRecord(growthRecord);
-            });
+                .forEach(growthRecord -> {
+                    growthRecordRepository.save(growthRecord);
+                    saveReport.updateGrowthRecord(growthRecord);
+                });
 
         return SaveGrowth.Response.of(savedReport);
     }
@@ -71,10 +69,10 @@ public class GrowthService {
         findReport.getGrowthDiary().update(request.getGrowthDiaryDto());
         request.getBabies().forEach(babyDto -> {
             GrowthRecord foundGrowthRecord = findReport.getGrowthRecordList()
-                .stream()
-                .filter(dto -> dto.getId().equals(babyDto.getGrowthRecordId()))
-                .findFirst()
-                .orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_MATCH_BABY_GROWTH_RECORD));
+                    .stream()
+                    .filter(dto -> dto.getBabyId().equals(babyDto.getBabyId()))
+                    .findFirst()
+                    .orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_MATCH_BABY_GROWTH_RECORD));
 
             foundGrowthRecord.update(babyDto);
         });
@@ -83,7 +81,7 @@ public class GrowthService {
 
     private BabyProfile findBabyProfileById(Long babyProfileId) {
         return babyProfileRepository.findById(babyProfileId)
-            .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
+                .orElseThrow(() -> new BusinessException(BabyErrorCode.NOT_FOUND_BABY_PROFILE));
     }
 
     private void isUserAuthorized(User mom, User target) {
@@ -107,17 +105,17 @@ public class GrowthService {
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
-            .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new BusinessException(UserErrorCode.NOT_FOUND_USER));
     }
 
     private GrowthReport findGrowthReportById(Long reportId) {
         return growthReportRepository.findById(reportId)
-            .orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_GROWTH_REPORT));
+                .orElseThrow(() -> new BusinessException(GrowthErrorCode.NOT_FOUND_GROWTH_REPORT));
     }
 
     public FindGrowthList.Response getGrowthList(Long babyProfileId, Long reportId, Long size) {
         List<GrowthSummary> growthSummaryList = growthReportRepository
-            .findGrowthSummaryListByBabyProfileIdAndLastIdAndSize(babyProfileId, reportId, size);
+                .findGrowthSummaryListByBabyProfileIdAndLastIdAndSize(babyProfileId, reportId, size);
 
         // TODO
         LocalDate nextExaminationDate = LocalDate.now().plusWeeks(1);
