@@ -1,19 +1,5 @@
 package com.juju.cozyformombackend3.domain.user.controller;
 
-import java.net.URI;
-import java.util.Map;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.juju.cozyformombackend3.domain.user.dto.LogoutDto;
 import com.juju.cozyformombackend3.domain.user.dto.SignOutDto;
 import com.juju.cozyformombackend3.domain.user.dto.SignUpDto;
@@ -22,13 +8,24 @@ import com.juju.cozyformombackend3.global.auth.annotation.LoginUserId;
 import com.juju.cozyformombackend3.global.auth.filter.JwtFilter;
 import com.juju.cozyformombackend3.global.auth.service.token.CozyTokenProvider;
 import com.juju.cozyformombackend3.global.dto.response.SuccessResponse;
-
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -41,10 +38,10 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse> signUp(
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
-            content = @Content(
-                schema = @Schema(implementation = SignUpDto.Request.class)))
-        @Valid @RequestBody SignUpDto.Request request) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = SignUpDto.Request.class)))
+            @Valid @RequestBody SignUpDto.Request request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = authentication.getCredentials().toString();
         Map<String, String> guestInfo = cozyTokenProvider.getInfo(token);
@@ -56,12 +53,12 @@ public class UserController {
         httpHeaders.setLocation(location);
 
         return new ResponseEntity<>(SuccessResponse.of(HttpStatus.CREATED.value(), response.getResponse()), httpHeaders,
-            HttpStatus.CREATED);
+                HttpStatus.CREATED);
     }
 
     @DeleteMapping("/logout")
     public ResponseEntity<SuccessResponse> logOut(
-        @Parameter(hidden = true) @LoginUserId Long userId) {
+            @Parameter(hidden = true) @LoginUserId Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String token = authentication.getCredentials().toString();
         Long tmpUserId = cozyTokenProvider.getUserId(token);
@@ -71,13 +68,29 @@ public class UserController {
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK.value(), response));
     }
 
+    @Operation(
+            summary = "성장 기록 등록",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            examples = {
+                                    @ExampleObject(
+                                            name = "someExample2",
+                                            value = "{\"reason\":\"내 맘이다.\"}"
+                                    )
+                            }
+                    )
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "회원탈퇴 완료")
+            }
+    )
     @DeleteMapping("/signout")
     public ResponseEntity<SuccessResponse> signOut(
-        @Parameter(hidden = true) @LoginUserId Long userId,
-        @RequestBody SignOutDto.Request request) {
+            @Parameter(hidden = true) @LoginUserId Long userId,
+            @RequestBody SignOutDto.Request request) {
 
-        LogoutDto.Response response = userService.signOut(6L, request.getReason());
+        LogoutDto.Response response = userService.signOut(userId, request.getReason());
 
-        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK.value(), response));
+        return ResponseEntity.noContent().build();
     }
 }
